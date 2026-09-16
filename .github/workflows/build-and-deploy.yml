@@ -34,6 +34,29 @@ jobs:
           build-args: |
             NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID }}
 
+      - name: Sync runtime secrets to infra repository
+        env:
+          GH_TOKEN: ${{ secrets.INFRA_REPO_PAT }}
+          MICROCMS_SERVICE_DOMAIN: ${{ secrets.MICROCMS_SERVICE_DOMAIN }}
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+          MICROCMS_PROJECTS_ENDPOINT: ${{ secrets.MICROCMS_PROJECTS_ENDPOINT }}
+          NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+        run: |
+          set -euo pipefail
+          for name in GH_TOKEN MICROCMS_SERVICE_DOMAIN MICROCMS_API_KEY NOTE_USER_ID; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::$name is missing from my-kubernetes repository secrets"
+              exit 1
+            fi
+          done
+
+          # gh encrypts each value with the target repository's public key.
+          infra_repo="naganuma-tsutomu/proxmox-iac-project"
+          printf '%s' "$MICROCMS_SERVICE_DOMAIN" | gh secret set MICROCMS_SERVICE_DOMAIN --repo "$infra_repo"
+          printf '%s' "$MICROCMS_API_KEY" | gh secret set MICROCMS_API_KEY --repo "$infra_repo"
+          printf '%s' "${MICROCMS_PROJECTS_ENDPOINT:-projects}" | gh secret set MICROCMS_PROJECTS_ENDPOINT --repo "$infra_repo"
+          printf '%s' "$NOTE_USER_ID" | gh secret set NOTE_USER_ID --repo "$infra_repo"
+
       - name: Trigger Infra Deploy
         uses: peter-evans/repository-dispatch@v3
         with:

@@ -18,6 +18,14 @@ NOTE_USER_ID=your_creator_id
 
 トップページのBLOG欄に、RSSから取得した最新3記事が表示されます。取得結果は最大5分間キャッシュします。
 
+## Kubernetesへのデプロイ
+
+`my-kubernetes` リポジトリの GitHub Actions Secrets に `MICROCMS_SERVICE_DOMAIN`、`MICROCMS_API_KEY`、`NOTE_USER_ID`、`INFRA_REPO_PAT` を設定します。`MICROCMS_PROJECTS_ENDPOINT` は省略時に `projects` を使用します。Google Analytics を使う場合は `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` も設定します。
+
+`INFRA_REPO_PAT` は `proxmox-iac-project` にアクセスできるトークンが必要です。Fine-grained PAT の場合、同リポジトリへの `Contents: write`（デプロイ通知）と `Secrets: write`（実行時設定の同期）を付与してください。権限が不足すると `Sync runtime secrets to infra repository` が失敗します。
+
+`main` への push 時にサイトのワークフローがイメージをビルドし、実行時設定をインフラリポジトリの Actions Secrets に暗号化して同期してからデプロイを通知します。インフラ側のワークフローが同じ namespace の Kubernetes Secret `next-app-runtime` を更新し、Deployment の Pod に環境変数として渡します。APIキーはイメージやデプロイ通知のペイロードには含めません。インフラ側のワークフローとマニフェストを先に反映してください。
+
 ## Getting Started
 
 First, run the development server:
