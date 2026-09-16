@@ -1,28 +1,85 @@
 import HeroSection from "../components/HeroSection";
 import ProjectCard from "../components/ProjectCard";
-import { projects } from "../app/data/projects";
+import { connection } from "next/server";
+import { getProjects } from "@/lib/projects";
+import type { ProjectSummary } from "@/lib/project-types";
+import { getNoteFeed } from "@/lib/note";
+import type { NoteFeed } from "@/lib/note-types";
+import NoteCard from "@/components/NoteCard";
 
-export default function Home() {
+export default async function Home() {
+  // Read server credentials at runtime, including when deployed as a container.
+  await connection();
+  let projects: ProjectSummary[] = [];
+  let noteFeed: NoteFeed | null = null;
+  let projectsUnavailable = false;
+  let noteUnavailable = false;
+  const [projectsResult, noteResult] = await Promise.allSettled([
+    getProjects(),
+    getNoteFeed(),
+  ]);
+  if (projectsResult.status === "fulfilled") {
+    projects = projectsResult.value;
+  } else {
+    console.error("Unable to load projects:", projectsResult.reason instanceof Error ? projectsResult.reason.message : "Unknown error");
+    projectsUnavailable = true;
+  }
+  if (noteResult.status === "fulfilled") {
+    noteFeed = noteResult.value;
+  } else {
+    console.error("Unable to load note articles:", noteResult.reason instanceof Error ? noteResult.reason.message : "Unknown error");
+    noteUnavailable = true;
+  }
   return (
     <>
       {/* Hero Section */}
       <HeroSection />
 
-      {/* Projects Section */}
-      <section className="relative py-24 px-4">
-        {/* Dot Pattern Background */}
-        <div className="absolute inset-0 h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
-        <div className="container mx-auto relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold text-center text-[#1C1C1C] mb-16 font-['Oswald'] uppercase tracking-wide">
-            My Projects
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
-              <ProjectCard key={project.slug} project={project} index={index} />
-            ))}
-          </div>
+      <section id="projects" className="projects-section site-shell" aria-labelledby="projects-title">
+        <div className="section-heading">
+          <h2 id="projects-title">PROJECTS</h2>
+          <span className="section-rule" aria-hidden="true" />
+          <div className="section-palette" aria-hidden="true"><i /><i /><i /><i /></div>
         </div>
+        {projectsUnavailable ? (
+          <p className="projects-message" role="status">記事を読み込めませんでした。時間をおいて再度アクセスしてください。</p>
+        ) : projects.length === 0 ? (
+          <p className="projects-message">記事は準備中です。</p>
+        ) : null}
+        <div className="projects-grid">
+          {projects.map((project, index) => (
+            <ProjectCard key={project.slug} project={project} index={index} />
+          ))}
+        </div>
+      </section>
+      <section id="notes" className="notes-section site-shell" aria-labelledby="notes-title">
+        <div className="section-heading">
+          <h2 id="notes-title">BLOG</h2><span className="section-rule" aria-hidden="true" />
+          <span className="section-tag">LATEST FROM NOTE</span>
+        </div>
+        {noteUnavailable ? (
+          <p className="notes-message" role="status">noteの記事を読み込めませんでした。時間をおいて再度アクセスしてください。</p>
+        ) : noteFeed?.articles.length ? (
+          <>
+            <div className="notes-grid">
+              {noteFeed.articles.map((article, index) => (
+                <NoteCard key={article.url} article={article} index={index} />
+              ))}
+            </div>
+            <a className="notes-profile-link" href={noteFeed.profileUrl} target="_blank" rel="noopener noreferrer">
+              ALL POSTS ON NOTE ↗
+            </a>
+          </>
+        ) : (
+          <div className="notes-placeholder">
+            <span className="notes-symbol" aria-hidden="true">&gt;_</span>
+            <div>
+              <h3>{noteFeed ? "RSSに記事はまだありません。" : "つくったこと、試したこと。"}</h3>
+              <p>{noteFeed ? "noteから記事が配信されると、ここに最新記事が表示されます。" : "サーバー構築や開発の記録を、noteからお届けします。"}</p>
+            </div>
+            <span className="section-tag">{noteFeed ? "WAITING FOR POSTS" : "READY TO CONNECT"}</span>
+          </div>
+        )}
       </section>
     </>
   );

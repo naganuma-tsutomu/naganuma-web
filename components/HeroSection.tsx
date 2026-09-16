@@ -1,48 +1,86 @@
-"use client";
+import { homelabPreview } from "@/app/data/homelab";
 
-import { useState, useEffect } from "react";
-import TypewriterEffect from "./TypewriterEffect";
+const monogram = [
+  " #####             #####",
+  " ######            #####",
+  " #######           #####",
+  " ########          #####",
+  " ##### ###         #####",
+  " #####  ###        #####",
+  " #####   ###       #####",
+  " #####    ###      #####",
+  " #####     ###     #####",
+  " #####      ###    #####",
+  " #####       ###   #####",
+  " #####        ###  #####",
+  " #####         ### #####",
+  " #####          ########",
+  " #####           #######",
+  " #####            ######",
+  " #####             #####",
+].join("\n");
 
 export default function HeroSection() {
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-    useEffect(() => {
-        let rafId: number;
-        const handleMouseMove = (e: MouseEvent) => {
-            rafId = requestAnimationFrame(() => {
-                // Calculate mouse position relative to center of screen (subtle movement)
-                const x = (e.clientX / window.innerWidth - 0.5) * 500;
-                const y = (e.clientY / window.innerHeight - 0.5) * 500;
-                setMousePosition({ x, y });
-            });
-        };
-
-        window.addEventListener("mousemove", handleMouseMove);
-        return () => {
-            window.removeEventListener("mousemove", handleMouseMove);
-            cancelAnimationFrame(rafId);
-        };
-    }, []);
-
-    return (
-        <section className="relative flex flex-col items-center justify-center py-32 px-4 overflow-hidden">
-            {/* Grid Background & Geometric Shape */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff1a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff1a_1px,transparent_1px)] bg-[size:24px_24px] transition-colors duration-300"></div>
-            <div
-                className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-gradient-to-tr from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full blur-3xl opacity-60 pointer-events-none transition-transform duration-75 ease-out"
-                style={{
-                    transform: `translate(calc(-50% + ${mousePosition.x}px), calc(-50% + ${mousePosition.y}px))`,
-                }}
-            ></div>
-            <div className="max-w-4xl mx-auto text-center z-10">
-                <TypewriterEffect
-                    text="Welcome to My Site."
-                    className="text-6xl md:text-8xl font-bold text-[#1C1C1C] dark:text-white mb-6 tracking-tight font-['Oswald'] min-h-[150px] md:min-h-[180px] uppercase inline-block"
-                />
-                <p className="text-xl md:text-2xl text-[#3a3a3a] dark:text-gray-300 font-['Shippori_Mincho'] tracking-wide transition-colors duration-300">
-                    This is a showcase of my projects and skills.
-                </p>
+  return (
+    <section className="hero-grid site-shell" aria-labelledby="hero-title">
+      <div className="terminal-panel dark-panel">
+        <div className="panel-titlebar">
+          <span>naganuma@home:~</span>
+          <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
+        </div>
+        <div className="terminal-body">
+          <p className="terminal-intro">Personal workspace · web / server / homelab</p>
+          <p className="terminal-command"><span className="terminal-prompt">naganuma@home:~</span>$ neofetch</p>
+          <div className="neofetch-output">
+            <pre className="ascii-monogram" aria-hidden="true">{monogram}</pre>
+            <div className="system-info">
+              <dl>
+                {homelabPreview.specs.map(([label, value]) => (
+                  <div className={`system-info-row ${["Kernel", "Packages", "Shell", "Terminal"].includes(label) ? "system-info-secondary" : ""}`} key={label}>
+                    <dt>{label}:</dt><dd>{value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="terminal-palette" aria-hidden="true">
+                {homelabPreview.palette.map((color) => <span key={color} style={{ backgroundColor: color }} />)}
+              </div>
+              <p className="sample-config">SAMPLE CONFIGURATION</p>
             </div>
-        </section>
-    );
+          </div>
+          <p className="terminal-command terminal-idle" aria-hidden="true">
+            <span className="terminal-prompt">naganuma@home:~</span>$<span className="terminal-caret" />
+          </p>
+        </div>
+      </div>
+      <div className="manifesto-panel">
+        <h1 id="hero-title">BUILD<br />TWEAK<br />LEARN<br />REPEAT.</h1>
+        <div className="manifesto-caption">
+          <p>WEB / SERVER / HOMELAB<br />CODE / DESIGN / LIFE</p>
+          <span className="short-rule" aria-hidden="true" />
+        </div>
+        <span className="manifesto-underscore" aria-hidden="true">_</span>
+      </div>
+      <div className="status-panel dark-panel">
+        <div className="panel-titlebar status-titlebar">
+          <h2>HOMELAB STATUS</h2><span className="status-demo">DEMO · NOT LIVE</span>
+        </div>
+        <div className="status-body">
+          <dl className="status-meters">
+            {homelabPreview.metrics.map(({ label, value }) => (
+              <div className="status-row" key={label}>
+                <dt>{label}</dt>
+                <dd>
+                  <span className="meter-segments" aria-hidden="true">
+                    {Array.from({ length: 16 }, (_, index) => <i key={index} className={index < Math.max(1, Math.round(value / 100 * 16)) ? "is-filled" : undefined} />)}
+                  </span>
+                  <span className="meter-value">{value}%</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="status-motto">MAKE <br />A BETTER <br />DIGITAL LIFE.<span className="short-rule" aria-hidden="true" /></p>
+        </div>
+      </div>
+    </section>
+  );
 }

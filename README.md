@@ -1,4 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NAGANUMA Portfolio
+
+Next.jsで実装したポートフォリオサイトです。PROJECTSのカードから記事ページを開けます。
+
+## microCMSで記事を管理する
+
+[接続手順・APIスキーマ](docs/microcms.md)を参照してください。未接続時はサンプル記事を表示します。
+
+環境変数の見本は [`.env.example`](.env.example) にあります。APIキーはサーバー側だけで使用します。
+
+## noteの記事を表示する
+
+`.env.local` の `NOTE_USER_ID` に、noteプロフィールURL末尾のクリエイターIDを設定します。
+
+```env
+NOTE_USER_ID=your_creator_id
+```
+
+トップページのBLOG欄に、RSSから取得した最新3記事が表示されます。取得結果は最大5分間キャッシュします。
 
 ## Getting Started
 
@@ -18,7 +36,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses `next/font` to load Oswald, Shippori Mincho, and Silkscreen.
 
 ## Learn More
 

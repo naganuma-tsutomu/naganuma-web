@@ -1,18 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
-import { motion, useInView } from "framer-motion";
-
-interface Project {
-  title: string;
-  description: string;
-  slug: string;
-  imageUrl: string;
-}
+import Link from "next/link";
+import { useState, useRef } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import type { ProjectSummary } from "@/lib/project-types";
 
 interface ProjectCardProps {
-  project: Project;
+  project: ProjectSummary;
   index: number;
 }
 
@@ -20,19 +15,21 @@ export default function ProjectCard({ project, index, }: ProjectCardProps) {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const ref = useRef(null);
+  const reduceMotion = useReducedMotion();
   const isInView = useInView(ref, { amount: 1 });
 
   return (
-    <motion.div
+    <motion.article
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group cursor-pointer relative h-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-black dark:focus-visible:ring-white rounded-lg focus-visible:ring-offset-4 dark:focus-visible:ring-offset-zinc-900"
-      tabIndex={0}
-      role="link"
+      transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : index * 0.1 }}
+      className="project-card group relative h-full"
+      style={{ fontFamily: "var(--font-shippori-mincho), serif" }}
+      aria-labelledby={`${project.slug}-title`}
     >
+      <Link href={`/projects/${encodeURIComponent(project.slug)}`} className="project-card-link" aria-labelledby={`${project.slug}-title`}>
       {/* Shadow Effect */}
       <div className={`absolute top-2 left-2 w-full h-full bg-black dark:bg-white transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] ${isInView ? "translate-x-[-2px] translate-y-[-2px]" : "translate-x-0 translate-y-0"
         }`}></div>
@@ -59,7 +56,7 @@ export default function ProjectCard({ project, index, }: ProjectCardProps) {
           {isLoading && !imageError && (
             <motion.div
               className="absolute inset-0 bg-gray-300 dark:bg-zinc-600 z-10"
-              animate={{ opacity: [0.5, 1, 0.5] }}
+              animate={reduceMotion ? undefined : { opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             />
           )}
@@ -67,6 +64,7 @@ export default function ProjectCard({ project, index, }: ProjectCardProps) {
             src={imageError ? "/images/no-image.jpg" : project.imageUrl}
             alt={project.title}
             fill
+            sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1023px) 46vw, (max-width: 1600px) 30vw, 475px"
             className={`object-cover transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
             priority={index < 3}
             onLoad={() => setIsLoading(false)}
@@ -76,12 +74,13 @@ export default function ProjectCard({ project, index, }: ProjectCardProps) {
 
         {/* Text Content */}
         <div className="p-6 flex-grow transition-colors duration-300">
-          <h3 className={`text-2xl font-bold font-oswald mb-2 group-hover:text-[#E53935] dark:group-hover:text-[#ff6b6b] transition-colors md:text-[#1C1C1C] md:dark:text-white ${isInView ? "text-[#E53935] dark:text-[#ff6b6b]" : "text-[#1C1C1C] dark:text-white"}`}>
+          <h3 id={`${project.slug}-title`} className={`text-2xl font-bold font-oswald mb-2 group-hover:text-[#E53935] dark:group-hover:text-[#ff6b6b] transition-colors md:text-[#1C1C1C] md:dark:text-white ${isInView ? "text-[#E53935] dark:text-[#ff6b6b]" : "text-[#1C1C1C] dark:text-white"}`}>
             {project.title}
           </h3>
           <p className="text-[#3a3a3a] dark:text-gray-300 line-clamp-3 transition-colors duration-300">{project.description}</p>
         </div>
       </motion.div>
-    </motion.div>
+      </Link>
+    </motion.article>
   );
 }
