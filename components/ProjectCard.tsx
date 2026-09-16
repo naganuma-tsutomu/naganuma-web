@@ -86,7 +86,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           {date && <div className="mb-3 font-mono text-xs tracking-wider text-[#52605e] dark:text-gray-300">
             PUBLISHED / <time dateTime={project.publishedAt}>{date}</time>
           </div>}
-          <h3 id={`${project.slug}-title`} className={`text-2xl font-bold font-oswald mb-2 group-hover:text-[#E53935] dark:group-hover:text-[#ff6b6b] transition-colors md:text-[#1C1C1C] md:dark:text-white ${isInView ? "text-[#E53935] dark:text-[#ff6b6b]" : "text-[#1C1C1C] dark:text-white"}`}>
+          <h3 id={`${project.slug}-title`} className={`text-2xl font-bold font-oswald mb-2 group-hover:text-[var(--red)] dark:group-hover:text-[var(--red)] transition-colors md:text-[#1C1C1C] md:dark:text-white ${isInView ? "text-[var(--red)] dark:text-[var(--red)]" : "text-[#1C1C1C] dark:text-white"}`}>
             {project.title}
           </h3>
           <p className="text-[#3a3a3a] dark:text-gray-300 line-clamp-3 transition-colors duration-300">{project.description}</p>

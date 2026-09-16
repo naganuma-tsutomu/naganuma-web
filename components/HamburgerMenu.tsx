@@ -104,7 +104,7 @@ const HamburgerMenu = () => {
           <button
             onClick={toggleMenu}
             aria-label="メニューを閉じる"
-            className="outline-none p-1 border-2 border-black dark:border-white hover:bg-[#E53935] dark:hover:bg-[#ff6b6b] hover:text-white transition-colors group focus-visible:ring-4 focus-visible:ring-[#E53935] dark:focus-visible:ring-[#ff6b6b]"
+            className="outline-none p-1 border-2 border-black dark:border-white hover:bg-[var(--red)] dark:hover:bg-[var(--red)] hover:text-white transition-colors group focus-visible:ring-4 focus-visible:ring-[var(--red)] dark:focus-visible:ring-[var(--red)]"
           >
             <svg
               className="w-8 h-8 text-[#1C1C1C] dark:text-white group-hover:text-white transition-colors"
@@ -125,7 +125,7 @@ const HamburgerMenu = () => {
               key={link.name}
               href={link.href}
               onClick={toggleMenu}
-              className="text-[#1C1C1C] dark:text-gray-200 hover:text-[#E53935] dark:hover:text-[#ff6b6b] hover:translate-x-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E53935] dark:focus-visible:ring-[#ff6b6b] px-2 rounded-sm"
+              className="text-[#1C1C1C] dark:text-gray-200 hover:text-[var(--red)] dark:hover:text-[var(--red)] hover:translate-x-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--red)] dark:focus-visible:ring-[var(--red)] px-2 rounded-sm"
             >
               {link.name}
             </Link>

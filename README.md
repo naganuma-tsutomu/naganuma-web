@@ -18,6 +18,20 @@ NOTE_USER_ID=your_creator_id
 
 トップページのBLOG欄に、RSSから取得した最新3記事が表示されます。取得結果は最大5分間キャッシュします。
 
+## HOMELAB STATUSをPrometheusに接続する
+
+Kubernetesにデプロイするコンテナには、`HOMELAB_PROMETHEUS_URL=http://192.168.20.130:9090` を設定しています。サイトのサーバー側だけがPrometheusへ問い合わせ、ProxmoxノードのCPU・メモリ・ディスク使用率と、VM/LXCの受信・送信速度（Mb/s）および直近10分間の推移を表示します。画面を開いている間は30秒ごとに更新し、非表示のタブでは更新を止めます。サーバー側では結果を25秒間キャッシュします。CPU使用率はノードのCPU数で重み付けし、メモリとディスクは全ノードの使用量を合計して計算します。複数のProxmox exporterを収集している場合は、`HOMELAB_PROMETHEUS_INSTANCE` で対象の `instance` ラベルを指定できます。
+
+接続できない場合は `OFFLINE` と `--` を表示します。URLを設定しないローカル開発環境では、デザイン用のサンプル値を表示します。必要な環境変数は [`.env.example`](.env.example) を参照してください。
+
+Podからの接続確認は、`kubectl` が使える端末で実行できます。
+
+```bash
+kubectl exec deployment/next-app -- node -e 'fetch("http://192.168.20.130:9090/api/v1/query?query=up", {signal: AbortSignal.timeout(5000)}).then(async r => console.log(r.status, (await r.json()).status)).catch(e => {console.error(e.message); process.exit(1)})'
+```
+
+`200 success` 以外やタイムアウトなら、Kubernetes側のPodまたはノードから `192.168.20.130` の TCP 9090 への通信経路とファイアウォールを確認してください。
+
 ## Kubernetesへのデプロイ
 
 `my-kubernetes` リポジトリの GitHub Actions Secrets に `MICROCMS_SERVICE_DOMAIN`、`MICROCMS_API_KEY`、`NOTE_USER_ID`、`INFRA_REPO_PAT` を設定します。`MICROCMS_PROJECTS_ENDPOINT` は省略時に `projects` を使用します。Google Analytics を使う場合は `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` も設定します。

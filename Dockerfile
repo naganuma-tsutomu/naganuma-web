@@ -23,6 +23,7 @@ FROM base AS runner
 WORKDIR /app
 # 警告修正: = を追加
 ENV NODE_ENV=production
+ENV HOMELAB_PROMETHEUS_URL=http://192.168.20.130:9090
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
