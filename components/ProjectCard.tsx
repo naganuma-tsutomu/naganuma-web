@@ -11,12 +11,21 @@ interface ProjectCardProps {
   index: number;
 }
 
-export default function ProjectCard({ project, index, }: ProjectCardProps) {
+const dateFormatter = new Intl.DateTimeFormat("ja-JP", {
+  timeZone: "Asia/Tokyo",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+export default function ProjectCard({ project, index }: ProjectCardProps) {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const ref = useRef(null);
   const reduceMotion = useReducedMotion();
   const isInView = useInView(ref, { amount: 1 });
+  const publishedAt = project.publishedAt ? new Date(project.publishedAt) : null;
+  const date = publishedAt && !Number.isNaN(publishedAt.getTime()) ? dateFormatter.format(publishedAt) : null;
 
   return (
     <motion.article
@@ -74,6 +83,9 @@ export default function ProjectCard({ project, index, }: ProjectCardProps) {
 
         {/* Text Content */}
         <div className="p-6 flex-grow transition-colors duration-300">
+          {date && <div className="mb-3 font-mono text-xs tracking-wider text-[#52605e] dark:text-gray-300">
+            PUBLISHED / <time dateTime={project.publishedAt}>{date}</time>
+          </div>}
           <h3 id={`${project.slug}-title`} className={`text-2xl font-bold font-oswald mb-2 group-hover:text-[#E53935] dark:group-hover:text-[#ff6b6b] transition-colors md:text-[#1C1C1C] md:dark:text-white ${isInView ? "text-[#E53935] dark:text-[#ff6b6b]" : "text-[#1C1C1C] dark:text-white"}`}>
             {project.title}
           </h3>

@@ -1,5 +1,6 @@
 import HeroSection from "../components/HeroSection";
 import ProjectCard from "../components/ProjectCard";
+import Link from "next/link";
 import { connection } from "next/server";
 import { getProjects } from "@/lib/projects";
 import type { ProjectSummary } from "@/lib/project-types";
@@ -15,7 +16,7 @@ export default async function Home() {
   let projectsUnavailable = false;
   let noteUnavailable = false;
   const [projectsResult, noteResult] = await Promise.allSettled([
-    getProjects(),
+    getProjects(3),
     getNoteFeed(),
   ]);
   if (projectsResult.status === "fulfilled") {
@@ -42,15 +43,18 @@ export default async function Home() {
           <div className="section-palette" aria-hidden="true"><i /><i /><i /><i /></div>
         </div>
         {projectsUnavailable ? (
-          <p className="projects-message" role="status">記事を読み込めませんでした。時間をおいて再度アクセスしてください。</p>
+          <p className="projects-message" role="status">プロジェクトを読み込めませんでした。時間をおいて再度アクセスしてください。</p>
         ) : projects.length === 0 ? (
-          <p className="projects-message">記事は準備中です。</p>
+          <p className="projects-message">プロジェクトは準備中です。</p>
         ) : null}
         <div className="projects-grid">
           {projects.map((project, index) => (
             <ProjectCard key={project.slug} project={project} index={index} />
           ))}
         </div>
+        {!projectsUnavailable && projects.length > 0 && (
+          <Link className="projects-all-link" href="/projects">ALL PROJECTS →</Link>
+        )}
       </section>
       <section id="notes" className="notes-section site-shell" aria-labelledby="notes-title">
         <div className="section-heading">

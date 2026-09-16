@@ -9,7 +9,7 @@ export default function ProjectError({ reset }: { reset: () => void }) {
       <h1>記事を読み込めませんでした</h1>
       <p>時間をおいてもう一度お試しください。</p>
       <button type="button" onClick={reset}>再読み込み</button>
-      <Link href="/#projects">← PROJECTS 一覧へ戻る</Link>
+      <Link href="/projects">← PROJECTS 一覧へ戻る</Link>
     </section>
   );
 }

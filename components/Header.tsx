@@ -21,7 +21,7 @@ const Header = () => {
             <Link
               key={link.name}
               href={link.href}
-              aria-current={pathname === link.href ? "page" : pathname.startsWith("/projects/") && link.name === "Projects" ? "location" : undefined}
+              aria-current={pathname === link.href ? "page" : pathname.startsWith("/projects/") && link.href === "/projects" ? "location" : undefined}
             >
               {link.name}
             </Link>

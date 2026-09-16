@@ -28,25 +28,26 @@ function toSummary(project: CMSProject): ProjectSummary {
     slug: project.id,
     title: project.title,
     description: project.description,
+    publishedAt: project.publishedAt,
     imageUrl: imageUrl?.startsWith("https://images.microcms-assets.io/assets/")
       ? imageUrl
       : "/images/no-image.jpg",
   };
 }
 
-export async function getProjects(): Promise<ProjectSummary[]> {
+export async function getProjects(limit?: number): Promise<ProjectSummary[]> {
   const config = getMicroCMSConfig();
-  if (!config) return samples;
+  if (!config) return limit === undefined ? samples : samples.slice(0, limit);
 
   const projects: ProjectSummary[] = [];
   let offset = 0;
   let totalCount: number;
   do {
     const page = await microCMSGet<CMSList>(config.projectsEndpoint, {
-      limit: "100",
+      limit: String(Math.min(100, limit === undefined ? 100 : limit - projects.length)),
       offset: String(offset),
       orders: "-publishedAt",
-      fields: "id,title,description,thumbnail",
+      fields: "id,title,description,thumbnail,publishedAt",
     });
     if (!Array.isArray(page.contents) || !Number.isInteger(page.totalCount) || page.totalCount < 0) {
       throw new Error("Invalid microCMS list response.");
@@ -56,7 +57,7 @@ export async function getProjects(): Promise<ProjectSummary[]> {
     totalCount = page.totalCount;
     // Content may be unpublished while the list is being retrieved.
     if (page.contents.length === 0) break;
-  } while (offset < totalCount);
+  } while (offset < totalCount && (limit === undefined || projects.length < limit));
   return projects;
 }
 

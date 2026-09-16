@@ -35,7 +35,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <div className="project-article-shell site-shell">
       <nav className="article-breadcrumb" aria-label="パンくずリスト">
-        <Link href="/#projects">PROJECTS</Link><span aria-hidden="true">/</span><span>{project.title}</span>
+        <Link href="/projects">PROJECTS</Link><span aria-hidden="true">/</span><span>{project.title}</span>
       </nav>
       <article>
         <header className="article-header">
@@ -52,7 +52,7 @@ export default async function ProjectPage({ params }: Props) {
         </div>
         <div className="article-body" dangerouslySetInnerHTML={{ __html: sanitizeArticle(project.content) }} />
       </article>
-      <footer className="article-footer"><Link href="/#projects">← PROJECTS 一覧へ戻る</Link></footer>
+      <footer className="article-footer"><Link href="/projects">← PROJECTS 一覧へ戻る</Link></footer>
     </div>
   );
 }
