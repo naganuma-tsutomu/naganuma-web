@@ -1,0 +1,100 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  padding: clamp(18px, 3vw, 42px);
+  background: #e9e4d8;
+  color: var(--ink);
+  font-family: var(--mono);
+  opacity: 1;
+  transition: opacity 1.2s ease-in-out;
+}
+
+.leaving { opacity: 0; }
+
+.topbar,
+.bottomBar { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.topbar { border-bottom: 1px solid #a8aaa0; padding-bottom: 14px; }
+.bottomBar { border-top: 1px solid #a8aaa0; padding-top: 14px; color: #52605e; font-size: 10px; line-height: 1.5; letter-spacing: .06em; }
+.brand { display: flex; align-items: center; gap: 11px; font-size: 13px; font-weight: 700; letter-spacing: .14em; }
+.brandMark { display: grid; place-items: center; width: 31px; height: 31px; border: 2px solid var(--ink); background: var(--orange); color: var(--red); font: 700 19px/1 var(--font-pixel), var(--mono); letter-spacing: 0; }
+.brandSuffix { color: #52605e; font-weight: 400; }
+.skip { border: 2px solid var(--ink); padding: 8px 11px; background: transparent; color: var(--ink); font: 11px/1.3 var(--mono); letter-spacing: .08em; transition: background-color .2s, color .2s; }
+.skip:hover { background: var(--ink); color: var(--paper); }
+.skip:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }
+.skip span { margin-left: 10px; font-size: 16px; }
+
+.center { display: grid; place-items: center; min-height: 0; overflow-y: auto; padding: 26px 10px 34px; scrollbar-width: none; }
+.center::-webkit-scrollbar { display: none; }
+.loginWindow { width: min(100%, 482px); border: 3px solid var(--ink); padding: 5px; background: var(--ink); color: var(--paper); box-shadow: 8px 8px 0 var(--ink); animation: windowAppear .65s ease-out both; }
+.titlebar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 38px; border: 1px solid #afbdba; padding: 7px 12px; font-size: 12px; }
+.windowDots { display: flex; gap: 7px; }
+.windowDots i { width: 10px; height: 10px; border: 1px solid #c7d4cf; border-radius: 50%; }
+.windowBody { border: 1px solid #afbdba; border-top: 0; padding: clamp(21px, 3vw, 34px); }
+.identity { display: flex; align-items: center; gap: 23px; }
+.avatar { display: grid; flex: 0 0 auto; place-items: center; width: 94px; height: 94px; border: 2px solid var(--paper); background: var(--orange); color: var(--red); font: 700 56px/1 var(--font-pixel), var(--mono); box-shadow: 4px 4px 0 #86cec2; }
+.accountType { margin: 0 0 6px; color: #86cec2; font-size: 10px; letter-spacing: .12em; }
+.accountName { margin: 0; font: 700 clamp(27px, 3.5vw, 35px)/1.2 var(--font-oswald), sans-serif; letter-spacing: .02em; }
+.accountCaption { margin: 7px 0 0; color: #b7c5c3; font-size: 10px; letter-spacing: .04em; }
+
+.authStage { position: relative; height: 90px; margin-top: 30px; border-top: 1px solid #789195; }
+.signIn { position: absolute; inset: 16px 0 auto; animation: signInFade .35s ease 2.05s forwards; }
+.fieldLabel { display: block; margin-bottom: 7px; color: #86cec2; font-size: 10px; line-height: 1; letter-spacing: .1em; }
+.passwordField { display: flex; align-items: center; justify-content: space-between; height: 43px; border: 1px solid #a9b8b7; background: #12272d; }
+.passwordDots { display: flex; align-items: center; gap: 7px; padding-left: 14px; }
+.passwordDots i { width: 6px; height: 6px; border-radius: 50%; background: var(--paper); opacity: 0; transform: scale(.4); animation: dotAppear .15s ease forwards; }
+.passwordDots i:nth-child(1) { animation-delay: .55s; }
+.passwordDots i:nth-child(2) { animation-delay: .66s; }
+.passwordDots i:nth-child(3) { animation-delay: .77s; }
+.passwordDots i:nth-child(4) { animation-delay: .88s; }
+.passwordDots i:nth-child(5) { animation-delay: .99s; }
+.passwordDots i:nth-child(6) { animation-delay: 1.1s; }
+.passwordDots i:nth-child(7) { animation-delay: 1.21s; }
+.passwordDots i:nth-child(8) { animation-delay: 1.32s; }
+.signInArrow { display: grid; place-items: center; align-self: stretch; width: 43px; background: var(--orange); color: var(--ink); font: 24px/1 var(--mono); }
+.welcome { position: absolute; top: 32px; left: 0; display: flex; align-items: center; gap: 13px; color: var(--paper); font: 700 18px/1.3 var(--font-oswald), sans-serif; letter-spacing: .06em; opacity: 0; animation: welcomeAppear .5s ease 2.25s forwards; }
+.cursor { color: var(--orange); font: 20px/1 var(--mono); animation: cursorBlink .8s steps(1, end) infinite; }
+.progress { height: 10px; overflow: hidden; border: 1px solid #789195; background: #243d43; }
+.progress span { display: block; width: 100%; height: 100%; background: repeating-linear-gradient(90deg, #86cec2 0 17px, #243d43 17px 20px); transform: translateX(-100%); animation: progress 2.2s steps(16, end) 1.15s forwards; }
+.windowFoot { display: flex; justify-content: space-between; gap: 12px; margin: 11px 0 0; color: #aebfbd; font-size: 9px; line-height: 1.5; letter-spacing: .06em; }
+.windowFoot span { white-space: nowrap; }
+
+.bottomSeparator { padding-inline: 7px; color: var(--red); }
+.connection { display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.connection i { width: 8px; height: 8px; background: var(--red); }
+
+@keyframes windowAppear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dotAppear { to { opacity: 1; transform: scale(1); } }
+@keyframes signInFade { to { opacity: 0; } }
+@keyframes welcomeAppear { to { opacity: 1; } }
+@keyframes cursorBlink { 50% { opacity: 0; } }
+@keyframes progress { to { transform: translateX(0); } }
+@media (max-width: 640px) {
+  .brandSuffix, .bottomBar > span:first-child { display: none; }
+  .bottomBar { justify-content: flex-end; }
+  .center { padding-inline: 5px; }
+  .loginWindow { box-shadow: 5px 5px 0 var(--ink); }
+  .windowBody { padding: 21px; }
+  .identity { gap: 17px; }
+  .avatar { width: 72px; height: 72px; font-size: 42px; }
+  .accountName { font-size: 28px; }
+  .accountCaption { font-size: 9px; }
+}
+
+@media (max-height: 560px) {
+  .screen { padding-block: 12px; }
+  .center { padding-block: 14px 20px; }
+  .windowBody { padding-block: 16px; }
+  .avatar { width: 58px; height: 58px; font-size: 34px; }
+  .authStage { margin-top: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen { display: none; }
+}

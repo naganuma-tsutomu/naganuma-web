@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import LoginIntro from "@/components/LoginIntro";
 import "./globals.css";
 import { Oswald, Shippori_Mincho, Silkscreen } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -37,6 +38,8 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${oswald.variable} ${shipporiMincho.variable} ${silkscreen.variable}`}>
       <body>
+        <LoginIntro />
+        <noscript><style>{"[data-login-intro] { display: none !important; }"}</style></noscript>
         <a className="skip-link" href="#main-content">本文へスキップ</a>
         <Header />
         <main id="main-content" className="flex-grow">{children}</main>
