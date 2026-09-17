@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { connection } from "next/server";
 import ProjectCard from "@/components/ProjectCard";
 import { getProjects } from "@/lib/projects";
@@ -23,14 +24,22 @@ export default async function ProjectsPage() {
 
   return (
     <section className="projects-index site-shell" aria-labelledby="projects-index-title">
-      <header className="projects-index-header">
-        <span className="section-tag">WORK / ARCHIVE</span>
-        <div className="section-heading">
-          <h1 id="projects-index-title">PROJECTS</h1>
-          <span className="section-rule" aria-hidden="true" />
-          <div className="section-palette" aria-hidden="true"><i /><i /><i /><i /></div>
+      <nav className="interior-breadcrumb" aria-label="パンくずリスト">
+        <Link href="/#home">HOME</Link><span aria-hidden="true">/</span><span>PROJECTS</span>
+      </nav>
+
+      <header className="interior-hero projects-index-header">
+        <div className="interior-hero-main">
+          <span className="interior-kicker">WORK / ARCHIVE</span>
+          <h1 id="projects-index-title">PROJECTS<span className="interior-title-period">.</span></h1>
+          <p>制作したものや、試してきたことをまとめています。</p>
+          <span className="interior-hero-underscore" aria-hidden="true">_</span>
         </div>
-        <p>制作したものや、試してきたことをまとめています。</p>
+        <div className="interior-hero-side">
+          <span>SELECTED WORK / FIELD NOTES</span>
+          <p>BUILD<br />TEST<br />TWEAK<br />REPEAT.</p>
+          <span>PROJECT JOURNAL ↗</span>
+        </div>
       </header>
       {projectsUnavailable ? (
         <p className="projects-message" role="status">プロジェクトを読み込めませんでした。時間をおいて再度アクセスしてください。</p>
