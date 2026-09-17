@@ -9,7 +9,7 @@ export const homelabPreview = {
     ["Kernel", "6.8.0"],
     ["Uptime", "24 days, 7 hours"],
     ["Packages", "1243"],
-    ["Shell", "zsh 5.9"],
+    ["Shell", "bash"],
     ["Terminal", "tmux"],
     ["CPU", "AMD Ryzen 5 5600G"],
     ["GPU", "NVIDIA GeForce RTX 3060"],

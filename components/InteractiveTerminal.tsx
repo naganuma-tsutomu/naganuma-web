@@ -4,42 +4,63 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { homelabPreview } from "@/app/data/homelab";
 
 const monogram = [
-  " #####             #####",
-  " ######            #####",
-  " #######           #####",
-  " ########          #####",
-  " ##### ###         #####",
-  " #####  ###        #####",
-  " #####   ###       #####",
-  " #####    ###      #####",
-  " #####     ###     #####",
-  " #####      ###    #####",
-  " #####       ###   #####",
-  " #####        ###  #####",
-  " #####         ### #####",
-  " #####          ########",
-  " #####           #######",
-  " #####            ######",
-  " #####             #####",
+  "    /#####\\           /#####\\",
+  "   /#######\\          |#####|",
+  "  /#########\\         |#####|",
+  " /#####\\#####\\        |#####|",
+  " |#####|\\#####\\       |#####|",
+  " |#####| \\#####\\      |#####|",
+  " |#####|  \\#####\\     |#####|",
+  " |#####|   \\#####\\    |#####|",
+  " |#####|    \\#####\\   |#####|",
+  " |#####|     \\#####\\  |#####|",
+  " |#####|      \\#####\\ |#####|",
+  " |#####|       \\#####\\|#####|",
+  " |#####|        \\###########|",
+  " \\#####/         \\##########/",
 ].join("\n");
 
-type Entry = { command: string; output: string };
+type CommandResult = { kind: "text"; output: string } | { kind: "neofetch" };
+type Entry = { command: string; result: CommandResult };
 
-function getOutput(command: string): string {
+function getOutput(command: string): CommandResult {
   const [name, ...args] = command.split(/\s+/);
 
   switch (name.toLowerCase()) {
     case "help":
-      return "Available commands: help, whoami, pwd, echo, clear";
+      return { kind: "text", output: "Available commands: help, whoami, pwd, echo, neofetch, clear" };
     case "whoami":
-      return "naganuma · web / server / homelab";
+      return { kind: "text", output: "naganuma" };
     case "pwd":
-      return "/home/naganuma";
+      return { kind: "text", output: "/home/naganuma" };
     case "echo":
-      return args.join(" ");
+      return { kind: "text", output: args.join(" ") };
+    case "neofetch":
+      return { kind: "neofetch" };
     default:
-      return `${name}: command not found. Type help to see available commands.`;
+      return { kind: "text", output: `${name}: command not found. Type help to see available commands.` };
   }
+}
+
+function NeofetchOutput() {
+  return (
+    <div className="neofetch-output">
+      <pre className="ascii-monogram" aria-hidden="true">{monogram}</pre>
+      <div className="system-info">
+        <dl>
+          {homelabPreview.specs.map(([label, value]) => (
+            <div className={`system-info-row ${["Kernel", "Packages", "Shell", "Terminal"].includes(label) ? "system-info-secondary" : ""}`} key={label}>
+              <dt>{label}:</dt><dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+        <div className="terminal-palette" aria-hidden="true">
+          {homelabPreview.palette.map((color) => <span key={color} style={{ backgroundColor: color }} />)}
+        </div>
+        <p className="sample-config">SAMPLE CONFIGURATION</p>
+      </div>
+    </div>
+  );
 }
 
 export default function InteractiveTerminal() {
@@ -65,7 +86,7 @@ export default function InteractiveTerminal() {
       setShowWelcome(false);
       screenRef.current?.scrollTo({ top: 0 });
     } else {
-      setHistory((current) => [...current, { command, output: getOutput(command) }]);
+      setHistory((current) => [...current, { command, result: getOutput(command) }]);
     }
     setInput("");
   }
@@ -82,49 +103,44 @@ export default function InteractiveTerminal() {
             <>
               <p className="terminal-intro">Personal workspace · web / server / homelab</p>
               <p className="terminal-command"><span className="terminal-prompt">naganuma@home:~</span>$ neofetch</p>
-              <div className="neofetch-output">
-                <pre className="ascii-monogram" aria-hidden="true">{monogram}</pre>
-                <div className="system-info">
-                  <dl>
-                    {homelabPreview.specs.map(([label, value]) => (
-                      <div className={`system-info-row ${["Kernel", "Packages", "Shell", "Terminal"].includes(label) ? "system-info-secondary" : ""}`} key={label}>
-                        <dt>{label}:</dt><dd>{value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <div className="terminal-palette" aria-hidden="true">
-                    {homelabPreview.palette.map((color) => <span key={color} style={{ backgroundColor: color }} />)}
-                  </div>
-                  <p className="sample-config">SAMPLE CONFIGURATION</p>
-                </div>
-              </div>
+              <NeofetchOutput />
             </>
           )}
           <div className="terminal-history" aria-live="polite">
             {history.map((entry, index) => (
               <div className="terminal-entry" key={index}>
                 <p className="terminal-command"><span className="terminal-prompt">naganuma@home:~</span>$ <span className="terminal-command-text">{entry.command}</span></p>
-                {entry.output && <p className="terminal-response">{entry.output}</p>}
+                {entry.result.kind === "neofetch" ? <NeofetchOutput /> : entry.result.output && <p className="terminal-response">{entry.result.output}</p>}
               </div>
             ))}
           </div>
+          <form className={`terminal-input-row${showWelcome ? " terminal-input-welcome" : ""}`} onSubmit={handleSubmit}>
+            <label htmlFor="terminal-command-input"><span className="terminal-prompt">naganuma@home:~</span>$</label>
+            <span className="terminal-input-wrap" style={{ width: `${input.length + 1}ch` }}>
+              <input
+                id="terminal-command-input"
+                ref={inputRef}
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                aria-label="Terminal command. Type help to see available commands."
+                title="Type help to see available commands"
+                maxLength={200}
+                autoComplete="off"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
+                enterKeyHint="go"
+              />
+              <span className="terminal-cursor" style={{ left: `min(${input.length}ch, calc(100% - 1ch))` }} aria-hidden="true" />
+              {!input && <span className="terminal-input-hint" aria-hidden="true">type help ↵</span>}
+            </span>
+          </form>
         </div>
-        <form className="terminal-input-row" onSubmit={handleSubmit}>
-          <label htmlFor="terminal-command-input"><span className="terminal-prompt">naganuma@home:~</span>$</label>
-          <input
-            id="terminal-command-input"
-            ref={inputRef}
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            placeholder="type help ↵"
-            maxLength={200}
-            autoComplete="off"
-            autoCapitalize="off"
-            autoCorrect="off"
-            spellCheck={false}
-            enterKeyHint="go"
-          />
-        </form>
+        <div className="tmux-status" aria-label="tmux session home, window 0 bash">
+          <span className="tmux-session">[home]</span>
+          <span className="tmux-window">0:bash*</span>
+          <span className="tmux-host">naganuma@home</span>
+        </div>
       </div>
     </div>
   );
