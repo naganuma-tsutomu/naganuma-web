@@ -57,6 +57,11 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), var(--font-shippori-mi
 @keyframes clock-colon-blink { 50% { opacity: 0; } }
 .header-caption { margin: 0; border-left: 1px solid #a3afa5; padding: 4px 0 4px 16px; color: #354641; font: 12px/1.55 var(--mono); white-space: nowrap; }
 .site-header a:focus-visible, .site-header button:focus-visible { outline-color: var(--red); }
+html[data-page-transition="active"] .site-header,
+html[data-page-transition="active"] footer {
+  pointer-events: none;
+  user-select: none;
+}
 .site-mobile-menu { display: none; }
 .site-mobile-menu > button { border: 1px solid #9aaea2; background: #f7f5ea; }
 .site-mobile-menu > button:hover { background: #fffaf0; }
@@ -64,8 +69,8 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), var(--font-shippori-mi
 
 .desktop-info { display: flex; align-items: center; gap: 14px; height: 26px; padding-top: 12px; color: #526963; font: 10px/1.4 var(--mono); letter-spacing: .08em; white-space: nowrap; }
 .desktop-info-label { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); }
-.desktop-info-label i { width: 6px; height: 6px; background: var(--red); }
-.desktop-info-title { color: var(--ink); font: 700 10px/1.2 Arial, sans-serif; letter-spacing: .12em; transition: font-size .25s ease; }
+.desktop-heading-marker, .desktop-info-label i { width: 6px; height: 6px; flex: none; background: var(--red); transition: box-shadow .2s ease; }
+.desktop-info-title { color: var(--ink); font: 700 11px/1.2 var(--mono), sans-serif; letter-spacing: .12em; transition: color .2s ease; }
 .desktop-info-index { color: #526963; font: 10px/1 var(--mono); letter-spacing: .08em; }
 .desktop-info-rule { flex: 1; height: 1px; background: #bac4b9; }
 
@@ -156,18 +161,20 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), var(--font-shippori-mi
 .projects-section { padding-top: 58px; }
 .section-heading { display: flex; align-items: center; gap: 18px; min-height: 34px; margin-bottom: 30px; }
 .section-heading-label { display: inline-flex; flex: none; align-items: center; gap: 10px; }
-.section-heading-marker { flex: none; width: 6px; height: 6px; background: var(--red); }
-.section-heading-index { color: #526963; font: 10px/1 var(--mono); letter-spacing: .08em; }
-.section-heading h2 { margin: 0; color: var(--ink); font: 700 10px/1.2 Arial, sans-serif; letter-spacing: .12em; transition: font-size .25s ease; }
+.section-heading-marker { flex: none; width: 6px; height: 6px; background: var(--red); transition: box-shadow .2s ease; }
+.section-heading-index { color: #526963; font: 10px/1 var(--mono); letter-spacing: .08em; transition: color .2s ease; }
+.section-heading h2 { margin: 0; color: var(--ink); font: 700 22px/1.2 Arial, sans-serif; letter-spacing: .12em; transition: color .2s ease; }
 .section-rule { height: 1px; background: var(--ink); flex: 1; }
 .section-heading > .section-rule { background: #bac4b9; }
 @media (hover: hover) and (min-width: 768px) {
+  .desktop-area:is(:hover, :focus-within) .desktop-heading-marker,
+  .projects-section:is(:hover, :focus-within) .section-heading-marker,
+  .notes-section:is(:hover, :focus-within) .section-heading-marker { box-shadow: 0 0 8px var(--red); }
   .desktop-area:is(:hover, :focus-within) .desktop-info-title,
   .projects-section:is(:hover, :focus-within) .section-heading h2,
-  .notes-section:is(:hover, :focus-within) .section-heading h2 { font-size: 22px; }
-}
-@media (hover: none) and (min-width: 768px) {
-  .desktop-info-title, .section-heading h2 { font-size: 22px; }
+  .notes-section:is(:hover, :focus-within) .section-heading h2 { color: #000; }
+  .projects-section:is(:hover, :focus-within) .section-heading-index,
+  .notes-section:is(:hover, :focus-within) .section-heading-index { color: var(--teal); }
 }
 .section-palette { display: flex; gap: 11px; }
 .section-palette i { width: 19px; height: 19px; background: var(--ink); }
@@ -302,7 +309,7 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), var(--font-shippori-mi
   .site-launcher-icon { display: none; }
   .desktop-info { height: 30px; gap: 8px; }
   .desktop-info-label { gap: 8px; }
-  .desktop-info-title { font-size: 16px; }
+  .desktop-info-title { font-size: 11px; }
   .hero-grid { display: flex; flex-direction: column; gap: 16px; }
   .manifesto-panel { order: -1; min-height: 282px; padding: 26px; }
   .manifesto-panel h1 { font-size: 42px; }

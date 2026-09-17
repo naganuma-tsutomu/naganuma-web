@@ -9,10 +9,11 @@ type Phase = "idle" | "closing" | "opening";
 
 const CLOSE_DURATION = 460;
 const OPEN_DURATION = 560;
-const NAVIGATION_TIMEOUT = 15000;
+const NAVIGATION_TIMEOUT = 4000;
 
-function routeLabel(pathname: string) {
-  return pathname === "/" ? "/home" : pathname;
+function routeLabel(pathname: string, hash = "") {
+  const base = pathname === "/" ? "/home" : pathname;
+  return hash ? `${base}${hash}` : base;
 }
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
@@ -28,19 +29,26 @@ export default function PageTransition({ children }: { children: React.ReactNode
     timers.current = [];
   }, []);
 
-  const startNavigation = useCallback((nextPath: string) => {
+  const resetToIdle = useCallback(() => {
+    clearTimers();
+    startedAt.current = 0;
+    setPhase("idle");
+    delete document.documentElement.dataset.pageTransition;
+  }, [clearTimers]);
+
+  const startNavigation = useCallback((nextPath: string, nextHash = "") => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     clearTimers();
     startedAt.current = performance.now();
+    document.documentElement.dataset.pageTransition = "active";
     flushSync(() => {
-      setDestination(routeLabel(nextPath));
+      setDestination(routeLabel(nextPath, nextHash));
       setPhase("closing");
     });
     timers.current.push(window.setTimeout(() => {
-      startedAt.current = 0;
-      setPhase("idle");
+      resetToIdle();
     }, NAVIGATION_TIMEOUT));
-  }, [clearTimers]);
+  }, [clearTimers, resetToIdle]);
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
@@ -50,20 +58,31 @@ export default function PageTransition({ children }: { children: React.ReactNode
       if (!link || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
       const destinationUrl = new URL(link.href, window.location.href);
       if (destinationUrl.origin !== window.location.origin || destinationUrl.pathname === window.location.pathname) return;
-      startNavigation(destinationUrl.pathname);
+      startNavigation(destinationUrl.pathname, destinationUrl.hash);
     };
 
+    // Skip full-screen blocking overlay on browser back/forward (e.g. mobile swipe back)
     const onPopState = () => {
-      if (window.location.pathname !== previousPath.current) startNavigation(window.location.pathname);
+      previousPath.current = window.location.pathname;
+      resetToIdle();
+    };
+
+    // Allow user to cancel overlay with Escape key if it feels stuck
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && phase !== "idle") {
+        resetToIdle();
+      }
     };
 
     document.addEventListener("click", onClick, true);
     window.addEventListener("popstate", onPopState);
+    window.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("click", onClick, true);
       window.removeEventListener("popstate", onPopState);
+      window.removeEventListener("keydown", onKeyDown);
     };
-  }, [startNavigation]);
+  }, [phase, resetToIdle, startNavigation]);
 
   useEffect(() => {
     if (pathname === previousPath.current) return;
@@ -71,23 +90,32 @@ export default function PageTransition({ children }: { children: React.ReactNode
     clearTimers();
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      startedAt.current = 0;
-      timers.current.push(window.setTimeout(() => setPhase("idle"), 0));
+      timers.current.push(window.setTimeout(() => resetToIdle(), 0));
       return;
     }
 
     const remaining = Math.max(0, CLOSE_DURATION - (performance.now() - startedAt.current));
     timers.current.push(window.setTimeout(() => {
-      setDestination(routeLabel(pathname));
+      setDestination(routeLabel(pathname, window.location.hash));
       setPhase("opening");
       timers.current.push(window.setTimeout(() => {
-        startedAt.current = 0;
-        setPhase("idle");
+        resetToIdle();
+        if (window.location.hash) {
+          const target = document.querySelector(window.location.hash);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth" });
+          }
+        }
       }, OPEN_DURATION));
     }, startedAt.current ? remaining : 0));
-  }, [pathname, clearTimers]);
+  }, [pathname, clearTimers, resetToIdle]);
 
-  useEffect(() => () => clearTimers(), [clearTimers]);
+  useEffect(() => {
+    return () => {
+      clearTimers();
+      delete document.documentElement.dataset.pageTransition;
+    };
+  }, [clearTimers]);
 
   return (
     <>

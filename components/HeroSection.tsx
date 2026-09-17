@@ -36,8 +36,10 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
     const baseLeft = rect.left - current.x;
     const baseTop = rect.top - current.y;
     const visibleWidth = Math.min(120, rect.width);
+    const desktopInfoBottom = document.querySelector(".desktop-info")?.getBoundingClientRect().bottom;
     const headerBottom = document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 0;
-    const minTop = Math.max(0, headerBottom) + PANEL_TOP_GAP;
+    const barrierBottom = typeof desktopInfoBottom === "number" ? Math.max(headerBottom, desktopInfoBottom) : headerBottom;
+    const minTop = Math.max(0, barrierBottom) + PANEL_TOP_GAP;
     const x = clamp(requestedX, visibleWidth - rect.width - baseLeft, window.innerWidth - visibleWidth - baseLeft);
     const y = clamp(requestedY, minTop - baseTop, Math.max(minTop, window.innerHeight - 36) - baseTop);
 
