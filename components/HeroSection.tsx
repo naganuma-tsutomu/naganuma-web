@@ -14,6 +14,8 @@ type Drag = {
   origin: Position;
 };
 
+const PANEL_TOP_GAP = 10;
+
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
@@ -35,7 +37,7 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
     const baseTop = rect.top - current.y;
     const visibleWidth = Math.min(120, rect.width);
     const headerBottom = document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 0;
-    const minTop = Math.max(0, headerBottom) + 4;
+    const minTop = Math.max(0, headerBottom) + PANEL_TOP_GAP;
     const x = clamp(requestedX, visibleWidth - rect.width - baseLeft, window.innerWidth - visibleWidth - baseLeft);
     const y = clamp(requestedY, minTop - baseTop, Math.max(minTop, window.innerHeight - 36) - baseTop);
 
@@ -69,6 +71,8 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
     if (event.pointerType === "touch" && panel.classList.contains("manifesto-panel") && !target.closest("h1")) return;
 
     event.preventDefault();
+    const current = positions.current.get(panel) ?? { x: 0, y: 0 };
+    positionPanel(panel, current.x, current.y);
     handle.focus({ preventScroll: true });
     handle.setPointerCapture(event.pointerId);
     panel.dataset.dragging = "";
@@ -133,6 +137,7 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
     <section
       ref={sectionRef}
       className="hero-grid site-shell"
+      style={{ paddingTop: PANEL_TOP_GAP }}
       aria-labelledby="hero-title"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}

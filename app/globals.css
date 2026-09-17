@@ -13,7 +13,7 @@
   --red: #d93626;
   --mono: "SFMono-Regular", Consolas, "Liberation Mono", var(--font-shippori-mincho), monospace;
 }
-html { scroll-behavior: smooth; scroll-padding-top: 112px; cursor: auto; }
+html { scroll-behavior: smooth; scroll-padding-top: 112px; scrollbar-gutter: stable; cursor: auto; }
 body {
   margin: 0;
   min-height: 100vh;
