@@ -108,8 +108,8 @@ export default function HomelabStatus({ configured }: { configured: boolean }) {
 
   const network = status?.network ?? emptyNetwork;
   return (
-    <div className="status-panel dark-panel">
-      <div className="panel-titlebar status-titlebar">
+    <div className="status-panel dark-panel" data-hero-window>
+      <div className="panel-titlebar status-titlebar" data-drag-handle role="group" tabIndex={0} aria-label="Homelab status window. Drag or use arrow keys to move.">
         <h2>HOMELAB STATUS</h2>
         <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
       </div>

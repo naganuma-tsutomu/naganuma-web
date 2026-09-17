@@ -34,7 +34,7 @@ export default async function Home() {
   return (
     <>
       {/* Hero Section */}
-      <HeroSection />
+      <HeroSection homelabConfigured={Boolean(process.env.HOMELAB_PROMETHEUS_URL)} />
 
       <section id="projects" className="projects-section site-shell" aria-labelledby="projects-title">
         <div className="section-heading">

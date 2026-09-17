@@ -92,8 +92,8 @@ export default function InteractiveTerminal() {
   }
 
   return (
-    <div className="terminal-panel dark-panel">
-      <div className="panel-titlebar">
+    <div className="terminal-panel dark-panel" data-hero-window>
+      <div className="panel-titlebar" data-drag-handle role="group" tabIndex={0} aria-label="Terminal window. Drag or use arrow keys to move.">
         <span>naganuma@home:~</span>
         <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
       </div>
