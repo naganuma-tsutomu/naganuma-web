@@ -62,10 +62,7 @@ html[data-page-transition="active"] footer {
   pointer-events: none;
   user-select: none;
 }
-.site-mobile-menu { display: none; }
-.site-mobile-menu > button { border: 1px solid #9aaea2; background: #f7f5ea; }
-.site-mobile-menu > button:hover { background: #fffaf0; }
-.site-mobile-menu > button svg { color: var(--ink); }
+
 
 .desktop-info { display: flex; align-items: center; gap: 14px; height: 26px; padding-top: 12px; color: #526963; font: 10px/1.4 var(--mono); letter-spacing: .08em; white-space: nowrap; }
 .desktop-info-label { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); }
@@ -279,7 +276,6 @@ html[data-page-transition="active"] footer {
 }
 @media (max-width: 899px) {
   .desktop-nav { display: none; }
-  .site-mobile-menu { display: block; margin-left: auto; }
 }
 @media (max-width: 1023px) {
   .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

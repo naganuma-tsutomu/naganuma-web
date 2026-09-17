@@ -2,25 +2,83 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import styles from "./HamburgerMenu.module.css";
 
-import { links } from "../app/data/links";
+const menuLinks = [
+  { name: "HOME", href: "/#home", tag: "SYS_ROOT" },
+  { name: "PROJECTS", href: "/projects", tag: "WORK / 02" },
+  { name: "NOTES", href: "/#notes", tag: "BLOG / 03" },
+  { name: "ABOUT", href: "/about", tag: "PROFILE / 04" },
+  { name: "CONTACT", href: "/contact", tag: "INQUIRY / 05" },
+];
 
-const HamburgerMenu = () => {
+function MenuClock() {
+  const [now, setNow] = useState<Date | null>(null);
+
+  useEffect(() => {
+    const update = () => setNow(new Date());
+    update();
+    const interval = window.setInterval(update, 1000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const twoDigits = (value: number) => String(value).padStart(2, "0");
+  const hours = now ? twoDigits(now.getHours()) : "--";
+  const minutes = now ? twoDigits(now.getMinutes()) : "--";
+  const time = `${hours}:${minutes}`;
+  const date = now ? `${now.getFullYear()}/${twoDigits(now.getMonth() + 1)}/${twoDigits(now.getDate())}` : "----/--/--";
+
+  return (
+    <time dateTime={now?.toISOString()} aria-label={now ? `現在の日時 ${date} ${time}` : "現在の日時を読み込み中"}>
+      <span aria-hidden="true">
+        {hours}<span className={styles.footerClockColon}>:</span>{minutes}
+      </span>
+      {" "}<span style={{ color: "#788e89", fontSize: "10px" }}>({date})</span>
+    </time>
+  );
+}
+
+export default function HamburgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
+  const [hash, setHash] = useState("");
+
+  useEffect(() => {
+    const updateHash = () => setHash(window.location.hash);
+    updateHash();
+    window.addEventListener("hashchange", updateHash);
+    return () => window.removeEventListener("hashchange", updateHash);
+  }, [pathname]);
+
+  const isCurrent = (href: string): boolean => {
+    if (href === "/#home") return pathname === "/" && (hash === "" || hash === "#home");
+    if (href === "/#notes") return pathname === "/" && hash === "#notes";
+    if (pathname === href) return true;
+    if (href === "/projects" && pathname.startsWith("/projects/")) return true;
+    return false;
+  };
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
+    setIsOpen((prev) => !prev);
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
   };
 
   useEffect(() => {
     if (!isOpen) return;
-    const opener = document.activeElement as HTMLElement | null;
+
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
     const focusFrame = requestAnimationFrame(() => {
       menuRef.current?.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true });
     });
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -42,98 +100,131 @@ const HamburgerMenu = () => {
         }
       }
     };
+
+    const triggerElement = triggerRef.current;
     const desktop = window.matchMedia("(min-width: 900px)");
     const closeOnDesktop = () => { if (desktop.matches) setIsOpen(false); };
     desktop.addEventListener("change", closeOnDesktop);
     window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       cancelAnimationFrame(focusFrame);
       window.removeEventListener("keydown", handleKeyDown);
       desktop.removeEventListener("change", closeOnDesktop);
       document.body.style.overflow = previousOverflow;
-      opener?.focus({ preventScroll: true });
+      triggerElement?.focus({ preventScroll: true });
     };
   }, [isOpen]);
 
   return (
-    <div className="site-mobile-menu">
+    <div className={styles.mobileMenuWrapper}>
       <button
+        ref={triggerRef}
         onClick={toggleMenu}
-        className="outline-none p-2 border-2 border-black dark:border-white bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors focus-visible:ring-4 focus-visible:ring-black dark:focus-visible:ring-white"
-        aria-label={isOpen ? "メニューを閉じる" : "メニューを開く"}
+        className={styles.triggerButton}
+        data-open={isOpen}
+        aria-label={isOpen ? "ナビゲーションメニューを閉じる" : "ナビゲーションメニューを開く"}
         aria-expanded={isOpen}
-        aria-controls="mobile-menu"
+        aria-controls="mobile-navigation-drawer"
       >
-        <svg
-          className="w-8 h-8 text-[#1C1C1C] dark:text-white"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          {isOpen ? (
-            <path d="M6 18L18 6M6 6l12 12"></path>
-          ) : (
-            <path d="M4 6h16M4 12h12M4 18h8"></path>
-          )}
-        </svg>
+        <span className={styles.triggerIcon} aria-hidden="true">
+          <i /><i /><i /><i />
+        </span>
+        <span>{isOpen ? "CLOSE" : "MENU"}</span>
       </button>
 
-      {/* Overlay */}
+      {/* バックドロップ */}
       <div
-        className={`fixed inset-0 bg-black/60 z-30 transition-opacity duration-300 backdrop-blur-sm
-          ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-        onClick={toggleMenu}
+        className={styles.backdrop}
+        data-open={isOpen}
+        onClick={closeMenu}
         aria-hidden="true"
-      ></div>
+      />
 
-      {/* Slide-in Menu */}
+      {/* スライドインメニュー（ウィンドウ風ドロワー） */}
       <div
-        id="mobile-menu"
+        id="mobile-navigation-drawer"
         ref={menuRef}
         inert={!isOpen}
         role="dialog"
         aria-modal="true"
         aria-label="サイト内ナビゲーション"
-        className={`fixed top-0 right-0 h-dvh w-80 max-w-full bg-[#f4f1e5] z-40 transform transition-transform ease-in-out duration-300 border-l-2 border-[#0a171d] shadow-2xl overflow-y-auto
-          ${isOpen ? "translate-x-0 visible" : "translate-x-full invisible"}`}
+        className={styles.drawer}
+        data-open={isOpen}
       >
-        <div className="flex justify-end p-4 border-b-4 border-black dark:border-white bg-gray-50 dark:bg-zinc-800 transition-colors duration-300">
+        {/* ウィンドウタイトルバー */}
+        <div className={styles.titlebar}>
+          <div className={styles.titlebarTitle}>
+            <span className={styles.statusDot} aria-hidden="true" />
+            <span>naganuma@home: navigation</span>
+          </div>
           <button
-            onClick={toggleMenu}
+            type="button"
+            onClick={closeMenu}
+            className={styles.closeButton}
             aria-label="メニューを閉じる"
-            className="outline-none p-1 border-2 border-black dark:border-white hover:bg-[var(--red)] dark:hover:bg-[var(--red)] hover:text-white transition-colors group focus-visible:ring-4 focus-visible:ring-[var(--red)] dark:focus-visible:ring-[var(--red)]"
           >
-            <svg
-              className="w-8 h-8 text-[#1C1C1C] dark:text-white group-hover:text-white transition-colors"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+            ✕
           </button>
         </div>
-        <nav className="flex flex-col items-start space-y-6 font-mono text-2xl py-12 px-8 uppercase tracking-wide">
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              onClick={toggleMenu}
-              className="text-[#1C1C1C] dark:text-gray-200 hover:text-[var(--red)] dark:hover:text-[var(--red)] hover:translate-x-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--red)] dark:focus-visible:ring-[var(--red)] px-2 rounded-sm"
-            >
-              {link.name}
-            </Link>
-          ))}
+
+        {/* システムヘッダー */}
+        <div className={styles.systemHeader} aria-hidden="true">
+          <span>
+            <span className={styles.systemHeaderMarker} />
+            WORKSPACE MENU
+          </span>
+          <span>01 → 05 ITEMS</span>
+        </div>
+
+        {/* ナビゲーションリスト */}
+        <nav className={styles.navScroll} aria-label="モバイルナビゲーション">
+          {menuLinks.map((link, index) => {
+            const current = isCurrent(link.href);
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={closeMenu}
+                className={styles.navItem}
+                data-current={current}
+                aria-current={current ? "page" : undefined}
+              >
+                <div className={styles.navItemLeading}>
+                  <span className={styles.taskbarNumber} aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className={styles.navLabel}>{link.name}</span>
+                </div>
+                <div className={styles.navItemTrailing} aria-hidden="true">
+                  <span>{link.tag}</span>
+                  <span>→</span>
+                </div>
+              </Link>
+            );
+          })}
         </nav>
+
+        {/* システムフッター */}
+        <div className={styles.systemFooter}>
+          <div className={styles.footerClockRow}>
+            <span className={styles.clockBadge}>
+              <span className={styles.clockBadgeDot} aria-hidden="true" />
+              SYSTEM CLOCK
+            </span>
+            <MenuClock />
+          </div>
+          <div className={styles.footerLinks}>
+            <span style={{ color: "#526963", fontSize: "10px" }}>EXTERNAL:</span>
+            <a href="https://github.com/naganuma-tsutomu" target="_blank" rel="noopener noreferrer">
+              GITHUB ↗
+            </a>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer">
+              X ↗
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
-};
-
-export default HamburgerMenu;
+}
