@@ -110,7 +110,8 @@ export default function HomelabStatus({ configured }: { configured: boolean }) {
   return (
     <div className="status-panel dark-panel">
       <div className="panel-titlebar status-titlebar">
-        <h2>HOMELAB STATUS</h2><span className="status-demo" data-state={status?.state} aria-live="polite">{status ? labels[status.state] : "CONNECTING"}</span>
+        <h2>HOMELAB STATUS</h2>
+        <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
       </div>
       <div className="status-body">
         <dl className="status-meters">
@@ -133,7 +134,10 @@ export default function HomelabStatus({ configured }: { configured: boolean }) {
             </dd>
           </div>
         </dl>
-        <p className="status-motto">MAKE <br />A BETTER <br />DIGITAL LIFE.<span className="short-rule" aria-hidden="true" /></p>
+        <div className="status-motto-wrap">
+          <span className="status-demo" data-state={status?.state} aria-live="polite">{status ? labels[status.state] : "CONNECTING"}</span>
+          <p className="status-motto">MAKE <br />A BETTER <br />DIGITAL LIFE.<span className="short-rule" aria-hidden="true" /></p>
+        </div>
       </div>
     </div>
   );
