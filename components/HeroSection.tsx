@@ -135,6 +135,7 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
 
   return (
     <section
+      id="home"
       ref={sectionRef}
       className="hero-grid site-shell"
       style={{ paddingTop: PANEL_TOP_GAP }}

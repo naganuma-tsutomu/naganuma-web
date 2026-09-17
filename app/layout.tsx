@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LoginIntro from "@/components/LoginIntro";
+import { LOGIN_INTRO_STORAGE_KEY } from "@/lib/login-intro";
 import "./globals.css";
 import { Oswald, Shippori_Mincho, Silkscreen } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -36,7 +37,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${oswald.variable} ${shipporiMincho.variable} ${silkscreen.variable}`}>
+    <html lang="ja" className={`${oswald.variable} ${shipporiMincho.variable} ${silkscreen.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        {process.env.NODE_ENV === "production" && (
+          <script dangerouslySetInnerHTML={{
+            __html: `try { if (localStorage.getItem(${JSON.stringify(LOGIN_INTRO_STORAGE_KEY)}) === "1") document.documentElement.dataset.loginIntroSeen = "true"; } catch {}`,
+          }} />
+        )}
+      </head>
       <body>
         <LoginIntro />
         <noscript><style>{"[data-login-intro] { display: none !important; }"}</style></noscript>

@@ -45,7 +45,7 @@ export default function About() {
   return (
     <div className="interior-page site-shell">
       <nav className="interior-breadcrumb" aria-label="パンくずリスト">
-        <Link href="/">HOME</Link><span aria-hidden="true">/</span><span>ABOUT</span>
+        <Link href="/#home">HOME</Link><span aria-hidden="true">/</span><span>ABOUT</span>
       </nav>
 
       <header className="interior-hero">

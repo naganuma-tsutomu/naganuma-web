@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { LOGIN_INTRO_STORAGE_KEY } from "@/lib/login-intro";
 import styles from "./LoginIntro.module.css";
 
 const INTRO_DURATION = 3800;
-const EXIT_DURATION = 1300;
+const EXIT_DURATION = 780;
 
 export default function LoginIntro() {
   const [phase, setPhase] = useState<"active" | "leaving" | "hidden">("active");
@@ -12,6 +13,7 @@ export default function LoginIntro() {
   const exitTimer = useRef<number | null>(null);
   const restorePage = useRef<(() => void) | null>(null);
   const skipButton = useRef<HTMLButtonElement>(null);
+  const shouldShow = useRef<boolean | null>(null);
 
   const dismiss = useCallback(() => {
     if (exitTimer.current !== null) return;
@@ -25,6 +27,25 @@ export default function LoginIntro() {
   }, []);
 
   useEffect(() => {
+    if (shouldShow.current === null) {
+      if (process.env.NODE_ENV === "development") {
+        shouldShow.current = true;
+      } else {
+        try {
+          shouldShow.current = window.localStorage.getItem(LOGIN_INTRO_STORAGE_KEY) !== "1";
+          if (shouldShow.current) window.localStorage.setItem(LOGIN_INTRO_STORAGE_KEY, "1");
+        } catch {
+          // The intro still works when browser storage is unavailable.
+          shouldShow.current = true;
+        }
+      }
+    }
+
+    if (!shouldShow.current) {
+      const frame = window.requestAnimationFrame(() => setPhase("hidden"));
+      return () => window.cancelAnimationFrame(frame);
+    }
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       const frame = window.requestAnimationFrame(() => setPhase("hidden"));
       return () => window.cancelAnimationFrame(frame);
@@ -62,50 +83,57 @@ export default function LoginIntro() {
       aria-modal="true"
       aria-label="ウェルカム画面"
     >
-      <div className={styles.topbar}>
-        <div className={styles.brand}><span className={styles.brandMark}>N</span><span>NAGANUMA<span className={styles.brandSuffix}> / PERSONAL WORKSPACE</span></span></div>
-        <button ref={skipButton} className={styles.skip} type="button" onClick={dismiss}>
-          SKIP INTRO <span aria-hidden="true">→</span>
-        </button>
-      </div>
-
-      <div className={styles.center}>
-        <div className={styles.loginWindow}>
-          <div className={styles.titlebar}>
-            <span>naganuma@home: login</span>
-            <span className={styles.windowDots} aria-hidden="true"><i /><i /><i /></span>
+      <div className={styles.frame}>
+        <div className={styles.topbar}>
+          <div className={styles.brand}>
+            <span className="site-wordmark">
+              <span>NAGANUMA</span>
+            </span>
+            <span className={styles.brandSuffix}>PERSONAL WORKSPACE</span>
           </div>
-          <div className={styles.windowBody}>
-            <div className={styles.identity}>
-              <div className={styles.avatar} aria-hidden="true">N</div>
-              <div>
-                <p className={styles.accountType}>LOCAL ACCOUNT / 01</p>
-                <h2 className={styles.accountName}>naganuma</h2>
-                <p className={styles.accountCaption}>WEB / SERVER / HOMELAB</p>
-              </div>
+          <button ref={skipButton} className={styles.skip} type="button" onClick={dismiss}>
+            SKIP INTRO <span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+        <div className={styles.center}>
+          <div className={styles.loginWindow}>
+            <div className={styles.titlebar}>
+              <span>naganuma@home: login</span>
+              <span className={styles.windowDots} aria-hidden="true"><i /><i /><i /></span>
             </div>
-            <div className={styles.authStage}>
-              <div className={styles.signIn} aria-hidden="true">
-                <span className={styles.fieldLabel}>PASSWORD</span>
-                <span className={styles.passwordField}>
-                  <span className={styles.passwordDots}><i /><i /><i /><i /><i /><i /><i /><i /></span>
-                  <span className={styles.signInArrow}>→</span>
-                </span>
+            <div className={styles.windowBody}>
+              <div className={styles.identity}>
+                <div className={styles.avatar} aria-hidden="true">N</div>
+                <div>
+                  <p className={styles.accountType}>LOCAL ACCOUNT / 01</p>
+                  <h2 className={styles.accountName}>naganuma</h2>
+                  <p className={styles.accountCaption}>WEB / SERVER / HOMELAB</p>
+                </div>
               </div>
-              <div className={styles.welcome} aria-live="polite">
-                <span className={styles.cursor} aria-hidden="true">&gt;_</span>
-                <span>WELCOME BACK</span>
+              <div className={styles.authStage}>
+                <div className={styles.signIn} aria-hidden="true">
+                  <span className={styles.fieldLabel}>PASSWORD</span>
+                  <span className={styles.passwordField}>
+                    <span className={styles.passwordDots}><i /><i /><i /><i /><i /><i /><i /><i /></span>
+                    <span className={styles.signInArrow}>→</span>
+                  </span>
+                </div>
+                <div className={styles.welcome} aria-live="polite">
+                  <span className={styles.cursor} aria-hidden="true">&gt;_</span>
+                  <span>WELCOME BACK</span>
+                </div>
               </div>
+              <div className={styles.progress} aria-hidden="true"><span /></div>
+              <p className={styles.windowFoot}>INITIALIZING WORKSPACE <span>SESSION 01</span></p>
             </div>
-            <div className={styles.progress} aria-hidden="true"><span /></div>
-            <p className={styles.windowFoot}>INITIALIZING WORKSPACE <span>SESSION 01</span></p>
           </div>
         </div>
-      </div>
 
-      <div className={styles.bottomBar} aria-hidden="true">
-        <span>© NAGANUMA <span className={styles.bottomSeparator}>/</span> PERSONAL WORKSPACE</span>
-        <span className={styles.connection}><i /> LOCAL SESSION</span>
+        <div className={styles.bottomBar} aria-hidden="true">
+          <span>© NAGANUMA</span>
+          <span className={styles.connection}><i /> LOCAL SESSION</span>
+        </div>
       </div>
     </div>
   );

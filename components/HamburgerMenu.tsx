@@ -42,7 +42,7 @@ const HamburgerMenu = () => {
         }
       }
     };
-    const desktop = window.matchMedia("(min-width: 768px)");
+    const desktop = window.matchMedia("(min-width: 900px)");
     const closeOnDesktop = () => { if (desktop.matches) setIsOpen(false); };
     desktop.addEventListener("change", closeOnDesktop);
     window.addEventListener("keydown", handleKeyDown);
@@ -56,7 +56,7 @@ const HamburgerMenu = () => {
   }, [isOpen]);
 
   return (
-    <div className="md:hidden">
+    <div className="site-mobile-menu">
       <button
         onClick={toggleMenu}
         className="outline-none p-2 border-2 border-black dark:border-white bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors focus-visible:ring-4 focus-visible:ring-black dark:focus-visible:ring-white"
