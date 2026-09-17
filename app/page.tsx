@@ -34,12 +34,25 @@ export default async function Home() {
   return (
     <>
       {/* Hero Section */}
-      <HeroSection homelabConfigured={Boolean(process.env.HOMELAB_PROMETHEUS_URL)} />
+      <div className="desktop-area">
+        <div className="desktop-info site-shell" aria-hidden="true">
+          <span className="desktop-info-label">
+            <i />
+            <span className="desktop-info-title">DESKTOP</span>
+            <span className="desktop-info-index">01</span>
+          </span>
+          <span className="desktop-info-rule" />
+        </div>
+        <HeroSection homelabConfigured={Boolean(process.env.HOMELAB_PROMETHEUS_URL)} />
+      </div>
 
       <section id="projects" className="projects-section site-shell" aria-labelledby="projects-title">
         <div className="section-heading">
-          <span className="section-heading-index" aria-hidden="true">03</span>
-          <h2 id="projects-title">PROJECTS</h2>
+          <div className="section-heading-label">
+            <span className="section-heading-marker" aria-hidden="true" />
+            <h2 id="projects-title">PROJECTS</h2>
+            <span className="section-heading-index" aria-hidden="true">03</span>
+          </div>
           <span className="section-rule" aria-hidden="true" />
           <div className="section-palette" aria-hidden="true"><i /><i /><i /><i /></div>
         </div>
@@ -59,8 +72,12 @@ export default async function Home() {
       </section>
       <section id="notes" className="notes-section site-shell" aria-labelledby="notes-title">
         <div className="section-heading">
-          <span className="section-heading-index" aria-hidden="true">04</span>
-          <h2 id="notes-title">BLOG</h2><span className="section-rule" aria-hidden="true" />
+          <div className="section-heading-label">
+            <span className="section-heading-marker" aria-hidden="true" />
+            <h2 id="notes-title">BLOG</h2>
+            <span className="section-heading-index" aria-hidden="true">04</span>
+          </div>
+          <span className="section-rule" aria-hidden="true" />
           <span className="section-tag">LATEST FROM NOTE</span>
         </div>
         {noteUnavailable ? (

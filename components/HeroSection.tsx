@@ -14,7 +14,7 @@ type Drag = {
   origin: Position;
 };
 
-const PANEL_TOP_GAP = 10;
+const PANEL_TOP_GAP = 22;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);

@@ -32,12 +32,14 @@ function HeaderClock() {
   }, []);
 
   const twoDigits = (value: number) => String(value).padStart(2, "0");
-  const time = now ? `${twoDigits(now.getHours())}:${twoDigits(now.getMinutes())}` : "--:--";
+  const hours = now ? twoDigits(now.getHours()) : "--";
+  const minutes = now ? twoDigits(now.getMinutes()) : "--";
+  const time = `${hours}:${minutes}`;
   const date = now ? `${now.getFullYear()}/${twoDigits(now.getMonth() + 1)}/${twoDigits(now.getDate())}` : "----/--/--";
 
   return (
     <time className="header-clock" dateTime={now?.toISOString()} aria-label={now ? `現在の日時 ${date} ${time}` : "現在の日時を読み込み中"}>
-      <span className="header-clock-time">{time}</span>
+      <span className="header-clock-time" aria-hidden="true">{hours}<span className="header-clock-colon">:</span>{minutes}</span>
       <span className="header-clock-date">{date}</span>
     </time>
   );

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LoginIntro from "@/components/LoginIntro";
+import PageTransition from "@/components/PageTransition";
 import { LOGIN_INTRO_STORAGE_KEY } from "@/lib/login-intro";
 import "./globals.css";
 import { Oswald, Shippori_Mincho, Silkscreen } from "next/font/google";
@@ -50,7 +51,7 @@ export default function RootLayout({
         <noscript><style>{"[data-login-intro] { display: none !important; }"}</style></noscript>
         <a className="skip-link" href="#main-content">本文へスキップ</a>
         <Header />
-        <main id="main-content" className="flex-grow">{children}</main>
+        <PageTransition>{children}</PageTransition>
         <Footer />
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
