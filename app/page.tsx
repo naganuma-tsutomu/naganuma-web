@@ -38,6 +38,7 @@ export default async function Home() {
 
       <section id="projects" className="projects-section site-shell" aria-labelledby="projects-title">
         <div className="section-heading">
+          <span className="section-heading-index" aria-hidden="true">03</span>
           <h2 id="projects-title">PROJECTS</h2>
           <span className="section-rule" aria-hidden="true" />
           <div className="section-palette" aria-hidden="true"><i /><i /><i /><i /></div>
@@ -58,6 +59,7 @@ export default async function Home() {
       </section>
       <section id="notes" className="notes-section site-shell" aria-labelledby="notes-title">
         <div className="section-heading">
+          <span className="section-heading-index" aria-hidden="true">04</span>
           <h2 id="notes-title">BLOG</h2><span className="section-rule" aria-hidden="true" />
           <span className="section-tag">LATEST FROM NOTE</span>
         </div>

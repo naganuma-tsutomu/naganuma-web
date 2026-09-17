@@ -39,7 +39,7 @@
 .topbar { border-bottom: 1px solid #a8aaa0; padding-bottom: 14px; }
 .bottomBar { border-top: 1px solid #a8aaa0; padding-top: 14px; color: #52605e; font-size: 10px; line-height: 1.5; letter-spacing: .06em; }
 .brand { display: flex; align-items: center; gap: 20px; min-width: 0; font-family: Arial, "Helvetica Neue", var(--font-shippori-mincho), serif; }
-.brand :global(.site-wordmark) { align-self: auto; min-height: 38px; margin-right: 0; padding-inline: 9px; font-size: 20px; }
+.brand :global(.site-wordmark) { margin-right: 0; }
 .brandSuffix { color: #52605e; font: 400 11px/1.5 var(--mono); letter-spacing: .13em; white-space: nowrap; }
 .skip { flex: none; border: 2px solid var(--ink); padding: 8px 11px; background: transparent; color: var(--ink); font: 11px/1.3 var(--mono); letter-spacing: .08em; white-space: nowrap; transition: background-color .2s, color .2s; }
 .skip:hover { background: var(--ink); color: var(--paper); }
@@ -120,7 +120,7 @@
 
 @media (max-width: 374px) {
   .topbar { gap: 8px; }
-  .brand :global(.site-wordmark) { font-size: 17px; }
+  .brand :global(.site-wordmark) { font-size: 18px; letter-spacing: .2em; }
   .skip { padding: 7px 8px; font-size: 10px; }
   .skip span { margin-left: 5px; font-size: 14px; }
 }

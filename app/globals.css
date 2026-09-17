@@ -37,8 +37,11 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), var(--font-shippori-mi
 
 .site-header { position: sticky; top: 0; z-index: 50; border-bottom: 2px solid var(--ink); background: #e8e9df; color: var(--ink); }
 .header-inner { min-height: 70px; display: flex; align-items: center; gap: 14px; }
-.site-wordmark { display: inline-flex; flex: none; align-self: stretch; align-items: center; padding: 0 12px; background: var(--orange); color: var(--red); font: 700 34px/1 var(--font-pixel), var(--mono); letter-spacing: -.09em; white-space: nowrap; transition: background-color .2s; }
-.site-wordmark:hover { background: #ffd09a; }
+.site-wordmark { display: inline-flex; flex: none; min-height: 45px; align-items: center; gap: 11px; border: 1px solid transparent; padding: 0 13px; background: transparent; color: var(--ink); font-size: 21px; font-weight: 700; letter-spacing: .27em; white-space: nowrap; transition: color .2s; }
+.site-wordmark:hover { color: var(--red); }
+.site-launcher-icon { display: grid; grid-template-columns: repeat(2, 7px); gap: 3px; transform: rotate(-7deg); }
+.site-launcher-icon i { width: 7px; height: 7px; border: 1px solid currentColor; background: currentColor; transition: border-color .2s, background-color .2s; }
+.site-launcher-icon i:nth-child(2), .site-launcher-icon i:nth-child(3) { background: transparent; }
 .desktop-nav { display: flex; align-items: center; gap: 5px; border-left: 1px solid #a3afa5; padding-left: 14px; font: 13px var(--mono); text-transform: uppercase; }
 .desktop-nav a { position: relative; display: inline-flex; min-height: 42px; min-width: 84px; align-items: center; justify-content: flex-start; gap: 8px; border: 1px solid #a9b5a9; padding: 0 11px; background: #f7f5ea; color: var(--ink); white-space: nowrap; transition: background-color .2s, border-color .2s; }
 .desktop-nav a:hover { border-color: var(--ink); background: #fffaf0; }
@@ -142,8 +145,9 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), var(--font-shippori-mi
 .status-motto .short-rule { width: 23px; }
 
 .projects-section { padding-top: 34px; }
-.section-heading { display: flex; align-items: center; gap: 18px; margin-bottom: 19px; }
-.section-heading h2 { margin: 0; font: 700 28px/1.2 Arial, sans-serif; letter-spacing: .12em; }
+.section-heading { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
+.section-heading-index { flex: none; border-right: 1px solid #aeb7ad; padding-right: 12px; color: var(--teal); font: 12px/1 var(--mono); }
+.section-heading h2 { margin: 0; color: var(--ink); font: 700 28px/1.2 Arial, sans-serif; letter-spacing: .12em; }
 .section-rule { height: 1px; background: var(--ink); flex: 1; }
 .section-palette { display: flex; gap: 11px; }
 .section-palette i { width: 19px; height: 19px; background: var(--ink); }
@@ -274,7 +278,8 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), var(--font-shippori-mi
   html { scroll-padding-top: 88px; }
   .site-shell { width: calc(100% - 32px); }
   .header-inner { min-height: 78px; gap: 12px; }
-  .site-wordmark { font-size: 26px; padding-inline: 10px; }
+  .site-wordmark { font-size: 19px; letter-spacing: .22em; }
+  .site-launcher-icon { display: none; }
   .hero-grid { display: flex; flex-direction: column; gap: 12px; }
   .manifesto-panel { order: -1; min-height: 282px; padding: 26px; }
   .manifesto-panel h1 { font-size: 42px; }
@@ -310,6 +315,7 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), var(--font-shippori-mi
   .projects-index-header { margin-bottom: 42px; }
   .section-heading { gap: 12px; }
   .section-heading h2 { font-size: 22px; }
+  .section-heading-index { padding-right: 8px; font-size: 10px; }
   .section-palette { gap: 6px; }
   .section-palette i { width: 14px; height: 14px; }
   .projects-grid { grid-template-columns: 1fr; }
@@ -338,7 +344,6 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), var(--font-shippori-mi
   .status-motto br, .status-motto .short-rule { display: none; }
 }
 @media (max-width: 374px) {
-  .site-wordmark { font-size: 22px; }
   .neofetch-output { grid-template-columns: 1fr; }
   .ascii-monogram { display: none; }
   .system-info-row { font-size: 12px; grid-template-columns: 70px 1fr; }

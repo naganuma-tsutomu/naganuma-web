@@ -67,6 +67,7 @@ const Header = () => {
     <header className="site-header">
       <div className="site-shell header-inner">
         <Link href="/#home" className="site-wordmark" aria-label="NAGANUMA ホーム">
+          <span className="site-launcher-icon" aria-hidden="true"><i /><i /><i /><i /></span>
           <span>NAGANUMA</span>
         </Link>
 

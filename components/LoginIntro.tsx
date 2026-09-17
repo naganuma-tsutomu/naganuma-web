@@ -87,6 +87,7 @@ export default function LoginIntro() {
         <div className={styles.topbar}>
           <div className={styles.brand}>
             <span className="site-wordmark">
+              <span className="site-launcher-icon" aria-hidden="true"><i /><i /><i /><i /></span>
               <span>NAGANUMA</span>
             </span>
             <span className={styles.brandSuffix}>PERSONAL WORKSPACE</span>
