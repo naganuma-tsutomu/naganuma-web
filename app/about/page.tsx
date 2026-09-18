@@ -65,8 +65,8 @@ export default function About() {
       <section className="about-intro" aria-labelledby="about-intro-title">
         <div className="about-identity dark-panel">
           <div className="panel-titlebar">
-            <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
             <span>profile.txt</span>
+            <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
           </div>
           <div className="about-identity-body">
             <span className="about-identity-prompt">&gt; whoami</span>
@@ -88,7 +88,7 @@ export default function About() {
             <p>技術の進化は早いですが、変わらない「良さ」を大切にしながら、最新のトレンド（Next.js, Reactなど）を取り入れた開発を行っています。このポートフォリオサイトも、レトロモダンなデザインと最新の技術スタックを融合させて作りました。</p>
             <p>コードを書くこと以外にも、デザイン、写真、そして新しいコーヒーショップを探すことが好きです。</p>
           </div>
-          <Link href="/contact" className="interior-action">GET IN TOUCH <span aria-hidden="true">↗</span></Link>
+          <Link href="/contact" className="interior-action">FIND ME ONLINE <span aria-hidden="true">↗</span></Link>
         </div>
       </section>
 

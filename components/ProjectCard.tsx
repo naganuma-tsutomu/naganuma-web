@@ -45,23 +45,23 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 
       {/* Main Card Content */}
       <motion.div
-        className={`relative bg-white dark:bg-zinc-800 overflow-hidden border-4 border-black dark:border-white h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] ${isInView ? "translate-x-[3px] translate-y-[3px]" : "translate-x-0 translate-y-0"
+        className={`relative bg-white dark:bg-zinc-800 overflow-hidden border-2 border-black dark:border-white h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] ${isInView ? "translate-x-[3px] translate-y-[3px]" : "translate-x-0 translate-y-0"
           }`}
       >
         {/* Browser Header */}
-        <div className="flex items-center p-2 bg-gray-200 dark:bg-zinc-700 border-b-4 border-black dark:border-white transition-colors duration-300">
-          <div className="flex space-x-1">
-            <span className={`w-3 h-3 rounded-full border-2 border-black dark:border-white group-hover:bg-[#1C1C1C] dark:group-hover:bg-white transition-colors md:bg-transparent md:dark:bg-transparent ${isInView ? "bg-[#1C1C1C] dark:bg-white" : "bg-transparent dark:bg-transparent"}`}></span>
-            <span className={`w-3 h-3 rounded-full border-2 border-black dark:border-white group-hover:bg-[#1C1C1C] dark:group-hover:bg-white transition-colors md:bg-transparent md:dark:bg-transparent ${isInView ? "bg-[#1C1C1C] dark:bg-white" : "bg-transparent dark:bg-transparent"}`}></span>
-            <span className={`w-3 h-3 rounded-full border-2 border-black dark:border-white group-hover:bg-[#1C1C1C] dark:group-hover:bg-white transition-colors md:bg-transparent md:dark:bg-transparent ${isInView ? "bg-[#1C1C1C] dark:bg-white" : "bg-transparent dark:bg-transparent"}`}></span>
+        <div className="flex items-center justify-between gap-2 p-2 bg-gray-200 dark:bg-zinc-700 border-b-2 border-black dark:border-white transition-colors duration-300">
+          <div className="min-w-0 flex-1 truncate text-left text-sm text-gray-700 dark:text-gray-300 font-bold">
+            {project.title}.md
           </div>
-          <div className="flex-grow text-center text-sm text-gray-700 dark:text-gray-300 font-bold truncate ml-2">
-            {project.title}.html
+          <div className="flex shrink-0 space-x-1" aria-hidden="true">
+            <span className={`w-3 h-3 rounded-full border border-black dark:border-white group-hover:bg-[#1C1C1C] dark:group-hover:bg-white transition-colors md:bg-transparent md:dark:bg-transparent ${isInView ? "bg-[#1C1C1C] dark:bg-white" : "bg-transparent dark:bg-transparent"}`}></span>
+            <span className={`w-3 h-3 rounded-full border border-black dark:border-white group-hover:bg-[#1C1C1C] dark:group-hover:bg-white transition-colors md:bg-transparent md:dark:bg-transparent ${isInView ? "bg-[#1C1C1C] dark:bg-white" : "bg-transparent dark:bg-transparent"}`}></span>
+            <span className={`w-3 h-3 rounded-full border border-black dark:border-white group-hover:bg-[#1C1C1C] dark:group-hover:bg-white transition-colors md:bg-transparent md:dark:bg-transparent ${isInView ? "bg-[#1C1C1C] dark:bg-white" : "bg-transparent dark:bg-transparent"}`}></span>
           </div>
         </div>
 
         {/* Image */}
-        <div className="relative h-48 bg-gray-100 dark:bg-zinc-900 border-b-4 border-black dark:border-white shrink-0">
+        <div className="relative h-48 bg-gray-100 dark:bg-zinc-900 border-b-2 border-black dark:border-white shrink-0">
           {isLoading && !imageError && (
             <motion.div
               className="absolute inset-0 bg-gray-300 dark:bg-zinc-600 z-10"

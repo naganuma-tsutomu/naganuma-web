@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { githubProfileUrl, xProfileUrl } from "@/app/data/links";
 import styles from "./HamburgerMenu.module.css";
 
 const menuLinks = [
@@ -10,7 +11,7 @@ const menuLinks = [
   { name: "PROJECTS", href: "/projects", tag: "WORK / 02" },
   { name: "NOTES", href: "/notes", tag: "ARTICLES / 03" },
   { name: "ABOUT", href: "/about", tag: "PROFILE / 04" },
-  { name: "CONTACT", href: "/contact", tag: "INQUIRY / 05" },
+  { name: "CONTACT", href: "/contact", tag: "LINKS / 05" },
 ];
 
 function MenuClock() {
@@ -207,10 +208,10 @@ export default function HamburgerMenu() {
           </div>
           <div className={styles.footerLinks}>
             <span style={{ color: "#526963", fontSize: "10px" }}>EXTERNAL:</span>
-            <a href="https://github.com/naganuma-tsutomu" target="_blank" rel="noopener noreferrer">
+            <a href={githubProfileUrl} target="_blank" rel="noopener noreferrer">
               GITHUB ↗
             </a>
-            <a href="https://x.com" target="_blank" rel="noopener noreferrer">
+            <a href={xProfileUrl} target="_blank" rel="noopener noreferrer">
               X ↗
             </a>
           </div>
