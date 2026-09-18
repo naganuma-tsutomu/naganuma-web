@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# local review documents
+/review-markdown/
+
 # next.js
 /.next/
 /out/

@@ -19,7 +19,10 @@ export function getMicroCMSConfig() {
   const apiKey = process.env.MICROCMS_API_KEY?.trim();
   const projectsEndpoint = process.env.MICROCMS_PROJECTS_ENDPOINT?.trim() || "projects";
 
-  if (!serviceDomain && !apiKey) return null;
+  if (!serviceDomain && !apiKey) {
+    if (process.env.NODE_ENV === "development") return null;
+    throw new Error("Set both MICROCMS_SERVICE_DOMAIN and MICROCMS_API_KEY. Sample projects are available only in development.");
+  }
   if (!serviceDomain || !apiKey) {
     throw new Error("Set both MICROCMS_SERVICE_DOMAIN and MICROCMS_API_KEY.");
   }

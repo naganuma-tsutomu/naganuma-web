@@ -5,10 +5,12 @@ import { getMicroCMSConfig, microCMSGet, MicroCMSError } from "../lib/microcms.t
 let savedDomain;
 let savedKey;
 let savedEndpoint;
+let savedNodeEnv;
 beforeEach(() => {
   savedDomain = process.env.MICROCMS_SERVICE_DOMAIN;
   savedKey = process.env.MICROCMS_API_KEY;
   savedEndpoint = process.env.MICROCMS_PROJECTS_ENDPOINT;
+  savedNodeEnv = process.env.NODE_ENV;
   delete process.env.MICROCMS_SERVICE_DOMAIN;
   delete process.env.MICROCMS_API_KEY;
   delete process.env.MICROCMS_PROJECTS_ENDPOINT;
@@ -20,16 +22,24 @@ afterEach(() => {
   else process.env.MICROCMS_API_KEY = savedKey;
   if (savedEndpoint === undefined) delete process.env.MICROCMS_PROJECTS_ENDPOINT;
   else process.env.MICROCMS_PROJECTS_ENDPOINT = savedEndpoint;
+  if (savedNodeEnv === undefined) delete process.env.NODE_ENV;
+  else process.env.NODE_ENV = savedNodeEnv;
   mock.restoreAll();
 });
 
-test("only completely missing configuration enables sample mode", () => {
+test("sample mode requires development and completely missing configuration", () => {
+  process.env.NODE_ENV = "development";
   assert.equal(getMicroCMSConfig(), null);
   process.env.MICROCMS_SERVICE_DOMAIN = "portfolio";
   assert.throws(() => getMicroCMSConfig(), /Set both/);
   delete process.env.MICROCMS_SERVICE_DOMAIN;
   process.env.MICROCMS_API_KEY = "test-key";
   assert.throws(() => getMicroCMSConfig(), /Set both/);
+});
+
+test("missing production credentials fail closed instead of enabling samples", () => {
+  process.env.NODE_ENV = "production";
+  assert.throws(() => getMicroCMSConfig(), /Sample projects are available only in development/);
 });
 
 test("rejects a URL or another host instead of a service ID", () => {
