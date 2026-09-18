@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { usePathname } from "next/navigation";
+import { pageNumber } from "@/app/data/links";
 import styles from "./PageTransition.module.css";
 
 type Phase = "idle" | "closing" | "opening";
@@ -20,6 +21,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const [phase, setPhase] = useState<Phase>("idle");
   const [destination, setDestination] = useState("/home");
+  const [pageNumbers, setPageNumbers] = useState({ from: pageNumber(pathname), to: pageNumber(pathname) });
   const previousPath = useRef(pathname);
   const startedAt = useRef(0);
   const timers = useRef<number[]>([]);
@@ -43,6 +45,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
     document.documentElement.dataset.pageTransition = "active";
     flushSync(() => {
       setDestination(routeLabel(nextPath, nextHash));
+      setPageNumbers({ from: pageNumber(window.location.pathname), to: pageNumber(nextPath) });
       setPhase("closing");
     });
     timers.current.push(window.setTimeout(() => {
@@ -86,6 +89,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
   useEffect(() => {
     if (pathname === previousPath.current) return;
+    setPageNumbers({ from: pageNumber(previousPath.current), to: pageNumber(pathname) });
     previousPath.current = pathname;
     clearTimers();
 
@@ -128,7 +132,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
       </main>
       <div className={styles.overlay} data-phase={phase} aria-hidden={phase === "idle"} role="status" aria-live="polite">
         <div className={styles.desktopFrame} aria-hidden="true">
-          <span><i /> DESKTOP 01 / WORKSPACE</span>
+          <span><i /> DESKTOP {phase === "opening" ? pageNumbers.to : pageNumbers.from} / WORKSPACE</span>
           <span>WINDOW MANAGER <b>↗</b></span>
         </div>
         <div className={styles.window} aria-hidden="true">
@@ -137,7 +141,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
             <span className={styles.windowDots} aria-hidden="true"><i /><i /><i /></span>
           </div>
           <div className={styles.windowBody}>
-            <div className={styles.kicker}><span className={styles.statusDot} /> SYSTEM / OPEN WINDOW <span>01 → 02</span></div>
+            <div className={styles.kicker}><span className={styles.statusDot} /> SYSTEM / OPEN WINDOW <span>{pageNumbers.from} → {pageNumbers.to}</span></div>
             <div className={styles.command}><span aria-hidden="true">&gt;_</span><span>open <strong>{destination}</strong></span></div>
             <div className={styles.divider} />
             <div className={styles.message}><span>INITIALIZING WORKSPACE</span><span>{phase === "opening" ? "OPENING" : "PLEASE WAIT"}</span></div>
