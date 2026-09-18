@@ -19,11 +19,11 @@ const rss = `<?xml version="1.0" encoding="UTF-8" ?>
     <title><![CDATA[最初の記事]]></title>
     <link>https://note.com/example/n/n123</link>
     <pubDate>Tue, 15 Sep 2026 03:00:00 GMT</pubDate>
-    <description><![CDATA[<p>サーバーを<strong>構築</strong>しました。</p>]]></description>
+    <description><![CDATA[<p>サーバーを<strong>構築</strong>しました。</p><a href="https://note.com/example/n/n123">続きを読む</a>]]></description>
     <media:thumbnail>https://assets.st-note.com/production/uploads/images/example.png?width=800</media:thumbnail>
   </item>
   <item><title>外部の記事</title><link>https://example.com/article</link></item>
-  <item><title>画像なしの記事</title><link>https://note.com/example/n/n456</link><media:thumbnail url="https://example.com/unsafe.png" /></item>
+  <item><title>画像なしの記事</title><link>https://note.com/example/n/n456</link><description><![CDATA[<a href="https://note.com/example/n/n456">画像なしの記事を続きを読む</a>]]></description><media:thumbnail url="https://example.com/unsafe.png" /></item>
 </channel></rss>`;
 
 test("parses note articles and turns RSS HTML into a plain excerpt", () => {
@@ -40,6 +40,26 @@ test("parses note articles and turns RSS HTML into a plain excerpt", () => {
     description: "",
     thumbnailUrl: null,
   }]);
+});
+
+test("omits read-more text when it is the entire RSS description", () => {
+  const readMoreOnlyRss = `<?xml version="1.0"?><rss version="2.0"><channel><item>
+    <title>テスト記事</title>
+    <link>https://note.com/example/n/n789</link>
+    <description>テスト記事を続きを読む</description>
+  </item></channel></rss>`;
+
+  assert.equal(parseNoteRSS(readMoreOnlyRss)[0].description, "");
+});
+
+test("keeps the excerpt while removing note's actual read-more link", () => {
+  const noteRss = `<?xml version="1.0"?><rss version="2.0"><channel><item>
+    <title>テスト記事</title>
+    <link>https://note.com/example/n/n789</link>
+    <description><![CDATA[<p name="022ae7ae-326b-468b-8272-adefbf0d507e" id="022ae7ae-326b-468b-8272-adefbf0d507e">テスト記事だよ</p><br/><a href='https://note.com/example/n/n789'>続きをみる</a>]]></description>
+  </item></channel></rss>`;
+
+  assert.equal(parseNoteRSS(noteRss)[0].description, "テスト記事だよ");
 });
 
 test("accepts only a creator ID, not an arbitrary RSS URL", () => {

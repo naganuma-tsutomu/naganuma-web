@@ -9,6 +9,7 @@ import type { ProjectSummary } from "@/lib/project-types";
 interface ProjectCardProps {
   project: ProjectSummary;
   index: number;
+  sample?: boolean;
 }
 
 const dateFormatter = new Intl.DateTimeFormat("ja-JP", {
@@ -18,7 +19,7 @@ const dateFormatter = new Intl.DateTimeFormat("ja-JP", {
   day: "2-digit",
 });
 
-export default function ProjectCard({ project, index }: ProjectCardProps) {
+export default function ProjectCard({ project, index, sample = false }: ProjectCardProps) {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const ref = useRef(null);
@@ -27,25 +28,15 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
   const publishedAt = project.publishedAt ? new Date(project.publishedAt) : null;
   const date = publishedAt && !Number.isNaN(publishedAt.getTime()) ? dateFormatter.format(publishedAt) : null;
 
-  return (
-    <motion.article
-      ref={ref}
-      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : index * 0.1 }}
-      className="project-card group relative h-full"
-      style={{ fontFamily: "var(--font-shippori-mincho), serif" }}
-      aria-labelledby={`${project.slug}-title`}
-    >
-      <Link href={`/projects/${encodeURIComponent(project.slug)}`} className="project-card-link" aria-labelledby={`${project.slug}-title`}>
+  const content = (
+    <>
       {/* Shadow Effect */}
       <div className={`absolute top-2 left-2 w-full h-full bg-black dark:bg-white transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] ${isInView ? "translate-x-[-2px] translate-y-[-2px]" : "translate-x-0 translate-y-0"
         }`}></div>
 
       {/* Main Card Content */}
       <motion.div
-        className={`relative bg-white dark:bg-zinc-800 overflow-hidden border-2 border-black dark:border-white h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] ${isInView ? "translate-x-[3px] translate-y-[3px]" : "translate-x-0 translate-y-0"
+        className={`project-card-surface relative bg-white dark:bg-zinc-800 overflow-hidden border-2 border-black dark:border-white h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] ${isInView ? "translate-x-[3px] translate-y-[3px]" : "translate-x-0 translate-y-0"
           }`}
       >
         {/* Browser Header */}
@@ -83,6 +74,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 
         {/* Text Content */}
         <div className="p-6 flex-grow transition-colors duration-300">
+          {sample && <span className="project-card-sample">SAMPLE</span>}
           {date && <div className="mb-3 font-mono text-xs tracking-wider text-[#52605e] dark:text-gray-300">
             PUBLISHED / <time dateTime={project.publishedAt}>{date}</time>
           </div>}
@@ -92,7 +84,27 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           <p className="text-[#3a3a3a] dark:text-gray-300 line-clamp-3 transition-colors duration-300">{project.description}</p>
         </div>
       </motion.div>
-      </Link>
+    </>
+  );
+
+  return (
+    <motion.article
+      ref={ref}
+      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : index * 0.1 }}
+      className={`project-card group relative h-full${sample ? " project-card-preview" : ""}`}
+      style={{ fontFamily: "var(--font-shippori-mincho), serif" }}
+      aria-labelledby={`${project.slug}-title`}
+    >
+      {sample ? (
+        <div className="project-card-link">{content}</div>
+      ) : (
+        <Link href={`/projects/${encodeURIComponent(project.slug)}`} className="project-card-link" aria-labelledby={`${project.slug}-title`}>
+          {content}
+        </Link>
+      )}
     </motion.article>
   );
 }

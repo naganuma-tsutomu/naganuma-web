@@ -2,15 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import NoteCard from "@/components/NoteCard";
+import ListPagination from "@/components/ListPagination";
+import { noteSamples } from "@/app/data/note-samples";
 import { getNoteFeed } from "@/lib/note";
 import type { NoteFeed } from "@/lib/note-types";
+import { paginate, sampleContentEnabled } from "@/lib/sample-content";
 
 export const metadata: Metadata = {
   title: "NOTES | NAGANUMA",
   description: "noteで執筆した最新記事を最大20件掲載しています。サーバー構築や日々の開発の記録をお届けします。",
 };
 
-export default async function NotesPage() {
+export default async function NotesPage({ searchParams }: { searchParams: Promise<{ page?: string | string[] }> }) {
   await connection();
   let noteFeed: NoteFeed | null = null;
   let noteUnavailable = false;
@@ -21,6 +24,14 @@ export default async function NotesPage() {
     console.error("Unable to load note articles:", error instanceof Error ? error.message : "Unknown error");
     noteUnavailable = true;
   }
+
+  const showSamples = sampleContentEnabled();
+  const articles = noteFeed?.articles ?? [];
+  const entries = [
+    ...articles.map(article => ({ article, sample: false })),
+    ...(showSamples ? noteSamples.map(article => ({ article, sample: true })) : []),
+  ];
+  const { items, page, totalPages, startIndex } = paginate(entries, (await searchParams).page);
 
   return (
     <section className="projects-index site-shell" aria-labelledby="notes-index-title">
@@ -53,14 +64,18 @@ export default async function NotesPage() {
       </header>
 
       {noteUnavailable ? (
-        <p className="notes-message" role="status">noteの記事を読み込めませんでした。時間をおいて再度アクセスしてください。</p>
-      ) : noteFeed?.articles.length ? (
+        <p className="notes-message" role="status">{showSamples ? "noteの記事を読み込めませんでした。以下は表示サンプルです。" : "noteの記事を読み込めませんでした。時間をおいて再度アクセスしてください。"}</p>
+      ) : null}
+      {entries.length > 0 ? (
+        <>
         <div className="notes-grid">
-          {noteFeed.articles.map((article, index) => (
-            <NoteCard key={article.url} article={article} index={index} />
+          {items.map(({ article, sample }, index) => (
+            <NoteCard key={sample ? `sample-${article.title}` : article.url} article={article} index={startIndex + index} sample={sample} />
           ))}
         </div>
-      ) : (
+        <ListPagination path="/notes" page={page} totalPages={totalPages} />
+        </>
+      ) : !noteUnavailable ? (
         <div className="notes-placeholder">
           <span className="notes-symbol" aria-hidden="true">&gt;_</span>
           <div>
@@ -69,7 +84,7 @@ export default async function NotesPage() {
           </div>
           <span className="section-tag">{noteFeed ? "WAITING FOR POSTS" : "READY TO CONNECT"}</span>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

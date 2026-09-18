@@ -1,7 +1,9 @@
 import Link from "next/link";
 import ProjectCard from "./ProjectCard";
+import { projects as projectSamples } from "@/app/data/projects";
 import { getProjects } from "@/lib/projects";
 import type { ProjectSummary } from "@/lib/project-types";
+import { sampleContentEnabled } from "@/lib/sample-content";
 
 export function ProjectsSkeleton() {
   return (
@@ -59,16 +61,24 @@ export default async function ProjectsSection() {
     projectsUnavailable = true;
   }
 
+  const showSamples = sampleContentEnabled();
+  const samples = showSamples
+    ? projectSamples.slice(0, Math.max(0, 3 - projects.length))
+    : [];
+
   return (
     <>
       {projectsUnavailable ? (
-        <p className="projects-message" role="status">プロジェクトを読み込めませんでした。時間をおいて再度アクセスしてください。</p>
+        <p className="projects-message" role="status">{showSamples ? "プロジェクトを読み込めませんでした。以下は表示サンプルです。" : "プロジェクトを読み込めませんでした。時間をおいて再度アクセスしてください。"}</p>
       ) : projects.length === 0 ? (
-        <p className="projects-message">プロジェクトは準備中です。</p>
+        <p className="projects-message">{showSamples ? "プロジェクトは準備中です。以下は表示サンプルです。" : "プロジェクトは準備中です。"}</p>
       ) : null}
       <div className="projects-grid">
         {projects.map((project, index) => (
           <ProjectCard key={project.slug} project={project} index={index} />
+        ))}
+        {samples.map((project, index) => (
+          <ProjectCard key={`sample-${project.slug}`} project={project} index={projects.length + index} sample />
         ))}
       </div>
       {!projectsUnavailable && projects.length > 0 && (

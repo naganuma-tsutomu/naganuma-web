@@ -19,11 +19,22 @@ function textValue(value: XMLValue): string {
   return "";
 }
 
-function excerptFromHtml(value: string): string {
+function excerptFromHtml(value: string, title: string): string {
   const plainText = sanitizeHtml(value, {
     allowedTags: [],
     allowedAttributes: {},
+    textFilter: (text, tagName) =>
+      tagName === "a" && /(?:続きを読む|続きを[見み]る)\s*$/u.test(text) ? "" : text,
   }).replace(/\s+/g, " ").trim();
+
+  if ([
+    "続きを読む",
+    "続きを見る",
+    "続きをみる",
+    `${title}を続きを読む`,
+    `${title}の続きを見る`,
+    `${title}の続きをみる`,
+  ].includes(plainText)) return "";
 
   const characters = Array.from(plainText);
   return characters.length > 120 ? `${characters.slice(0, 120).join("")}…` : plainText;
@@ -88,7 +99,7 @@ export function parseNoteRSS(xml: string, limit = 3): NoteArticle[] {
       title,
       url,
       publishedAt,
-      description: excerptFromHtml(rawDescription),
+      description: excerptFromHtml(rawDescription, title),
       thumbnailUrl: safeNoteThumbnailUrl(thumbnailValue),
     }];
   }).slice(0, Math.max(0, limit));

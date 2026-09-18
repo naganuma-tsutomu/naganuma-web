@@ -1,7 +1,9 @@
 import Link from "next/link";
 import NoteCard from "./NoteCard";
+import { noteSamples } from "@/app/data/note-samples";
 import { getNoteFeed } from "@/lib/note";
 import type { NoteFeed } from "@/lib/note-types";
+import { sampleContentEnabled } from "@/lib/sample-content";
 
 export function NotesSkeleton() {
   return (
@@ -40,17 +42,39 @@ export default async function NotesSection() {
     noteUnavailable = true;
   }
 
+  const articles = noteFeed?.articles ?? [];
+  const showSamples = sampleContentEnabled();
+  const samples = showSamples ? noteSamples.slice(0, Math.max(0, 3 - articles.length)) : [];
+  const hasCards = articles.length + samples.length > 0;
+
   return (
     <>
       {noteUnavailable ? (
-        <p className="notes-message" role="status">noteの記事を読み込めませんでした。時間をおいて再度アクセスしてください。</p>
-      ) : noteFeed?.articles.length ? (
-        <>
-          <div className="notes-grid">
-            {noteFeed.articles.map((article, index) => (
-              <NoteCard key={article.url} article={article} index={index} />
-            ))}
+        <p className="notes-message" role="status">{showSamples ? "noteの記事を読み込めませんでした。以下は表示サンプルです。" : "noteの記事を読み込めませんでした。時間をおいて再度アクセスしてください。"}</p>
+      ) : articles.length === 0 && showSamples ? (
+        <p className="notes-message">noteの記事は準備中です。以下は表示サンプルです。</p>
+      ) : null}
+      {hasCards ? (
+        <div className="notes-grid">
+          {articles.map((article, index) => (
+            <NoteCard key={article.url} article={article} index={index} />
+          ))}
+          {samples.map((article, index) => (
+            <NoteCard key={`sample-${article.title}`} article={article} index={articles.length + index} sample />
+          ))}
+        </div>
+      ) : !noteUnavailable ? (
+        <div className="notes-placeholder">
+          <span className="notes-symbol" aria-hidden="true">&gt;_</span>
+          <div>
+            <h3>{noteFeed ? "RSSに記事はまだありません。" : "つくったこと、試したこと。"}</h3>
+            <p>{noteFeed ? "noteから記事が配信されると、ここに最新記事が表示されます。" : "サーバー構築や開発の記録を、noteからお届けします。"}</p>
           </div>
+          <span className="section-tag">{noteFeed ? "WAITING FOR POSTS" : "READY TO CONNECT"}</span>
+        </div>
+      ) : null}
+      {noteFeed && articles.length > 0 ? (
+        <>
           <div className="flex flex-wrap items-center justify-between gap-4 mt-5">
             <a className="notes-profile-link !m-0" href={noteFeed.profileUrl} target="_blank" rel="noopener noreferrer">
               ALL POSTS ON NOTE ↗
@@ -60,16 +84,7 @@ export default async function NotesSection() {
             </Link>
           </div>
         </>
-      ) : (
-        <div className="notes-placeholder">
-          <span className="notes-symbol" aria-hidden="true">&gt;_</span>
-          <div>
-            <h3>{noteFeed ? "RSSに記事はまだありません。" : "つくったこと、試したこと。"}</h3>
-            <p>{noteFeed ? "noteから記事が配信されると、ここに最新記事が表示されます。" : "サーバー構築や開発の記録を、noteからお届けします。"}</p>
-          </div>
-          <span className="section-tag">{noteFeed ? "WAITING FOR POSTS" : "READY TO CONNECT"}</span>
-        </div>
-      )}
+      ) : null}
     </>
   );
 }
