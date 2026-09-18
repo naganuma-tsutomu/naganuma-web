@@ -69,11 +69,24 @@ export default function About() {
             <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
           </div>
           <div className="about-identity-body">
-            <span className="about-identity-prompt">&gt; whoami</span>
-            <div className="about-monogram" aria-hidden="true">N<span>_</span></div>
+            <div className="about-terminal-content">
+              <p className="about-terminal-command"><span>naganuma@home:~</span>$ whoami</p>
+              <p className="about-terminal-response">naganuma</p>
+              <p className="about-terminal-command"><span>naganuma@home:~</span>$ cat profile.txt</p>
+              <div className="about-terminal-profile">
+                <div className="about-monogram" aria-hidden="true">N<span>_</span></div>
+                <dl>
+                  <div><dt>NAME</dt><dd>NAGANUMA</dd></div>
+                  <div><dt>ROLE</dt><dd>SOFTWARE ENGINEER</dd></div>
+                  <div><dt>FOCUS</dt><dd>WEB / SERVER / HOMELAB</dd></div>
+                </dl>
+              </div>
+              <p className="about-terminal-comment"># BUILD / TWEAK / LEARN / REPEAT</p>
+              <p className="about-terminal-command about-terminal-ready"><span>naganuma@home:~</span>$ <i aria-hidden="true" /></p>
+            </div>
             <div className="about-identity-footer">
-              <span>NAGANUMA</span>
-              <span>WEB / SERVER / HOMELAB</span>
+              <span>1:profile.txt*</span>
+              <span>READ ONLY / UTF-8</span>
             </div>
           </div>
         </div>

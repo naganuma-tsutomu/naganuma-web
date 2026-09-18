@@ -459,11 +459,23 @@ html[data-page-transition="active"] footer {
 .about-intro { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(32px, 5vw, 80px); align-items: stretch; padding-block: 72px 80px; }
 .about-identity { display: flex; flex-direction: column; min-width: 0; min-height: 475px; }
 .about-identity .panel-titlebar { justify-content: space-between; }
-.about-identity-body { display: flex; flex: 1; flex-direction: column; min-height: 0; border: 1px solid #bcc8c9; border-top: 0; padding: 22px 24px; }
-.about-identity-prompt { color: var(--aqua); font-size: 13px; }
-.about-monogram { display: flex; flex: 1; align-items: center; justify-content: center; color: var(--aqua); font: 700 clamp(120px, 15vw, 220px)/1 var(--font-oswald), sans-serif; letter-spacing: -.16em; }
-.about-monogram span { align-self: center; color: var(--orange); }
-.about-identity-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 12px; border-top: 1px solid #597174; padding-top: 12px; font: 10px/1.5 var(--mono); letter-spacing: .05em; }
+.about-identity-body { display: flex; flex: 1; flex-direction: column; min-height: 0; border: 1px solid #bcc8c9; border-top: 0; }
+.about-terminal-content { display: flex; flex: 1; flex-direction: column; min-width: 0; padding: 22px 24px 18px; }
+.about-terminal-command, .about-terminal-response, .about-terminal-comment { margin: 0; font: 12px/1.6 var(--mono); overflow-wrap: anywhere; }
+.about-terminal-command span { color: var(--aqua); }
+.about-terminal-response { margin: 4px 0 20px; color: #eaf4ef; }
+.about-terminal-profile { display: grid; grid-template-columns: 110px minmax(0, 1fr); align-items: center; gap: 20px; margin-top: 12px; border-left: 2px solid var(--aqua); padding: 19px 14px 19px 18px; background: #173036; }
+.about-monogram { display: flex; align-items: center; justify-content: center; color: var(--aqua); font: 700 112px/.9 var(--font-oswald), sans-serif; letter-spacing: -.16em; white-space: nowrap; }
+.about-monogram span { color: var(--orange); }
+.about-terminal-profile dl { display: grid; gap: 11px; min-width: 0; margin: 0; }
+.about-terminal-profile dl div { min-width: 0; }
+.about-terminal-profile dt { color: var(--aqua); font: 10px/1.4 var(--mono); letter-spacing: .1em; }
+.about-terminal-profile dd { margin: 2px 0 0; color: #f1f0e9; font: 12px/1.45 var(--mono); overflow-wrap: anywhere; }
+.about-terminal-comment { margin-top: 17px; color: #9fb4b3; font-size: 11px; }
+.about-terminal-ready { display: flex; align-items: center; gap: .5ch; margin-top: auto; padding-top: 20px; }
+.about-terminal-ready i { width: 9px; height: 1.2em; background: var(--orange); animation: about-cursor-blink 1s steps(1, end) infinite; }
+@keyframes about-cursor-blink { 50% { opacity: 0; } }
+.about-identity-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 5px 10px; background: #86cec2; color: #08171b; font: 10px/1.5 var(--mono); letter-spacing: .02em; }
 .about-copy { padding-block: 6px; }
 .about-copy h2 { margin: 0 0 25px; font: 700 clamp(32px, 3.5vw, 48px)/1.2 Arial, sans-serif; letter-spacing: -.03em; }
 .about-prose { max-width: 670px; color: #38484a; font-size: 15px; line-height: 2; }
@@ -514,7 +526,7 @@ html[data-page-transition="active"] footer {
   .about-intro, .contact-grid { grid-template-columns: 1fr; gap: 34px; padding-top: 42px; }
   .about-intro { padding-bottom: 47px; }
   .about-identity { min-height: 300px; }
-  .about-monogram { font-size: 130px; }
+  .about-monogram { font-size: 112px; }
   .about-copy h2 { margin-bottom: 18px; }
   .about-section { padding-block: 25px 37px; }
   .about-experience li { grid-template-columns: 1fr auto; gap: 8px 14px; }
@@ -527,6 +539,10 @@ html[data-page-transition="active"] footer {
   .interior-hero-main { min-height: 240px; }
   .interior-section-heading { gap: 10px; font-size: 10px; }
   .about-identity-footer { font-size: 8px; }
+  .about-terminal-content { padding: 18px 16px 14px; }
+  .about-terminal-profile { grid-template-columns: 76px minmax(0, 1fr); gap: 12px; padding: 14px 10px; }
+  .about-monogram { font-size: 78px; }
+  .about-terminal-profile dd { font-size: 10px; }
   .about-skills { gap: 9px; }
   .about-skills li { min-height: 73px; gap: 7px; padding: 11px; font-size: 14px; }
   .about-skills li span:last-child { font-size: 12px; }
