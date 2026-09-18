@@ -1,3 +1,4 @@
+import Link from "next/link";
 import NoteCard from "./NoteCard";
 import { getNoteFeed } from "@/lib/note";
 import type { NoteFeed } from "@/lib/note-types";
@@ -50,9 +51,14 @@ export default async function NotesSection() {
               <NoteCard key={article.url} article={article} index={index} />
             ))}
           </div>
-          <a className="notes-profile-link" href={noteFeed.profileUrl} target="_blank" rel="noopener noreferrer">
-            ALL POSTS ON NOTE ↗
-          </a>
+          <div className="flex flex-wrap items-center justify-between gap-4 mt-5">
+            <a className="notes-profile-link !m-0" href={noteFeed.profileUrl} target="_blank" rel="noopener noreferrer">
+              ALL POSTS ON NOTE ↗
+            </a>
+            <Link className="projects-all-link !m-0" href="/notes">
+              LATEST NOTES →
+            </Link>
+          </div>
         </>
       ) : (
         <div className="notes-placeholder">

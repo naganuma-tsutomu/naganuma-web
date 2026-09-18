@@ -1,0 +1,75 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { connection } from "next/server";
+import NoteCard from "@/components/NoteCard";
+import { getNoteFeed } from "@/lib/note";
+import type { NoteFeed } from "@/lib/note-types";
+
+export const metadata: Metadata = {
+  title: "NOTES | NAGANUMA",
+  description: "noteで執筆した最新記事を最大20件掲載しています。サーバー構築や日々の開発の記録をお届けします。",
+};
+
+export default async function NotesPage() {
+  await connection();
+  let noteFeed: NoteFeed | null = null;
+  let noteUnavailable = false;
+
+  try {
+    noteFeed = await getNoteFeed(20);
+  } catch (error) {
+    console.error("Unable to load note articles:", error instanceof Error ? error.message : "Unknown error");
+    noteUnavailable = true;
+  }
+
+  return (
+    <section className="projects-index site-shell" aria-labelledby="notes-index-title">
+      <nav className="interior-breadcrumb" aria-label="パンくずリスト">
+        <Link href="/">HOME</Link><span aria-hidden="true">/</span><span>NOTES</span>
+      </nav>
+
+      <header className="interior-hero projects-index-header">
+        <div className="interior-hero-main">
+          <span className="interior-kicker">ARTICLES / NOTE</span>
+          <h1 id="notes-index-title">NOTES<span className="interior-title-period">.</span></h1>
+          <p>つくったこと、試したこと。noteの最新記事を最大20件掲載しています。</p>
+          <span className="interior-hero-underscore" aria-hidden="true">_</span>
+        </div>
+        <div className="interior-hero-side">
+          <span>LATEST FROM NOTE / FIELD LOG</span>
+          <p>READ<br />LEARN<br />WRITE<br />SHARE.</p>
+          {noteFeed?.profileUrl ? (
+            <a
+              href={noteFeed.profileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ALL POSTS ON NOTE ↗
+            </a>
+          ) : (
+            <span>NOTE JOURNAL ↗</span>
+          )}
+        </div>
+      </header>
+
+      {noteUnavailable ? (
+        <p className="notes-message" role="status">noteの記事を読み込めませんでした。時間をおいて再度アクセスしてください。</p>
+      ) : noteFeed?.articles.length ? (
+        <div className="notes-grid">
+          {noteFeed.articles.map((article, index) => (
+            <NoteCard key={article.url} article={article} index={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="notes-placeholder">
+          <span className="notes-symbol" aria-hidden="true">&gt;_</span>
+          <div>
+            <h3>{noteFeed ? "RSSに記事はまだありません。" : "つくったこと、試したこと。"}</h3>
+            <p>{noteFeed ? "noteから記事が配信されると、ここに最新記事が表示されます。" : "サーバー構築や開発の記録を、noteからお届けします。"}</p>
+          </div>
+          <span className="section-tag">{noteFeed ? "WAITING FOR POSTS" : "READY TO CONNECT"}</span>
+        </div>
+      )}
+    </section>
+  );
+}

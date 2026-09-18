@@ -6,9 +6,9 @@ import { usePathname } from "next/navigation";
 import styles from "./HamburgerMenu.module.css";
 
 const menuLinks = [
-  { name: "HOME", href: "/#home", tag: "SYS_ROOT" },
+  { name: "HOME", href: "/", tag: "SYS_ROOT" },
   { name: "PROJECTS", href: "/projects", tag: "WORK / 02" },
-  { name: "NOTES", href: "/#notes", tag: "BLOG / 03" },
+  { name: "NOTES", href: "/notes", tag: "ARTICLES / 03" },
   { name: "ABOUT", href: "/about", tag: "PROFILE / 04" },
   { name: "CONTACT", href: "/contact", tag: "INQUIRY / 05" },
 ];
@@ -44,20 +44,11 @@ export default function HamburgerMenu() {
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
-  const [hash, setHash] = useState("");
-
-  useEffect(() => {
-    const updateHash = () => setHash(window.location.hash);
-    updateHash();
-    window.addEventListener("hashchange", updateHash);
-    return () => window.removeEventListener("hashchange", updateHash);
-  }, [pathname]);
 
   const isCurrent = (href: string): boolean => {
-    if (href === "/#home") return pathname === "/" && (hash === "" || hash === "#home");
-    if (href === "/#notes") return pathname === "/" && hash === "#notes";
     if (pathname === href) return true;
     if (href === "/projects" && pathname.startsWith("/projects/")) return true;
+    if (href === "/notes" && pathname.startsWith("/notes/")) return true;
     return false;
   };
 

@@ -25,7 +25,7 @@ export default async function ProjectsPage() {
   return (
     <section className="projects-index site-shell" aria-labelledby="projects-index-title">
       <nav className="interior-breadcrumb" aria-label="パンくずリスト">
-        <Link href="/#home">HOME</Link><span aria-hidden="true">/</span><span>PROJECTS</span>
+        <Link href="/">HOME</Link><span aria-hidden="true">/</span><span>PROJECTS</span>
       </nav>
 
       <header className="interior-hero projects-index-header">

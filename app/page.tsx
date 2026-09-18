@@ -42,7 +42,7 @@ export default async function Home() {
         <div className="section-heading">
           <div className="section-heading-label">
             <span className="section-heading-marker" aria-hidden="true" />
-            <h2 id="notes-title">BLOG</h2>
+            <h2 id="notes-title">NOTES</h2>
             <span className="section-heading-index" aria-hidden="true">03</span>
           </div>
           <span className="section-rule" aria-hidden="true" />

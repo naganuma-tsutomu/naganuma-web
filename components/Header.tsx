@@ -47,28 +47,18 @@ function HeaderClock() {
 
 const Header = () => {
   const pathname = usePathname();
-  const [hash, setHash] = useState("");
 
-  useEffect(() => {
-    const updateHash = () => setHash(window.location.hash);
-    updateHash();
-    window.addEventListener("hashchange", updateHash);
-    return () => window.removeEventListener("hashchange", updateHash);
-  }, [pathname]);
-
-  const notesSelected = pathname === "/" && hash === "#notes";
   const currentPage = (href: string): "page" | "location" | undefined => {
-    if (href === "/#notes") return notesSelected ? "location" : undefined;
-    if (href === "/#home") return pathname === "/" && !notesSelected ? "page" : undefined;
     if (pathname === href) return "page";
     if (href === "/projects" && pathname.startsWith("/projects/")) return "location";
+    if (href === "/notes" && pathname.startsWith("/notes/")) return "location";
     return undefined;
   };
 
   return (
     <header className="site-header">
       <div className="site-shell header-inner">
-        <Link href="/#home" className="site-wordmark" aria-label="NAGANUMA ホーム">
+        <Link href="/" className="site-wordmark" aria-label="NAGANUMA ホーム">
           <span className="site-launcher-icon" aria-hidden="true"><i /><i /><i /><i /></span>
           <span>NAGANUMA</span>
         </Link>
