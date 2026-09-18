@@ -6,6 +6,7 @@ import type { NoteArticle, NoteFeed } from "@/lib/note-types";
 
 const NOTE_ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
 const RSS_REVALIDATE_SECONDS = 5 * 60;
+const NOTE_TIMEOUT_MS = 4000;
 
 type XMLValue = string | number | Record<string, unknown> | XMLValue[] | undefined;
 
@@ -112,7 +113,7 @@ export async function getNoteFeed(limit = 3): Promise<NoteFeed | null> {
       Accept: "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8",
     },
     next: { revalidate: RSS_REVALIDATE_SECONDS },
-    signal: AbortSignal.timeout(8_000),
+    signal: AbortSignal.timeout(NOTE_TIMEOUT_MS),
   });
   if (!response.ok) {
     throw new Error(`note RSS request failed (${response.status}).`);

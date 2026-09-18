@@ -35,6 +35,8 @@ export function getMicroCMSConfig() {
   return { serviceDomain, apiKey, projectsEndpoint };
 }
 
+const MICROCMS_TIMEOUT_MS = 4000;
+
 export async function microCMSGet<T>(path: string, query: Record<string, string> = {}): Promise<T> {
   const config = getMicroCMSConfig();
   if (!config) throw new Error("microCMS is not configured.");
@@ -44,7 +46,7 @@ export async function microCMSGet<T>(path: string, query: Record<string, string>
   const response = await fetch(url, {
     headers: { "X-MICROCMS-API-KEY": config.apiKey },
     next: { revalidate: 60 },
-    signal: AbortSignal.timeout(8000),
+    signal: AbortSignal.timeout(MICROCMS_TIMEOUT_MS),
   });
   if (!response.ok) throw new MicroCMSError(response.status, path);
   return response.json() as Promise<T>;
