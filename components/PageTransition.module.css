@@ -105,9 +105,9 @@
 .message { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 9px; color: #b7c5c3; font-size: 10px; letter-spacing: .07em; }
 .message span:last-child { color: var(--orange); white-space: nowrap; }
 .progress { height: 12px; overflow: hidden; border: 1px solid #789195; background: #243d43; }
-.progress span { display: block; width: 100%; height: 100%; background: repeating-linear-gradient(90deg, #86cec2 0 18px, #243d43 18px 21px); transform: scaleX(.08); transform-origin: left; }
+.progress span { display: block; width: 100%; height: 100%; background: repeating-linear-gradient(90deg, #86cec2 0 18px, #243d43 18px 21px); clip-path: inset(0 100% 0 0); }
 .overlay[data-phase="closing"] .progress span { animation: progressLoading 1.35s steps(16, end) both; }
-.overlay[data-phase="opening"] .progress span { transform: scaleX(1); }
+.overlay[data-phase="opening"] .progress span { clip-path: inset(0 0 0 0); }
 .windowFooter { display: flex; justify-content: space-between; gap: 12px; margin-top: 13px; color: #aebfbd; font-size: 9px; letter-spacing: .07em; }
 .screenReader { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 
@@ -132,8 +132,8 @@
   100% { opacity: 0; transform: translateY(-18px) scale(.92); filter: blur(2px); }
 }
 @keyframes progressLoading {
-  from { transform: scaleX(.08); }
-  to { transform: scaleX(.82); }
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 18% 0 0); }
 }
 @keyframes cursorBlink { 50% { opacity: 0; } }
 
