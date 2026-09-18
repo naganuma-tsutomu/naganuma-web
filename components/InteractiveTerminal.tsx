@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { homelabPreview } from "@/app/data/homelab";
+import { links } from "@/app/data/links";
 
 const monogram = [
   "    /#####\\           /#####\\",
@@ -22,13 +24,16 @@ const monogram = [
 
 type CommandResult = { kind: "text"; output: string } | { kind: "neofetch" };
 type Entry = { command: string; result: CommandResult };
+const pageNames = links.filter(({ href }) => href !== "/").map(({ name }) => name.toLowerCase());
 
 function getOutput(command: string): CommandResult {
   const [name, ...args] = command.split(/\s+/);
 
   switch (name.toLowerCase()) {
     case "help":
-      return { kind: "text", output: "Available commands: help, whoami, pwd, echo, neofetch, clear" };
+      return { kind: "text", output: `Commands: help, ls, cd <page>, whoami, pwd, echo, neofetch, clear\nUse cd ${pageNames.join(", cd ")} to open a page.` };
+    case "ls":
+      return { kind: "text", output: pageNames.map((name) => `${name}/`).join("  ") };
     case "whoami":
       return { kind: "text", output: "naganuma" };
     case "pwd":
@@ -64,6 +69,7 @@ function NeofetchOutput() {
 }
 
 export default function InteractiveTerminal() {
+  const router = useRouter();
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<Entry[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
@@ -80,8 +86,24 @@ export default function InteractiveTerminal() {
     event.preventDefault();
     const command = input.trim();
     if (!command) return;
+    const [name, ...args] = command.split(/\s+/);
 
-    if (command.toLowerCase() === "clear") {
+    if (name.toLowerCase() === "cd") {
+      const target = args[0]?.toLowerCase().replace(/^\.\//, "").replace(/\/+$/, "");
+      const destination = !target || ["~", "..", "/"].includes(target)
+        ? "/"
+        : links.find(({ name: page, href }) => target === page.toLowerCase() || target === href)?.href;
+
+      if (args.length > 1) {
+        setHistory((current) => [...current, { command, result: { kind: "text", output: "cd: too many arguments" } }]);
+      } else if (!destination) {
+        setHistory((current) => [...current, { command, result: { kind: "text", output: `cd: ${args[0]}: no such page. Type ls to see available pages.` } }]);
+      } else if (destination === "/") {
+        setHistory((current) => [...current, { command, result: { kind: "text", output: "Already at home." } }]);
+      } else {
+        router.push(destination);
+      }
+    } else if (command.toLowerCase() === "clear") {
       setHistory([]);
       setShowWelcome(false);
       screenRef.current?.scrollTo({ top: 0 });
