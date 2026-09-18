@@ -57,10 +57,10 @@ export default async function NotesSection() {
       {hasCards ? (
         <div className="notes-grid">
           {articles.map((article, index) => (
-            <NoteCard key={article.url} article={article} index={index} />
+            <NoteCard key={article.url} article={article} index={index} scrollHighlight />
           ))}
           {samples.map((article, index) => (
-            <NoteCard key={`sample-${article.title}`} article={article} index={articles.length + index} sample />
+            <NoteCard key={`sample-${article.title}`} article={article} index={articles.length + index} sample scrollHighlight />
           ))}
         </div>
       ) : !noteUnavailable ? (
