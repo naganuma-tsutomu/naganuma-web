@@ -122,6 +122,7 @@ html[data-page-transition="active"] footer {
 .manifesto-caption p { margin: 0; }
 .short-rule { display: block; width: 30px; height: 1px; background: currentColor; margin-top: 14px; }
 .manifesto-underscore { display: block; margin-top: -6px; color: var(--red); font: 38px/.7 var(--mono); }
+.manifesto-mobile-title, .mobile-hero-eyebrow, .mobile-hero-copy, .mobile-hero-actions { display: none; }
 
 .status-panel { position: relative; display: flex; flex-direction: column; }
 .status-panel::before { position: absolute; inset: 5px; border: 1px solid #bcc8c9; content: ""; pointer-events: none; }
@@ -154,6 +155,7 @@ html[data-page-transition="active"] footer {
 .status-motto-wrap .status-demo { position: absolute; top: 0; right: 0; }
 .status-motto { margin: 0; border-left: 1px solid #bdc8c9; padding-left: 28px; align-content: center; font-size: 15px; line-height: 1.55; letter-spacing: .06em; }
 .status-motto .short-rule { width: 23px; }
+.mobile-status-summary, .mobile-terminal-section { display: none; }
 
 .projects-section { padding-top: 58px; }
 .section-heading { display: flex; align-items: center; gap: 18px; min-height: 34px; margin-bottom: 30px; }
@@ -326,14 +328,30 @@ html[data-page-transition="active"] footer {
   .header-inner { min-height: 78px; gap: 12px; }
   .site-wordmark { font-size: 19px; letter-spacing: .22em; }
   .site-launcher-icon { display: none; }
-  .desktop-info { height: 30px; gap: 8px; }
+  .desktop-info { display: none; }
   .desktop-info-label { gap: 8px; }
   .desktop-info-title { font-size: 11px; }
-  .hero-grid { display: flex; flex-direction: column; gap: 16px; }
-  .manifesto-panel { order: -1; min-height: 282px; padding: 26px; }
-  .manifesto-panel h1 { font-size: 42px; }
-  .manifesto-caption { top: 28px; bottom: auto; right: 20px; font-size: 10px; }
-  .manifesto-underscore { margin-top: 3px; }
+  .hero-grid { display: flex; flex-direction: column; gap: 12px; }
+  .hero-grid > .terminal-panel { display: none; }
+  .hero-grid .manifesto-panel[data-drag-handle], .hero-grid .manifesto-panel h1 { cursor: auto; touch-action: pan-y; }
+  .manifesto-panel { min-height: 242px; display: flex; flex-direction: column; padding: 20px 21px 18px; }
+  .manifesto-panel h1 { margin-top: 19px; font-size: clamp(20px, 6.2vw, 28px); line-height: 1.16; }
+  .manifesto-desktop-title, .manifesto-caption, .manifesto-underscore { display: none; }
+  .manifesto-mobile-title { display: block; white-space: nowrap; }
+  .mobile-hero-eyebrow { display: block; font: 10px/1.4 var(--mono); letter-spacing: .04em; }
+  .mobile-hero-copy { display: grid; gap: 2px; margin: auto 0 0; font: 12px/1.45 var(--mono); }
+  .mobile-hero-copy span:first-child { font-size: 10px; letter-spacing: .04em; }
+  .mobile-hero-copy span:last-child { font-family: var(--font-shippori-mincho), serif; font-size: 13px; }
+  .mobile-hero-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin-top: 17px; }
+  .mobile-hero-actions a { display: inline-flex; min-height: 44px; align-items: center; justify-content: space-between; gap: 8px; border: 2px solid var(--ink); padding: 0 11px; color: var(--ink); font: 700 11px/1.2 var(--mono); text-decoration: none; white-space: nowrap; }
+  .mobile-hero-actions a:first-child { background: var(--ink); color: var(--paper); }
+  .mobile-hero-actions a:active { transform: translate(2px, 2px); }
+  .hero-grid .status-titlebar, .hero-grid .status-network, .hero-grid .status-motto-wrap { display: none; }
+  .hero-grid .status-body { display: block; flex: none; min-height: 0; border-top: 1px solid #bcc8c9; padding: 11px 12px 13px; }
+  .hero-grid .status-meters { gap: 8px; }
+  .mobile-status-summary { display: flex; min-height: 43px; align-items: center; gap: 12px; padding: 8px 12px; font: 10px/1.3 var(--mono); }
+  .mobile-status-summary strong { margin-right: auto; font-size: 11px; letter-spacing: .04em; }
+  .mobile-status-summary .status-demo { font-size: 9px; }
   .panel-titlebar { padding-inline: 12px; font-size: 13px; }
   .terminal-panel { min-height: 450px; }
   .terminal-body { padding: 13px 12px 17px; }
@@ -359,7 +377,18 @@ html[data-page-transition="active"] footer {
   .network-line { grid-template-columns: 37px 5ch minmax(24px, 1fr); gap: 4px; font-size: 10px; }
   .network-unit { font-size: 8px; }
   .meter-segments { height: 15px; gap: 1px; }
-  .projects-section { padding-top: 42px; }
+  .projects-section { padding-top: 30px; }
+  .mobile-terminal-section { display: block; padding-top: 42px; }
+  .mobile-terminal-summary { display: flex; min-height: 70px; align-items: center; gap: 14px; border: 2px solid var(--ink); padding: 12px 15px; background: var(--teal); color: var(--paper); cursor: pointer; list-style: none; }
+  .mobile-terminal-summary::-webkit-details-marker { display: none; }
+  .mobile-terminal-summary:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }
+  .mobile-terminal-prompt { color: var(--aqua); font: 700 24px/1 var(--mono); }
+  .mobile-terminal-summary strong, .mobile-terminal-summary small { display: block; }
+  .mobile-terminal-summary strong { font: 700 14px/1.2 var(--mono); letter-spacing: .08em; }
+  .mobile-terminal-summary small { margin-top: 4px; color: #bad0cb; font: 10px/1.2 var(--mono); }
+  .mobile-terminal-indicator { width: 9px; height: 9px; margin-left: auto; border-right: 2px solid var(--aqua); border-bottom: 2px solid var(--aqua); transform: rotate(45deg); transition: transform .2s; }
+  .mobile-terminal-disclosure[open] .mobile-terminal-indicator { transform: rotate(225deg); }
+  .mobile-terminal-disclosure > .terminal-panel { margin-top: 10px; }
   .projects-index { padding-bottom: 60px; }
   .projects-index-header { margin-bottom: 42px; }
   .section-heading { gap: 12px; }
@@ -397,7 +426,7 @@ html[data-page-transition="active"] footer {
   .neofetch-output { grid-template-columns: 1fr; }
   .ascii-monogram { display: none; }
   .system-info-row { font-size: 12px; grid-template-columns: 70px 1fr; }
-  .manifesto-panel h1 { font-size: 36px; }
+  .manifesto-panel h1 { font-size: 20px; }
   .manifesto-caption { font-size: 8px; right: 12px; bottom: 18px; }
   .status-body { gap: 10px; }
   .status-motto { padding-left: 10px; font-size: 10px; }

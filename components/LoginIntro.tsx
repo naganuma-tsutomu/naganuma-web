@@ -6,6 +6,8 @@ import styles from "./LoginIntro.module.css";
 
 const INTRO_DURATION = 3800;
 const EXIT_DURATION = 780;
+const MOBILE_INTRO_DURATION = 1700;
+const MOBILE_EXIT_DURATION = 500;
 
 export default function LoginIntro() {
   const [phase, setPhase] = useState<"active" | "leaving" | "hidden">("active");
@@ -23,7 +25,7 @@ export default function LoginIntro() {
       restorePage.current?.();
       restorePage.current = null;
       setPhase("hidden");
-    }, EXIT_DURATION);
+    }, window.matchMedia("(max-width: 767px)").matches ? MOBILE_EXIT_DURATION : EXIT_DURATION);
   }, []);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function LoginIntro() {
     };
 
     skipButton.current?.focus({ preventScroll: true });
-    autoTimer.current = window.setTimeout(dismiss, INTRO_DURATION);
+    autoTimer.current = window.setTimeout(dismiss, window.matchMedia("(max-width: 767px)").matches ? MOBILE_INTRO_DURATION : INTRO_DURATION);
     return () => {
       if (autoTimer.current !== null) window.clearTimeout(autoTimer.current);
       if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);

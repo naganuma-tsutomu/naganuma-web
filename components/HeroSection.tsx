@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type PointerEvent, type KeyboardEvent } from "react";
+import Link from "next/link";
 import InteractiveTerminal from "@/components/InteractiveTerminal";
 import HomelabStatus from "@/components/HomelabStatus";
 
@@ -60,6 +61,7 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
   }
 
   function handlePointerDown(event: PointerEvent<HTMLElement>) {
+    if (window.matchMedia("(max-width: 767px)").matches) return;
     if (!event.isPrimary || (event.pointerType === "mouse" && event.button !== 0) || activeDrag.current) return;
     const target = event.target;
     if (!(target instanceof Element)) return;
@@ -95,6 +97,7 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLElement>) {
+    if (window.matchMedia("(max-width: 767px)").matches) return;
     const target = event.target;
     if (!(target instanceof HTMLElement) || !target.matches("[data-drag-handle]")) return;
     const panel = target.closest<HTMLElement>("[data-hero-window]");
@@ -150,11 +153,17 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
       onKeyDown={handleKeyDown}
     >
       <InteractiveTerminal />
-      <div className="manifesto-panel" data-hero-window data-drag-handle role="group" tabIndex={0} aria-label="BUILD TWEAK LEARN REPEAT window. Drag or use arrow keys to move.">
-        <h1 id="hero-title">BUILD<br />TWEAK<br />LEARN<br />REPEAT.</h1>
+      <div className="manifesto-panel" data-hero-window data-drag-handle role="group" tabIndex={0} aria-label="BUILD TWEAK LEARN REPEAT window">
+        <span className="mobile-hero-eyebrow">NAGANUMA / PERSONAL WORKSPACE</span>
+        <h1 id="hero-title"><span className="manifesto-desktop-title">BUILD<br />TWEAK<br />LEARN<br />REPEAT.</span><span className="manifesto-mobile-title">BUILD. TWEAK.<br />LEARN. REPEAT.</span></h1>
         <div className="manifesto-caption">
           <p>WEB / SERVER / HOMELAB<br />CODE / DESIGN / LIFE</p>
           <span className="short-rule" aria-hidden="true" />
+        </div>
+        <p className="mobile-hero-copy"><span>WEB / SERVER / HOMELAB/ CODE</span><span>つくって、試して、記録する。</span></p>
+        <div className="mobile-hero-actions">
+          <a href="#projects">PROJECTS<span aria-hidden="true">→</span></a>
+          <Link href="/about">ABOUT <span aria-hidden="true">↗</span></Link>
         </div>
         <span className="manifesto-underscore" aria-hidden="true">_</span>
       </div>

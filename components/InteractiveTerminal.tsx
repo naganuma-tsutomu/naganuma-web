@@ -68,7 +68,7 @@ function NeofetchOutput() {
   );
 }
 
-export default function InteractiveTerminal() {
+export default function InteractiveTerminal({ draggable = true, inputId = "terminal-command-input" }: { draggable?: boolean; inputId?: string }) {
   const router = useRouter();
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<Entry[]>([]);
@@ -114,8 +114,8 @@ export default function InteractiveTerminal() {
   }
 
   return (
-    <div className="terminal-panel dark-panel" data-hero-window>
-      <div className="panel-titlebar" data-drag-handle role="group" tabIndex={0} aria-label="Terminal window. Drag or use arrow keys to move.">
+    <div className="terminal-panel dark-panel" data-hero-window={draggable ? "" : undefined}>
+      <div className="panel-titlebar" data-drag-handle={draggable ? "" : undefined} role={draggable ? "group" : undefined} tabIndex={draggable ? 0 : undefined} aria-label={draggable ? "Terminal window. Drag or use arrow keys to move." : undefined}>
         <span>naganuma@home:~</span>
         <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
       </div>
@@ -137,10 +137,10 @@ export default function InteractiveTerminal() {
             ))}
           </div>
           <form className={`terminal-input-row${showWelcome ? " terminal-input-welcome" : ""}`} onSubmit={handleSubmit}>
-            <label htmlFor="terminal-command-input"><span className="terminal-prompt">naganuma@home:~</span>$</label>
+            <label htmlFor={inputId}><span className="terminal-prompt">naganuma@home:~</span>$</label>
             <span className="terminal-input-wrap" style={{ width: `${input.length + 1}ch` }}>
               <input
-                id="terminal-command-input"
+                id={inputId}
                 ref={inputRef}
                 value={input}
                 onChange={(event) => setInput(event.target.value)}

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import HeroSection from "../components/HeroSection";
 import ProjectsSection, { ProjectsSkeleton } from "../components/ProjectsSection";
 import NotesSection, { NotesSkeleton } from "../components/NotesSection";
+import InteractiveTerminal from "../components/InteractiveTerminal";
 import { connection } from "next/server";
 
 export default async function Home() {
@@ -36,6 +37,17 @@ export default async function Home() {
         <Suspense fallback={<ProjectsSkeleton />}>
           <ProjectsSection />
         </Suspense>
+      </section>
+
+      <section className="mobile-terminal-section site-shell" aria-label="ターミナル">
+        <details className="mobile-terminal-disclosure">
+          <summary className="mobile-terminal-summary">
+            <span className="mobile-terminal-prompt" aria-hidden="true">&gt;_</span>
+            <span><strong>TERMINAL</strong></span>
+            <span className="mobile-terminal-indicator" aria-hidden="true" />
+          </summary>
+          <InteractiveTerminal draggable={false} inputId="mobile-terminal-command-input" />
+        </details>
       </section>
 
       <section id="notes" className="notes-section site-shell" aria-labelledby="notes-title">
