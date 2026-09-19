@@ -71,7 +71,7 @@ jobs:
           set -euo pipefail
           for name in GH_TOKEN MICROCMS_SERVICE_DOMAIN MICROCMS_API_KEY NOTE_USER_ID; do
             if [[ -z "${!name}" ]]; then
-              echo "::error::$name is missing from my-kubernetes repository secrets"
+              echo "::error::$name is missing from naganuma-web repository secrets"
               exit 1
             fi
           done
