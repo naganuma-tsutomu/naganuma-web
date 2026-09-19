@@ -54,10 +54,8 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
         {/* Image */}
         <div className="relative h-48 bg-gray-100 dark:bg-zinc-900 border-b-2 border-black dark:border-white shrink-0">
           {isLoading && !imageError && (
-            <motion.div
-              className="absolute inset-0 bg-gray-300 dark:bg-zinc-600 z-10"
-              animate={reduceMotion ? undefined : { opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            <div
+              className="absolute inset-0 bg-gray-300 dark:bg-zinc-600 z-10 animate-[pulse_1.5s_ease-in-out_infinite] motion-reduce:animate-none"
             />
           )}
           <Image
@@ -90,11 +88,12 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
   return (
     <motion.article
       ref={ref}
-      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+      // Keep SSR and hydration styles identical; CSS handles reduced motion immediately.
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : index * 0.1 }}
-      className={`project-card group relative h-full font-[family-name:var(--font-shippori-mincho)]${sample ? " project-card-preview" : ""}`}
+      className={`project-card group relative h-full font-[family-name:var(--font-shippori-mincho)] motion-reduce:opacity-100! motion-reduce:transform-none!${sample ? " project-card-preview" : ""}`}
       aria-labelledby={`${project.slug}-title`}
     >
       {sample ? (
