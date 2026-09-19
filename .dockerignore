@@ -1,0 +1,23 @@
+# Version control and repository-only metadata
+.git
+.github
+.agents
+.codex
+
+# Dependencies and generated output
+node_modules
+.next
+out
+build
+coverage
+*.tsbuildinfo
+
+# Local environment files and secrets
+.env*
+!.env.example
+
+# Local-only files
+review-markdown
+.DS_Store
+*.log
+*.pem

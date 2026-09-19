@@ -5,13 +5,17 @@ on:
   pull_request:
     branches: [ "main" ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   # イメージ名は全て小文字にする必要があります
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/my-next-app
 
 jobs:
   check:
-    name: Lint and Test
+    name: Lint, Test, and Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +34,9 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Run production build
+        run: npm run build
 
   build:
     name: Build and Deploy
