@@ -13,6 +13,7 @@ const menuLinks = [
   { name: "ABOUT", href: "/about", tag: "PROFILE / 04" },
   { name: "CONTACT", href: "/contact", tag: "LINKS / 05" },
 ];
+const externalLinkClass = "border-b border-current pb-px text-[var(--ink)] no-underline transition-colors duration-150 hover:text-[var(--red)]";
 
 function MenuClock() {
   const [now, setNow] = useState<Date | null>(null);
@@ -35,7 +36,7 @@ function MenuClock() {
       <span aria-hidden="true">
         {hours}<span className={styles.footerClockColon}>:</span>{minutes}
       </span>
-      {" "}<span style={{ color: "#788e89", fontSize: "10px" }}>({date})</span>
+      {" "}<span className="text-[10px] text-[#788e89]">({date})</span>
     </time>
   );
 }
@@ -109,17 +110,17 @@ export default function HamburgerMenu() {
   }, [isOpen]);
 
   return (
-    <div className={styles.mobileMenuWrapper}>
+    <div className="ml-auto block min-[900px]:hidden">
       <button
         ref={triggerRef}
         onClick={toggleMenu}
-        className={styles.triggerButton}
+        className="group inline-flex min-h-10 cursor-pointer items-center gap-[9px] border-2 border-[var(--ink)] bg-[#f7f5ea] px-[13px] py-[7px] font-[family-name:var(--mono)] text-[11px] font-bold tracking-[0.14em] text-[var(--ink)] uppercase shadow-[3px_3px_0_var(--ink)] transition-[transform,box-shadow,background-color] duration-150 hover:bg-[#fffaf0] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0_var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--red)]"
         data-open={isOpen}
         aria-label={isOpen ? "ナビゲーションメニューを閉じる" : "ナビゲーションメニューを開く"}
         aria-expanded={isOpen}
         aria-controls="mobile-navigation-drawer"
       >
-        <span className={styles.triggerIcon} aria-hidden="true">
+        <span className="grid grid-cols-[repeat(2,6px)] gap-[3px] rotate-[-7deg] [&_i]:block [&_i]:h-[6px] [&_i]:w-[6px] [&_i]:border [&_i]:border-[var(--ink)] [&_i]:bg-[var(--ink)] [&_i]:transition-colors [&_i]:duration-200 [&_i:nth-child(2)]:bg-transparent [&_i:nth-child(3)]:bg-transparent group-data-[open=true]:[&_i]:border-[var(--red)] group-data-[open=true]:[&_i]:bg-[var(--red)]" aria-hidden="true">
           <i /><i /><i /><i />
         </span>
         <span>{isOpen ? "CLOSE" : "MENU"}</span>
@@ -127,7 +128,7 @@ export default function HamburgerMenu() {
 
       {/* バックドロップ */}
       <div
-        className={styles.backdrop}
+        className={`${styles.backdrop} pointer-events-none invisible fixed inset-0 z-[60] opacity-0 transition-[opacity,visibility] duration-250 data-[open=true]:pointer-events-auto data-[open=true]:visible data-[open=true]:opacity-100 motion-reduce:transition-none`}
         data-open={isOpen}
         onClick={closeMenu}
         aria-hidden="true"
@@ -141,19 +142,19 @@ export default function HamburgerMenu() {
         role="dialog"
         aria-modal="true"
         aria-label="サイト内ナビゲーション"
-        className={styles.drawer}
+        className={`${styles.drawer} invisible fixed inset-y-0 right-0 z-[70] flex h-dvh w-[min(calc(100vw-32px),340px)] translate-x-full flex-col overflow-hidden border-l-[3px] border-[var(--ink)] font-[family-name:var(--mono)] text-[var(--ink)] shadow-[-8px_0_0_rgba(10,23,29,.35)] transition-[transform,visibility] duration-300 ease-[cubic-bezier(.16,1,.3,1)] data-[open=true]:visible data-[open=true]:translate-x-0 motion-reduce:transition-none`}
         data-open={isOpen}
       >
         {/* ウィンドウタイトルバー */}
-        <div className={styles.titlebar}>
-          <div className={styles.titlebarTitle}>
-            <span className={styles.statusDot} aria-hidden="true" />
+        <div className="flex min-h-11 shrink-0 items-center justify-between gap-[10px] border-b-2 border-[var(--ink)] bg-[var(--ink)] px-3 py-[6px] text-[11px] tracking-[0.08em] text-[var(--paper)]">
+          <div className="flex min-w-0 items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
+            <span className="h-[7px] w-[7px] shrink-0 rounded-full bg-[#57d7c3] shadow-[0_0_8px_#57d7c3]" aria-hidden="true" />
             <span>naganuma@home: navigation</span>
           </div>
           <button
             type="button"
             onClick={closeMenu}
-            className={styles.closeButton}
+            className="inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center border border-[#789195] bg-transparent font-[family-name:var(--mono)] text-[13px] font-bold text-[var(--paper)] transition-colors duration-150 hover:border-[var(--red)] hover:bg-[var(--red)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--orange)]"
             aria-label="メニューを閉じる"
           >
             ✕
@@ -161,16 +162,16 @@ export default function HamburgerMenu() {
         </div>
 
         {/* システムヘッダー */}
-        <div className={styles.systemHeader} aria-hidden="true">
-          <span>
-            <span className={styles.systemHeaderMarker} />
+        <div className="flex shrink-0 items-center justify-between border-b border-[#afbbaa] bg-[#e9e5d8] px-4 py-[10px] text-[10px] tracking-[0.08em] text-[#526963]" aria-hidden="true">
+          <span className="inline-flex items-center gap-[6px] font-bold text-[var(--ink)]">
+            <span className="h-[5px] w-[5px] bg-[var(--red)]" />
             WORKSPACE MENU
           </span>
           <span>01 → 05 ITEMS</span>
         </div>
 
         {/* ナビゲーションリスト */}
-        <nav className={styles.navScroll} aria-label="モバイルナビゲーション">
+        <nav className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-[18px]" aria-label="モバイルナビゲーション">
           {menuLinks.map((link, index) => {
             const current = isCurrent(link.href);
             return (
@@ -178,17 +179,17 @@ export default function HamburgerMenu() {
                 key={link.name}
                 href={link.href}
                 onClick={closeMenu}
-                className={styles.navItem}
+                className="group relative flex min-h-[52px] items-center justify-between gap-3 border-2 border-[var(--ink)] bg-[#f7f5ea] px-[14px] py-[10px] text-[var(--ink)] no-underline shadow-[4px_4px_0_var(--ink)] transition-[transform,box-shadow,background-color] duration-150 hover:bg-[#fffaf0] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--red)] data-[current=true]:bg-[#ffdfb8] data-[current=true]:after:absolute data-[current=true]:after:inset-x-0 data-[current=true]:after:bottom-0 data-[current=true]:after:h-[3px] data-[current=true]:after:bg-[var(--red)] data-[current=true]:after:content-['']"
                 data-current={current}
                 aria-current={current ? "page" : undefined}
               >
-                <div className={styles.navItemLeading}>
-                  <span className={styles.taskbarNumber} aria-hidden="true">
+                <div className="flex items-center gap-3">
+                  <span className="border-r border-[#aebcaa] pr-[10px] text-[11px] font-bold tracking-[0.08em] text-[var(--teal)] group-data-[current=true]:text-[var(--red)]" aria-hidden="true">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <span className={styles.navLabel}>{link.name}</span>
+                  <span className="font-[family-name:var(--font-oswald)] text-[19px] font-bold tracking-[0.08em] uppercase">{link.name}</span>
                 </div>
-                <div className={styles.navItemTrailing} aria-hidden="true">
+                <div className="flex items-center gap-2 text-[11px] text-[#526963] group-data-[current=true]:text-[var(--ink)]" aria-hidden="true">
                   <span>{link.tag}</span>
                   <span>→</span>
                 </div>
@@ -198,20 +199,20 @@ export default function HamburgerMenu() {
         </nav>
 
         {/* システムフッター */}
-        <div className={styles.systemFooter}>
-          <div className={styles.footerClockRow}>
-            <span className={styles.clockBadge}>
-              <span className={styles.clockBadgeDot} aria-hidden="true" />
+        <div className="flex shrink-0 flex-col gap-[10px] border-t-2 border-[var(--ink)] bg-[#e8e9df] px-4 py-[14px]">
+          <div className="flex items-center justify-between text-[11px] tracking-[0.06em] text-[var(--ink)]">
+            <span className="inline-flex items-center gap-[6px] font-bold">
+              <span className="h-[6px] w-[6px] bg-[var(--orange)] shadow-[0_0_6px_var(--orange)]" aria-hidden="true" />
               SYSTEM CLOCK
             </span>
             <MenuClock />
           </div>
-          <div className={styles.footerLinks}>
-            <span style={{ color: "#526963", fontSize: "10px" }}>EXTERNAL:</span>
-            <a href={githubProfileUrl} target="_blank" rel="noopener noreferrer">
+          <div className="flex items-center gap-[14px] border-t border-[#bdc9bd] pt-2 text-[11px] tracking-[0.08em]">
+            <span className="text-[10px] text-[#526963]">EXTERNAL:</span>
+            <a className={externalLinkClass} href={githubProfileUrl} target="_blank" rel="noopener noreferrer">
               GITHUB ↗
             </a>
-            <a href={xProfileUrl} target="_blank" rel="noopener noreferrer">
+            <a className={externalLinkClass} href={xProfileUrl} target="_blank" rel="noopener noreferrer">
               X ↗
             </a>
           </div>

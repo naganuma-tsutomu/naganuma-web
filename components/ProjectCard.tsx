@@ -94,8 +94,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : index * 0.1 }}
-      className={`project-card group relative h-full${sample ? " project-card-preview" : ""}`}
-      style={{ fontFamily: "var(--font-shippori-mincho), serif" }}
+      className={`project-card group relative h-full font-[family-name:var(--font-shippori-mincho)]${sample ? " project-card-preview" : ""}`}
       aria-labelledby={`${project.slug}-title`}
     >
       {sample ? (

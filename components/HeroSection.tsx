@@ -142,8 +142,7 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
     <section
       id="home"
       ref={sectionRef}
-      className="hero-grid site-shell"
-      style={{ paddingTop: PANEL_TOP_GAP }}
+      className="hero-grid site-shell pt-[22px]"
       aria-labelledby="hero-title"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}

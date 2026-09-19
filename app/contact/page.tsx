@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { githubProfileUrl, xProfileUrl } from "@/app/data/links";
-import styles from "./ContactLinks.module.css";
+
+const profileLinkClass = "grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-[7px] border border-[#8ca6a7] bg-[#102c32] px-5 py-[18px] text-[var(--paper)] no-underline transition-colors duration-200 hover:border-[var(--aqua)] hover:bg-[#17383d] focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-[var(--orange)]";
+const profileLabelClass = "col-start-1 font-[family-name:var(--mono)] text-[11px] leading-normal tracking-[0.08em] text-[var(--aqua)]";
+const profileUrlClass = "col-start-1 font-[family-name:var(--mono)] text-[15px] leading-normal font-bold [overflow-wrap:anywhere]";
+const profileArrowClass = "col-start-2 row-span-2 row-start-1 self-center font-[family-name:var(--mono)] text-2xl leading-none text-[var(--orange)]";
 
 export const metadata: Metadata = {
   title: "Contact | NAGANUMA",
@@ -55,24 +59,24 @@ export default function Contact() {
             <span>profiles.txt</span>
             <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
           </div>
-          <div className={styles.body}>
-            <div className={styles.heading}>
-              <span>&gt; ls /profiles</span>
-              <h2 id="contact-links-title">SOCIAL LINKS<span>_</span></h2>
+          <div className="border border-[#bcc8c9] border-t-0 p-[clamp(20px,3vw,37px)]">
+            <div className="mb-[29px]">
+              <span className="font-[family-name:var(--mono)] text-xs leading-normal text-[var(--aqua)]">&gt; ls /profiles</span>
+              <h2 id="contact-links-title" className="mt-3 font-[family-name:var(--font-pixel)] text-[clamp(23px,2.4vw,34px)] leading-[1.3] font-bold tracking-[-0.08em] max-[480px]:text-[22px]">SOCIAL LINKS<span className="text-[var(--aqua)]">_</span></h2>
             </div>
-            <div className={styles.list}>
-              <a className={styles.link} href={githubProfileUrl} target="_blank" rel="noopener noreferrer">
-                <span className={styles.label}>01 / GITHUB</span>
-                <span className={styles.url}>github.com/naganuma-tsutomu</span>
-                <span className={styles.arrow} aria-hidden="true">↗</span>
+            <div className="grid gap-[15px]">
+              <a className={profileLinkClass} href={githubProfileUrl} target="_blank" rel="noopener noreferrer">
+                <span className={profileLabelClass}>01 / GITHUB</span>
+                <span className={profileUrlClass}>github.com/naganuma-tsutomu</span>
+                <span className={profileArrowClass} aria-hidden="true">↗</span>
               </a>
-              <a className={styles.link} href={xProfileUrl} target="_blank" rel="noopener noreferrer">
-                <span className={styles.label}>02 / X</span>
-                <span className={styles.url}>x.com/naganuma_web</span>
-                <span className={styles.arrow} aria-hidden="true">↗</span>
+              <a className={profileLinkClass} href={xProfileUrl} target="_blank" rel="noopener noreferrer">
+                <span className={profileLabelClass}>02 / X</span>
+                <span className={profileUrlClass}>x.com/naganuma_web</span>
+                <span className={profileArrowClass} aria-hidden="true">↗</span>
               </a>
             </div>
-            <p className={styles.footer}>EXTERNAL LINKS <span>OPEN IN NEW TAB ↗</span></p>
+            <p className="mt-7 flex flex-wrap justify-between gap-x-4 gap-y-2 border-t border-[#597174] pt-[14px] font-[family-name:var(--mono)] text-[10px] leading-normal tracking-[0.08em] text-[#b9c7c9]">EXTERNAL LINKS <span>OPEN IN NEW TAB ↗</span></p>
           </div>
         </section>
       </div>

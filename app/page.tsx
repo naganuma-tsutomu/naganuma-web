@@ -13,13 +13,13 @@ export default async function Home() {
     <>
       {/* Hero Section */}
       <div className="desktop-area">
-        <div className="desktop-info site-shell" aria-hidden="true">
-          <span className="desktop-info-label">
-            <span className="desktop-heading-marker" aria-hidden="true" />
-            <span className="desktop-info-title">DESKTOP</span>
-            <span className="desktop-info-index">01</span>
+        <div className="desktop-info site-shell flex h-[26px] items-center gap-[14px] pt-3 font-[family-name:var(--mono)] text-[10px] leading-[1.4] tracking-[0.08em] whitespace-nowrap text-[#526963] max-[768px]:hidden" aria-hidden="true">
+          <span className="inline-flex items-center gap-[10px] text-[var(--ink)]">
+            <span className="desktop-heading-marker h-[6px] w-[6px] shrink-0 bg-[var(--red)] transition-shadow duration-200" aria-hidden="true" />
+            <span className="desktop-info-title font-[family-name:var(--mono)] text-[11px] leading-[1.2] font-bold tracking-[0.12em] text-[var(--ink)] transition-colors duration-200">DESKTOP</span>
+            <span className="font-[family-name:var(--mono)] text-[10px] leading-none tracking-[0.08em] text-[#526963]">01</span>
           </span>
-          <span className="desktop-info-rule" />
+          <span className="h-px flex-1 bg-[#bac4b9]" />
         </div>
         <HeroSection homelabConfigured={Boolean(process.env.HOMELAB_PROMETHEUS_URL)} />
       </div>

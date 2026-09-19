@@ -11,8 +11,7 @@ export function ProjectsSkeleton() {
       {Array.from({ length: 3 }).map((_, index) => (
         <div
           key={index}
-          className="project-card relative h-full"
-          style={{ fontFamily: "var(--font-shippori-mincho), serif" }}
+          className="project-card relative h-full font-[family-name:var(--font-shippori-mincho)]"
         >
           {/* Shadow Effect */}
           <div className="absolute top-2 left-2 w-full h-full bg-black dark:bg-white" />

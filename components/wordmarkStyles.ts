@@ -1,0 +1,3 @@
+export const wordmarkClass = "site-wordmark inline-flex min-h-[45px] shrink-0 items-center gap-[11px] border border-transparent bg-transparent px-[13px] text-[21px] font-bold tracking-[0.27em] whitespace-nowrap text-[var(--ink)] transition-colors duration-200 hover:text-[var(--red)] max-[768px]:text-[19px] max-[768px]:tracking-[0.22em]";
+
+export const launcherIconClass = "grid grid-cols-[repeat(2,7px)] gap-[3px] rotate-[-7deg] [&_i]:h-[7px] [&_i]:w-[7px] [&_i]:border [&_i]:border-current [&_i]:bg-current [&_i]:transition-colors [&_i]:duration-200 [&_i:nth-child(2)]:bg-transparent [&_i:nth-child(3)]:bg-transparent max-[768px]:hidden";

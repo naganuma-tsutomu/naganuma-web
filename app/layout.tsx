@@ -38,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${oswald.variable} ${shipporiMincho.variable} ${silkscreen.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="ja" className={`${oswald.variable} ${shipporiMincho.variable} ${silkscreen.variable} scroll-smooth scroll-pt-28 [scrollbar-gutter:stable] max-[768px]:scroll-pt-[88px] motion-reduce:scroll-auto`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {process.env.NODE_ENV === "production" && (
           <script dangerouslySetInnerHTML={{
@@ -46,10 +46,10 @@ export default function RootLayout({
           }} />
         )}
       </head>
-      <body>
+      <body className="m-0 flex min-h-screen flex-col bg-[var(--paper)] font-[Arial,'Helvetica_Neue',var(--font-shippori-mincho),serif] text-[var(--ink)]">
         <LoginIntro />
         <noscript><style>{"[data-login-intro] { display: none !important; }"}</style></noscript>
-        <a className="skip-link" href="#main-content">本文へスキップ</a>
+        <a className="skip-link fixed -top-[100px] left-4 z-[100] bg-[var(--ink)] px-5 py-3 text-white focus:top-3" href="#main-content">本文へスキップ</a>
         <Header />
         <PageTransition>{children}</PageTransition>
         <Footer />
