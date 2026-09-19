@@ -4,8 +4,9 @@ import { connection } from "next/server";
 import ProjectCard from "@/components/ProjectCard";
 import ListPagination from "@/components/ListPagination";
 import { projects as projectSamples } from "@/app/data/projects";
-import { getProjects } from "@/lib/projects";
-import type { ProjectSummary } from "@/lib/project-types";
+import { buildProjectEntries } from "@/lib/project-list";
+import { getProjectList } from "@/lib/projects";
+import type { ProjectListSource, ProjectSummary } from "@/lib/project-types";
 import { paginate, sampleContentEnabled } from "@/lib/sample-content";
 
 export const metadata: Metadata = {
@@ -16,20 +17,23 @@ export const metadata: Metadata = {
 export default async function ProjectsPage({ searchParams }: { searchParams: Promise<{ page?: string | string[] }> }) {
   await connection();
   let projects: ProjectSummary[] = [];
+  let projectSource: ProjectListSource | "unavailable" = "unavailable";
   let projectsUnavailable = false;
 
   try {
-    projects = await getProjects();
+    const result = await getProjectList();
+    projects = result.projects;
+    projectSource = result.source;
   } catch (error) {
     console.error("Unable to load projects:", error instanceof Error ? error.message : "Unknown error");
     projectsUnavailable = true;
   }
 
   const showSamples = sampleContentEnabled();
-  const entries = [
-    ...projects.map(project => ({ project, sample: false })),
-    ...(showSamples ? projectSamples.map(project => ({ project, sample: true })) : []),
-  ];
+  const entries = buildProjectEntries(projects, projectSamples, {
+    includeSamples: showSamples,
+    source: projectSource,
+  });
   const { items, page, totalPages } = paginate(entries, (await searchParams).page);
 
   return (

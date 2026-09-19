@@ -4,6 +4,10 @@ export function sampleContentEnabled(): boolean {
   return process.env.SHOW_SAMPLE_CONTENT === "true";
 }
 
+export function sampleExperienceEnabled(): boolean {
+  return process.env.NODE_ENV === "development" && sampleContentEnabled();
+}
+
 export function paginate<T>(items: readonly T[], rawPage: string | string[] | undefined) {
   const requestedPage = typeof rawPage === "string" && /^[1-9]\d*$/.test(rawPage)
     ? Number(rawPage)

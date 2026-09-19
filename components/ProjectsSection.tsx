@@ -1,8 +1,9 @@
 import Link from "next/link";
 import ProjectCard from "./ProjectCard";
 import { projects as projectSamples } from "@/app/data/projects";
-import { getProjects } from "@/lib/projects";
-import type { ProjectSummary } from "@/lib/project-types";
+import { buildProjectEntries } from "@/lib/project-list";
+import { getProjectList } from "@/lib/projects";
+import type { ProjectListSource, ProjectSummary } from "@/lib/project-types";
 import { sampleContentEnabled } from "@/lib/sample-content";
 
 export function ProjectsSkeleton() {
@@ -51,19 +52,24 @@ export function ProjectsSkeleton() {
 
 export default async function ProjectsSection() {
   let projects: ProjectSummary[] = [];
+  let projectSource: ProjectListSource | "unavailable" = "unavailable";
   let projectsUnavailable = false;
 
   try {
-    projects = await getProjects(3);
+    const result = await getProjectList(3);
+    projects = result.projects;
+    projectSource = result.source;
   } catch (error) {
     console.error("Unable to load projects:", error instanceof Error ? error.message : "Unknown error");
     projectsUnavailable = true;
   }
 
   const showSamples = sampleContentEnabled();
-  const samples = showSamples
-    ? projectSamples.slice(0, Math.max(0, 3 - projects.length))
-    : [];
+  const entries = buildProjectEntries(projects, projectSamples, {
+    includeSamples: showSamples,
+    source: projectSource,
+    maxItems: 3,
+  });
 
   return (
     <>
@@ -73,11 +79,8 @@ export default async function ProjectsSection() {
         <p className="projects-message">{showSamples ? "プロジェクトは準備中です。以下は表示サンプルです。" : "プロジェクトは準備中です。"}</p>
       ) : null}
       <div className="projects-grid">
-        {projects.map((project, index) => (
-          <ProjectCard key={project.slug} project={project} index={index} />
-        ))}
-        {samples.map((project, index) => (
-          <ProjectCard key={`sample-${project.slug}`} project={project} index={projects.length + index} sample />
+        {entries.map(({ project, sample }, index) => (
+          <ProjectCard key={`${sample ? "sample" : "project"}-${project.slug}`} project={project} index={index} sample={sample} />
         ))}
       </div>
       {!projectsUnavailable && projects.length > 0 && (

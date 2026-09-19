@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
-import { paginate, sampleContentEnabled } from "../lib/sample-content.ts";
+import { paginate, sampleContentEnabled, sampleExperienceEnabled } from "../lib/sample-content.ts";
 
 const savedSetting = process.env.SHOW_SAMPLE_CONTENT;
+const savedNodeEnv = process.env.NODE_ENV;
 afterEach(() => {
   if (savedSetting === undefined) delete process.env.SHOW_SAMPLE_CONTENT;
   else process.env.SHOW_SAMPLE_CONTENT = savedSetting;
+  if (savedNodeEnv === undefined) delete process.env.NODE_ENV;
+  else process.env.NODE_ENV = savedNodeEnv;
 });
 
 test("the sample content switch is off unless explicitly enabled", () => {
@@ -15,6 +18,18 @@ test("the sample content switch is off unless explicitly enabled", () => {
   assert.equal(sampleContentEnabled(), false);
   process.env.SHOW_SAMPLE_CONTENT = "true";
   assert.equal(sampleContentEnabled(), true);
+});
+
+test("the sample experience requires both development mode and the sample switch", () => {
+  process.env.NODE_ENV = "development";
+  process.env.SHOW_SAMPLE_CONTENT = "false";
+  assert.equal(sampleExperienceEnabled(), false);
+
+  process.env.SHOW_SAMPLE_CONTENT = "true";
+  assert.equal(sampleExperienceEnabled(), true);
+
+  process.env.NODE_ENV = "production";
+  assert.equal(sampleExperienceEnabled(), false);
 });
 
 test("a seventh item is available on the second listing page", () => {

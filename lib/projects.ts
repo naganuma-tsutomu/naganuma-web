@@ -3,7 +3,7 @@ import "server-only";
 import { cache } from "react";
 import { projects as samples } from "@/app/data/projects";
 import { getMicroCMSConfig, MicroCMSError, microCMSGet } from "@/lib/microcms";
-import type { ProjectArticle, ProjectSummary } from "@/lib/project-types";
+import type { ProjectArticle, ProjectListResult, ProjectSummary } from "@/lib/project-types";
 
 interface CMSProject {
   id: string;
@@ -35,9 +35,14 @@ function toSummary(project: CMSProject): ProjectSummary {
   };
 }
 
-export async function getProjects(limit?: number): Promise<ProjectSummary[]> {
+export async function getProjectList(limit?: number): Promise<ProjectListResult> {
   const config = getMicroCMSConfig();
-  if (!config) return limit === undefined ? samples : samples.slice(0, limit);
+  if (!config) {
+    return {
+      projects: limit === undefined ? samples : samples.slice(0, limit),
+      source: "development-samples",
+    };
+  }
 
   const projects: ProjectSummary[] = [];
   let offset = 0;
@@ -58,7 +63,7 @@ export async function getProjects(limit?: number): Promise<ProjectSummary[]> {
     // Content may be unpublished while the list is being retrieved.
     if (page.contents.length === 0) break;
   } while (offset < totalCount && (limit === undefined || projects.length < limit));
-  return projects;
+  return { projects, source: "microcms" };
 }
 
 export const getProject = cache(async (slug: string): Promise<ProjectArticle | null> => {

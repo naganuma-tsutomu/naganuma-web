@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { sampleExperienceEnabled } from "@/lib/sample-content";
 
 export const metadata: Metadata = {
   title: "About | NAGANUMA",
-  description: "プロフィール、スキル、これまでの経験について。",
+  description: "プロフィール、スキル、取り組んでいる技術について。",
 };
 
 const skills = [
@@ -42,6 +43,8 @@ const experiences = [
 ];
 
 export default function About() {
+  const showSampleExperience = sampleExperienceEnabled();
+
   return (
     <div className="interior-page site-shell">
       <nav className="interior-breadcrumb" aria-label="パンくずリスト">
@@ -119,27 +122,29 @@ export default function About() {
         </ul>
       </section>
 
-      <section className="about-section" aria-labelledby="experience-title">
-        <div className="interior-section-heading">
-          <span>03 / JOURNEY</span>
-          <span className="section-rule" aria-hidden="true" />
-          <span>SAMPLE CONTENT</span>
-        </div>
-        <h2 id="experience-title" className="interior-section-title">EXPERIENCE<span>.</span></h2>
-        <ol className="about-experience">
-          {experiences.map((experience) => (
-            <li key={experience.year}>
-              <span className="about-experience-year">{experience.year}</span>
-              <div>
-                <h3>{experience.title}</h3>
-                <span className="about-experience-company">{experience.company}</span>
-                <p>{experience.description}</p>
-              </div>
-              <span className="about-experience-mark" aria-hidden="true">↗</span>
-            </li>
-          ))}
-        </ol>
-      </section>
+      {showSampleExperience && (
+        <section className="about-section" aria-labelledby="experience-title">
+          <div className="interior-section-heading">
+            <span>03 / JOURNEY</span>
+            <span className="section-rule" aria-hidden="true" />
+            <span>SAMPLE CONTENT</span>
+          </div>
+          <h2 id="experience-title" className="interior-section-title">EXPERIENCE<span>.</span></h2>
+          <ol className="about-experience">
+            {experiences.map((experience) => (
+              <li key={experience.year}>
+                <span className="about-experience-year">{experience.year}</span>
+                <div>
+                  <h3>{experience.title}</h3>
+                  <span className="about-experience-company">{experience.company}</span>
+                  <p>{experience.description}</p>
+                </div>
+                <span className="about-experience-mark" aria-hidden="true">↗</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
     </div>
   );
 }
