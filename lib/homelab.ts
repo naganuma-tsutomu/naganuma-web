@@ -2,7 +2,7 @@ import "server-only";
 
 import { homelabPreview } from "@/app/data/homelab";
 import type { HomelabMetric, HomelabNetwork, HomelabStatus } from "@/lib/homelab-types";
-import { homelabQueries, networkQueries, normalizeMetric, parseInstantValue, parseRangeValues } from "@/lib/prometheus-metrics";
+import { homelabQueries, networkQueries, normalizeMetric, parseInstantValue, parseRangeValues, rangeValueAt } from "@/lib/prometheus-metrics";
 
 const LABELS = ["CPU", "MEM", "DISK"] as const;
 const CACHE_MS = 25_000;
@@ -24,14 +24,13 @@ function demoStatus(): HomelabStatus {
   };
 }
 
-async function queryPrometheus(baseUrl: URL, query: string, range: boolean, bearerToken?: string): Promise<unknown> {
+async function queryPrometheus(baseUrl: URL, query: string, rangeEnd: number | null, bearerToken?: string): Promise<unknown> {
   const url = new URL(baseUrl);
-  url.pathname = `${url.pathname.replace(/\/$/, "")}/api/v1/${range ? "query_range" : "query"}`;
+  url.pathname = `${url.pathname.replace(/\/$/, "")}/api/v1/${rangeEnd !== null ? "query_range" : "query"}`;
   url.searchParams.set("query", query);
-  if (range) {
-    const end = Math.floor(Date.now() / 30_000) * 30;
-    url.searchParams.set("start", String(end - 600));
-    url.searchParams.set("end", String(end));
+  if (rangeEnd !== null) {
+    url.searchParams.set("start", String(rangeEnd - 600));
+    url.searchParams.set("end", String(rangeEnd));
     url.searchParams.set("step", "30s");
   }
 
@@ -62,10 +61,11 @@ async function loadStatus(): Promise<HomelabStatus> {
   const netQueries = networkQueries(instance);
   const bearerToken = process.env.HOMELAB_PROMETHEUS_BEARER_TOKEN;
   const names = [...LABELS, "receive", "transmit"] as const;
+  const rangeEnd = Math.floor(Date.now() / 30_000) * 30;
   const results = await Promise.allSettled(names.map((name) => queryPrometheus(
     baseUrl,
     name === "receive" || name === "transmit" ? netQueries[name] : queries[name],
-    name === "receive" || name === "transmit",
+    name === "receive" || name === "transmit" ? rangeEnd : null,
     bearerToken,
   )));
   const metrics = LABELS.map((label, index) => {
@@ -93,8 +93,9 @@ async function loadStatus(): Promise<HomelabStatus> {
   }
   const history = [...byTimestamp].sort(([a], [b]) => a - b).map(([timestamp, values]) => ({ timestamp, ...values }));
   const network: HomelabNetwork = {
-    receiveMbps: receive?.at(-1)?.value ?? null,
-    transmitMbps: transmit?.at(-1)?.value ?? null,
+    // Keep history, but never substitute an older point for the current step.
+    receiveMbps: rangeValueAt(receive, rangeEnd),
+    transmitMbps: rangeValueAt(transmit, rangeEnd),
     history,
   };
   const available = metrics.filter(({ value }) => value !== null).length + Number(network.receiveMbps !== null) + Number(network.transmitMbps !== null);

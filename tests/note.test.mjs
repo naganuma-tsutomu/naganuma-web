@@ -62,6 +62,33 @@ test("keeps the excerpt while removing note's actual read-more link", () => {
   assert.equal(parseNoteRSS(noteRss)[0].description, "テスト記事だよ");
 });
 
+test("decodes XML and HTML entities without interpreting literal text as markup", () => {
+  const entityRss = `<rss><channel><item>
+    <title>A &amp; B &lt;C&gt;</title>
+    <link>https://note.com/example/n/entities</link>
+    <description><![CDATA[<p>A &amp; B &lt;C&gt; &quot;D&quot; &#39;E&#39; &#x1F600; &copy; &amp;lt;</p><script>hidden()</script>]]></description>
+    <media:thumbnail>https://assets.st-note.com/image.png?width=800&amp;height=400</media:thumbnail>
+  </item><item>
+    <title><![CDATA[Literal &amp; <title>]]></title>
+    <link>https://note.com/example/n/escaped</link>
+    <description>&lt;p&gt;A &amp;amp; B&lt;/p&gt;</description>
+  </item></channel></rss>`;
+  const articles = parseNoteRSS(entityRss);
+  assert.equal(articles[0].title, "A & B <C>");
+  assert.equal(articles[0].description, 'A & B <C> "D" \'E\' 😀 © &lt;');
+  assert.equal(articles[0].thumbnailUrl, "https://assets.st-note.com/image.png?width=800&height=400");
+  assert.equal(articles[1].title, "Literal &amp; <title>");
+  assert.equal(articles[1].description, "A & B");
+});
+
+test("counts decoded characters when truncating excerpts", () => {
+  const entityRss = `<rss><channel><item>
+    <title>Long excerpt</title><link>https://note.com/example/n/long</link>
+    <description><![CDATA[<p>${"&amp;".repeat(121)}</p>]]></description>
+  </item></channel></rss>`;
+  assert.equal(parseNoteRSS(entityRss)[0].description, `${"&".repeat(120)}…`);
+});
+
 test("accepts only a creator ID, not an arbitrary RSS URL", () => {
   assert.equal(getNoteUserId(), null);
   process.env.NOTE_USER_ID = " naga_numa-2026 ";

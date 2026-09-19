@@ -20,12 +20,16 @@ function textValue(value: XMLValue): string {
 }
 
 function excerptFromHtml(value: string, title: string): string {
+  // sanitize-html returns escaped HTML; cards render this value as React text.
+  // Undo only its text escaping, once, so literal entity examples stay literal.
   const plainText = sanitizeHtml(value, {
     allowedTags: [],
     allowedAttributes: {},
     textFilter: (text, tagName) =>
       tagName === "a" && /(?:続きを読む|続きを[見み]る)\s*$/u.test(text) ? "" : text,
-  }).replace(/\s+/g, " ").trim();
+  }).replace(/&(amp|lt|gt);/g, (entity) => ({
+    "&amp;": "&", "&lt;": "<", "&gt;": ">",
+  })[entity] ?? entity).replace(/\s+/g, " ").trim();
 
   if ([
     "続きを読む",
@@ -61,7 +65,7 @@ function safeNoteThumbnailUrl(value: string): string | null {
 export function parseNoteRSS(xml: string, limit = 3): NoteArticle[] {
   const parser = new XMLParser({
     ignoreAttributes: false,
-    processEntities: false,
+    processEntities: true,
     trimValues: true,
   });
   const document = parser.parse(xml) as Record<string, XMLValue>;

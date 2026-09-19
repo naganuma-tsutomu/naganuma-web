@@ -63,6 +63,13 @@ export function parseRangeValues(payload: unknown): Array<{ timestamp: number; v
   return values.length ? values : null;
 }
 
+export function rangeValueAt(
+  values: Array<{ timestamp: number; value: number }> | null,
+  timestamp: number,
+): number | null {
+  return values?.find((point) => point.timestamp === timestamp)?.value ?? null;
+}
+
 export function normalizeMetric(label: HomelabMetric["label"], value: number | null): HomelabMetric {
   if (value === null || value < 0) return { label, value: null, unit: "%", fillPercent: null };
   const percent = Math.max(0, Math.min(100, Math.round(value)));
