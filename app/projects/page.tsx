@@ -5,8 +5,7 @@ import ProjectCard from "@/components/ProjectCard";
 import ListPagination from "@/components/ListPagination";
 import { projects as projectSamples } from "@/app/data/projects";
 import { buildProjectEntries } from "@/lib/project-list";
-import { getProjectList } from "@/lib/projects";
-import type { ProjectListSource, ProjectSummary } from "@/lib/project-types";
+import { getProjectPage } from "@/lib/projects";
 import { paginate, sampleContentEnabled } from "@/lib/sample-content";
 
 export const metadata: Metadata = {
@@ -16,25 +15,21 @@ export const metadata: Metadata = {
 
 export default async function ProjectsPage({ searchParams }: { searchParams: Promise<{ page?: string | string[] }> }) {
   await connection();
-  let projects: ProjectSummary[] = [];
-  let projectSource: ProjectListSource | "unavailable" = "unavailable";
+  const rawPage = (await searchParams).page;
+  const showSamples = sampleContentEnabled();
   let projectsUnavailable = false;
-
+  let pagination;
   try {
-    const result = await getProjectList();
-    projects = result.projects;
-    projectSource = result.source;
+    pagination = await getProjectPage(rawPage, showSamples);
   } catch (error) {
     console.error("Unable to load projects:", error instanceof Error ? error.message : "Unknown error");
     projectsUnavailable = true;
+    pagination = paginate(buildProjectEntries([], projectSamples, {
+      includeSamples: showSamples,
+      source: "unavailable",
+    }), rawPage);
   }
-
-  const showSamples = sampleContentEnabled();
-  const entries = buildProjectEntries(projects, projectSamples, {
-    includeSamples: showSamples,
-    source: projectSource,
-  });
-  const { items, page, totalPages } = paginate(entries, (await searchParams).page);
+  const { items, page, totalPages } = pagination;
 
   return (
     <section className="projects-index site-shell" aria-labelledby="projects-index-title">
@@ -57,10 +52,10 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
       </header>
       {projectsUnavailable ? (
         <p className="projects-message" role="status">{showSamples ? "プロジェクトを読み込めませんでした。以下は表示サンプルです。" : "プロジェクトを読み込めませんでした。時間をおいて再度アクセスしてください。"}</p>
-      ) : entries.length === 0 ? (
+      ) : items.length === 0 ? (
         <p className="projects-message">プロジェクトは準備中です。</p>
       ) : null}
-      {entries.length > 0 && (
+      {items.length > 0 && (
         <>
         <div className="projects-grid">
           {items.map(({ project, sample }, index) => (

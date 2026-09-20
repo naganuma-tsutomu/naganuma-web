@@ -11,6 +11,7 @@ export type ProjectListSource = "microcms" | "development-samples";
 export interface ProjectListResult {
   projects: ProjectSummary[];
   source: ProjectListSource;
+  totalCount: number;
 }
 
 export interface ProjectArticle extends ProjectSummary {

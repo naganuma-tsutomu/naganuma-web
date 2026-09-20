@@ -1,9 +1,12 @@
 import "server-only";
 
 import { cache } from "react";
-import { projects as samples } from "@/app/data/projects";
-import { getMicroCMSConfig, MicroCMSError, microCMSGet } from "@/lib/microcms";
+import { projects as samples } from "../app/data/projects.ts";
+import { getMicroCMSConfig, MicroCMSError, microCMSGet } from "./microcms.ts";
 import type { ProjectArticle, ProjectListResult, ProjectSummary } from "@/lib/project-types";
+
+import { LIST_PAGE_SIZE } from "./sample-content.ts";
+import { buildProjectEntries } from "./project-list.ts";
 
 interface CMSProject {
   id: string;
@@ -35,35 +38,61 @@ function toSummary(project: CMSProject): ProjectSummary {
   };
 }
 
-export async function getProjectList(limit?: number): Promise<ProjectListResult> {
+export async function getProjectList(limit = LIST_PAGE_SIZE, offset = 0): Promise<ProjectListResult> {
+  if (!Number.isInteger(limit) || limit < 1 || limit > 100 || !Number.isSafeInteger(offset) || offset < 0) {
+    throw new Error("Invalid project pagination parameters.");
+  }
   const config = getMicroCMSConfig();
   if (!config) {
     return {
-      projects: limit === undefined ? samples : samples.slice(0, limit),
+      projects: samples.slice(offset, offset + limit),
+      totalCount: samples.length,
       source: "development-samples",
     };
   }
 
-  const projects: ProjectSummary[] = [];
-  let offset = 0;
-  let totalCount: number;
-  do {
-    const page = await microCMSGet<CMSList>(config.projectsEndpoint, {
-      limit: String(Math.min(100, limit === undefined ? 100 : limit - projects.length)),
-      offset: String(offset),
-      orders: "-publishedAt",
-      fields: "id,title,description,thumbnail,publishedAt",
+  const page = await microCMSGet<CMSList>(config.projectsEndpoint, {
+    limit: String(limit),
+    offset: String(offset),
+    orders: "-publishedAt",
+    fields: "id,title,description,thumbnail,publishedAt",
+  });
+  if (!Array.isArray(page.contents) || !Number.isSafeInteger(page.totalCount) || page.totalCount < 0) {
+    throw new Error("Invalid microCMS list response.");
+  }
+  return { projects: page.contents.map(toSummary), totalCount: page.totalCount, source: "microcms" };
+}
+
+export async function getProjectPage(rawPage: string | string[] | undefined, includeSamples: boolean) {
+  const requested = typeof rawPage === "string" && /^[1-9]\d*$/.test(rawPage) ? Number(rawPage) : 1;
+  const requestedPage = Number.isSafeInteger(requested) && Number.isSafeInteger((requested - 1) * LIST_PAGE_SIZE)
+    ? requested : 1;
+  let result = await getProjectList(LIST_PAGE_SIZE, (requestedPage - 1) * LIST_PAGE_SIZE);
+  let extraSamples = includeSamples && result.source === "microcms" ? samples : [];
+  if (extraSamples.length > 0) {
+    // Check only sample IDs, including collisions outside the requested page.
+    const config = getMicroCMSConfig()!;
+    const matches = await microCMSGet<{ contents: { id: string }[] }>(config.projectsEndpoint, {
+      ids: extraSamples.map(({ slug }) => slug).join(","),
+      fields: "id",
+      limit: String(extraSamples.length),
     });
-    if (!Array.isArray(page.contents) || !Number.isInteger(page.totalCount) || page.totalCount < 0) {
-      throw new Error("Invalid microCMS list response.");
-    }
-    projects.push(...page.contents.map(toSummary));
-    offset += page.contents.length;
-    totalCount = page.totalCount;
-    // Content may be unpublished while the list is being retrieved.
-    if (page.contents.length === 0) break;
-  } while (offset < totalCount && (limit === undefined || projects.length < limit));
-  return { projects, source: "microcms" };
+    const usedSlugs = new Set(matches.contents.map(({ id }) => id));
+    extraSamples = extraSamples.filter(({ slug }) => !usedSlugs.has(slug));
+  }
+  const totalPages = Math.max(1, Math.ceil((result.totalCount + extraSamples.length) / LIST_PAGE_SIZE));
+  const page = Math.min(requestedPage, totalPages);
+  const offset = (page - 1) * LIST_PAGE_SIZE;
+  if (page !== requestedPage && offset < result.totalCount) {
+    result = await getProjectList(LIST_PAGE_SIZE, offset);
+  }
+  const pageSamples = extraSamples.slice(Math.max(0, offset - result.totalCount));
+  const items = buildProjectEntries(offset < result.totalCount ? result.projects : [], pageSamples, {
+    includeSamples,
+    source: result.source,
+    maxItems: LIST_PAGE_SIZE,
+  });
+  return { items, page, totalPages };
 }
 
 export const getProject = cache(async (slug: string): Promise<ProjectArticle | null> => {
