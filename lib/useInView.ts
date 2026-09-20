@@ -31,7 +31,7 @@ export function useInView(
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        const inView = entry.isIntersecting;
+        const inView = entry.isIntersecting && entry.intersectionRatio >= threshold;
         if (inView) {
           setIsInView(true);
           if (once) {

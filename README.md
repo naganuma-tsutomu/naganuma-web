@@ -9,6 +9,8 @@ Next.jsで実装したポートフォリオサイトです。トップページ�
 - **Node.js**: `v22` 以上（`.nvmrc` あり）
 - **パッケージマネージャー**: `npm`
 
+クライアントテストのjsdomは Node.js `^22.22.2 || ^24.15.0 || >=26.0.0` が必要です。Node.js 22系では最新パッチ版を使用してください。
+
 ```bash
 # 依存関係のインストール
 npm install
@@ -31,6 +33,10 @@ npm run test:e2e
 # Lighthouse監査 (Lighthouse CI)
 npm run test:lighthouse
 ```
+
+## ユニットテスト
+
+`npm test` はサーバー用テスト（`test:server`）とクライアント用テスト（`test:client`）を順に実行します。クライアント側はjsdom上にReactをマウントし、`useInView`の表示率・一度だけの表示・監視解除・非対応環境でのフォールバックを検証します。サーバー用のReact条件はクライアントテストには適用しません。
 
 ## E2Eの固定データと失敗時の調査
 
