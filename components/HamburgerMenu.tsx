@@ -68,8 +68,15 @@ export default function HamburgerMenu() {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    const focusFrame = requestAnimationFrame(() => {
-      menuRef.current?.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true });
+    let focusFrame = requestAnimationFrame(function focusMenu() {
+      const button = menuRef.current?.querySelector<HTMLButtonElement>("button");
+      if (!button) return;
+      // The opening visibility transition may still be hidden on the first frame.
+      if (window.getComputedStyle(button).visibility !== "visible") {
+        focusFrame = requestAnimationFrame(focusMenu);
+        return;
+      }
+      button.focus({ preventScroll: true });
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {
