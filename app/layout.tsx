@@ -30,6 +30,10 @@ const silkscreen = Silkscreen({
 export const metadata: Metadata = {
   title: "naganuma web site",
   description: "Welcome to My Site.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function RootLayout({
