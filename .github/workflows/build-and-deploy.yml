@@ -44,6 +44,16 @@ jobs:
       - name: Run E2E tests
         run: npm run test:e2e
 
+      - name: Upload E2E reports and failure artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
       - name: Run Lighthouse audit
         uses: treosh/lighthouse-ci-action@v12
         with:

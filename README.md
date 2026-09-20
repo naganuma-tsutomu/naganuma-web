@@ -32,6 +32,16 @@ npm run test:e2e
 npm run test:lighthouse
 ```
 
+## E2Eの固定データと失敗時の調査
+
+`npm run build` の後に `npm run test:e2e` を実行します。初回は `npx playwright install --with-deps chromium` でブラウザを用意してください。既存の開発・本番サーバーを停止してから実行します（既定ポート3000、`PORT`で変更可能）。別サーバーを誤って検証しないよう再利用は無効にしています。
+
+Playwright専用サーバーは `e2e/fixtures/mock-cms.mjs` をNodeの`--import`で先に読み込み、サーバー側のmicroCMS通信を固定の13記事へ置き換えます。テスト専用のサービス名・APIキーを使用し、note・Prometheus・追加サンプルを無効にします。本番のアプリコード、通常の`npm start`、Dockerイメージにはこのモックを組み込みません。
+
+ホームの最新3件、一覧の6件→6件→1件、記事本文・メタデータ、前後のページ遷移、直接アクセス、存在しない記事の404画面をデスクトップ・モバイルで確認します。実CMSのデータ変更や秘密情報に依存しません。
+
+実行後は `npx playwright show-report` で `playwright-report/` のHTMLレポートを開けます。失敗時は初回からトレースとスクリーンショットを `test-results/` に保存します。CIでは成功・失敗にかかわらず（キャンセル時を除く）、両ディレクトリを `playwright-results` というActions成果物として14日間保存します。
+
 ## 環境変数
 
 環境変数の見本は [`.env.example`](.env.example) を参照してください。
