@@ -24,6 +24,9 @@ npm run lint
 
 # 本番ビルド検証
 npm run build
+
+# E2Eテスト実行 (Playwright)
+npm run test:e2e
 ```
 
 ## 環境変数
