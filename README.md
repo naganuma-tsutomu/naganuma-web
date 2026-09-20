@@ -27,6 +27,9 @@ npm run build
 
 # E2Eテスト実行 (Playwright)
 npm run test:e2e
+
+# Lighthouse監査 (Lighthouse CI)
+npm run test:lighthouse
 ```
 
 ## 環境変数

@@ -44,6 +44,13 @@ jobs:
       - name: Run E2E tests
         run: npm run test:e2e
 
+      - name: Run Lighthouse audit
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: './lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: false
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
