@@ -10,7 +10,12 @@ RUN npm ci
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY package.json package-lock.json* tsconfig.json next.config.ts ./
+COPY eslint.config.mjs* postcss.config.mjs* tailwind.config.ts* next-env.d.ts* ./
+COPY app ./app
+COPY components ./components
+COPY lib ./lib
+COPY public ./public
 
 ARG NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
 ENV NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=$NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
