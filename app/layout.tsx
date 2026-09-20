@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LoginIntro from "@/components/LoginIntro";
@@ -28,12 +29,10 @@ const silkscreen = Silkscreen({
 });
 
 export const metadata: Metadata = {
-  title: "naganuma web site",
-  description: "Welcome to My Site.",
-  robots: {
-    index: false,
-    follow: false,
-  },
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({

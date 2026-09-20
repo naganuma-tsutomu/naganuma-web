@@ -1,9 +1,12 @@
+import { createPageMetadata, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-metadata";
 import { Suspense } from "react";
 import HeroSection from "../components/HeroSection";
 import ProjectsSection, { ProjectsSkeleton } from "../components/ProjectsSection";
 import NotesSection, { NotesSkeleton } from "../components/NotesSection";
 import InteractiveTerminal from "../components/InteractiveTerminal";
 import { connection } from "next/server";
+
+export const metadata = createPageMetadata({ title: SITE_NAME, description: SITE_DESCRIPTION, path: "/" });
 
 export default async function Home() {
   // Read server credentials at runtime, including when deployed as a container.

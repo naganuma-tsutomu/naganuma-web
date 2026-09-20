@@ -4,6 +4,20 @@ Next.jsで実装したポートフォリオサイトです。トップページ�
 
 表示確認用のサンプルを追加するには、`.env.local` に `SHOW_SAMPLE_CONTENT=true` を設定してサーバーを再起動します。`/projects` と `/notes` では取得済みの記事の後ろにサンプルを各6件追加し、`/about` ではサンプル職歴を表示します。Homeでは実データが3件未満の場合に限り、空いた枠をサンプルで補います。サンプルカードにはリンクを付けません。`false` に戻すと追加表示を停止します。サンプル職歴は開発環境だけで表示され、本番では設定値にかかわらず非表示になります。
 
+## 検索非掲載・SNS共有・セキュリティヘッダー
+
+正式URLは `lib/site-metadata.ts` の `https://naganuma-web.com` に統一しています。各ページに固有のタイトル・説明・canonical・Open Graph・Twitter Cardを設定し、共通画像は `/og` で1200×630のPNGを生成します。プロジェクト記事は、画像があればその画像と公開日時を使用します。
+
+現在は検索非掲載の方針です。全ページのrobotsメタタグと全レスポンスの `X-Robots-Tag` に `noindex, nofollow` を維持しています。サイトマップやクローラーを遮断するrobots.txtは追加していません。検索公開へ変更する際は、メタタグとヘッダーの両方を見直してください。
+
+`next.config.ts` から `X-Content-Type-Options: nosniff`、`Referrer-Policy: strict-origin-when-cross-origin`、`Permissions-Policy: camera=(), microphone=(), geolocation=()` を配信します。HSTSはTLS終端側の設定確認後に対応します。
+
+本番ビルドには `Content-Security-Policy-Report-Only` を追加しています。これは違反を観測するための設定で、リソースをブロックしません。収集サーバーは設けていないため、確認はブラウザの開発者ツールのConsoleで行います。`npm run build` → `npm start` で起動し、初回・再訪問時のログイン演出、ページ遷移、記事画像、Analyticsを確認してください。開発サーバーではHMRのノイズを避けるためCSPを配信しません。
+
+現状の候補ポリシーでは、ログイン演出・Next.jsの初期化・Google Analyticsのインラインスクリプトが違反として報告される想定です。これらはReport-Onlyなので実行されます。強制適用は、nonce/hash方式と静的ページへの影響を検討し、違反を解消してから行ってください。スタイルは既存のアニメーションに合わせてインラインを許可し、記事内画像はサニタイズと同様にHTTPSを許可しています。
+
+参考: [Next.js CSPガイド](https://nextjs.org/docs/app/guides/content-security-policy)、[GoogleのCSPガイド](https://developers.google.com/tag-platform/security/guides/csp)。
+
 ## microCMSで記事を管理する
 
 [接続手順・APIスキーマ](docs/microcms.md)を参照してください。未接続時のサンプル記事は開発環境だけで表示します。本番で認証情報がない場合は読み込み失敗として扱います。

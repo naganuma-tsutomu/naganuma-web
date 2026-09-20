@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
 import { githubProfileUrl, xProfileUrl } from "@/app/data/links";
 
@@ -7,10 +7,11 @@ const profileLabelClass = "col-start-1 font-[family-name:var(--mono)] text-[11px
 const profileUrlClass = "col-start-1 font-[family-name:var(--mono)] text-[15px] leading-normal font-bold [overflow-wrap:anywhere]";
 const profileArrowClass = "col-start-2 row-span-2 row-start-1 self-center font-[family-name:var(--mono)] text-2xl leading-none text-[var(--orange)]";
 
-export const metadata: Metadata = {
-  title: "Contact | NAGANUMA",
+export const metadata = createPageMetadata({
+  title: "Contact",
   description: "GitHubとXのプロフィールへのリンクをまとめています。",
-};
+  path: "/contact",
+});
 
 export default function Contact() {
   return (

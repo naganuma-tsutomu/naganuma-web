@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/site-metadata";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -14,13 +15,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   await connection();
   const { slug } = await params;
   const project = await getProject(slug);
-  if (!project) return { title: "記事が見つかりません | NAGANUMA" };
-  return {
-    title: `${project.title} | NAGANUMA`,
+  if (!project) return { title: "記事が見つかりません", robots: { index: false, follow: false } };
+  return createPageMetadata({
+    title: project.title,
     description: project.description,
-    ...(project.isSample ? { robots: { index: false, follow: false } } : {}),
-    openGraph: { title: project.title, description: project.description, type: "article" },
-  };
+    path: `/projects/${encodeURIComponent(project.slug)}`,
+    imageUrl: project.isSample ? undefined : project.imageUrl,
+    publishedAt: project.isSample ? undefined : project.publishedAt,
+    article: true,
+  });
 }
 
 export default async function ProjectPage({ params }: Props) {

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { securityHeaders } from "./lib/security-headers.ts";
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -8,7 +9,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/:path*",
-        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+        headers: securityHeaders(process.env.NODE_ENV === "production"),
       },
     ];
   },

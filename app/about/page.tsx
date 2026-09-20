@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
 import { sampleExperienceEnabled } from "@/lib/sample-content";
 
-export const metadata: Metadata = {
-  title: "About | NAGANUMA",
+export const metadata = createPageMetadata({
+  title: "About",
   description: "プロフィール、スキル、取り組んでいる技術について。",
-};
+  path: "/about",
+});
 
 const skills = [
   "React",

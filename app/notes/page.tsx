@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
 import { connection } from "next/server";
 import NoteCard from "@/components/NoteCard";
@@ -8,10 +8,11 @@ import { getNoteFeed } from "@/lib/note";
 import type { NoteFeed } from "@/lib/note-types";
 import { paginate, sampleContentEnabled } from "@/lib/sample-content";
 
-export const metadata: Metadata = {
-  title: "NOTES | NAGANUMA",
+export const metadata = createPageMetadata({
+  title: "NOTES",
   description: "noteで執筆した最新記事を最大20件掲載しています。サーバー構築や日々の開発の記録をお届けします。",
-};
+  path: "/notes",
+});
 
 export default async function NotesPage({ searchParams }: { searchParams: Promise<{ page?: string | string[] }> }) {
   await connection();

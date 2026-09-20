@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
 import { connection } from "next/server";
 import ProjectCard from "@/components/ProjectCard";
@@ -8,10 +8,11 @@ import { buildProjectEntries } from "@/lib/project-list";
 import { getProjectPage } from "@/lib/projects";
 import { paginate, sampleContentEnabled } from "@/lib/sample-content";
 
-export const metadata: Metadata = {
-  title: "PROJECTS | NAGANUMA",
+export const metadata = createPageMetadata({
+  title: "PROJECTS",
   description: "制作したプロジェクトの一覧です。",
-};
+  path: "/projects",
+});
 
 export default async function ProjectsPage({ searchParams }: { searchParams: Promise<{ page?: string | string[] }> }) {
   await connection();
