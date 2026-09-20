@@ -1,8 +1,8 @@
 import "server-only";
 
-import { homelabPreview } from "@/app/data/homelab";
+import { homelabPreview } from "../app/data/homelab.ts";
 import type { HomelabMetric, HomelabNetwork, HomelabStatus } from "@/lib/homelab-types";
-import { homelabQueries, networkQueries, normalizeMetric, parseInstantValue, parseRangeValues, rangeValueAt } from "@/lib/prometheus-metrics";
+import { homelabQueries, networkQueries, normalizeMetric, parseInstantValue, parseRangeValues, rangeValueAt } from "./prometheus-metrics.ts";
 
 const LABELS = ["CPU", "MEM", "DISK"] as const;
 const CACHE_MS = 25_000;

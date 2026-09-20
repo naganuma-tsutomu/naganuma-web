@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, mock, test } from "node:test";
-import { getProjectList, getProjectPage } from "../lib/projects.ts";
+import { getProject, getProjectList, getProjectPage } from "../lib/projects.ts";
 
 let saved;
 beforeEach(() => {
@@ -121,4 +121,99 @@ test("rejects malformed CMS totals and invalid pagination parameters", async () 
   for (const args of [[0], [101], [6, -1], [6, 0.5]]) {
     await assert.rejects(getProjectList(...args), /Invalid project pagination/);
   }
+});
+
+const article = {
+  id: "real-article", title: "Real article", description: "A project",
+  content: "<p>Article body</p>", publishedAt: "2026-09-20T00:00:00.000Z",
+  thumbnail: { url: "https://images.microcms-assets.io/assets/service/image.jpg" },
+};
+
+test("loads an article from the configured endpoint with its metadata", async () => {
+  process.env.MICROCMS_PROJECTS_ENDPOINT = "works";
+  const fetch = mock.method(globalThis, "fetch", async url => {
+    assert.equal(url.pathname, "/api/v1/works/real-article");
+    return Response.json(article);
+  });
+  assert.deepEqual(await getProject("real-article"), {
+    slug: article.id, title: article.title, description: article.description,
+    content: article.content, publishedAt: article.publishedAt,
+    imageUrl: article.thumbnail.url, isSample: false,
+  });
+  assert.equal(fetch.mock.callCount(), 1);
+});
+
+test("rejects invalid article slugs before making a request", async () => {
+  const fetch = mock.method(globalThis, "fetch", () => { throw new Error("Unexpected fetch"); });
+  for (const slug of ["", "../secret", "a/b", "a?draftKey=secret", "%2F", "日本語"]) {
+    assert.equal(await getProject(slug), null);
+  }
+  assert.equal(fetch.mock.callCount(), 0);
+});
+
+test("only article 404s become missing articles; authentication and outage errors propagate", async () => {
+  let status = 404;
+  mock.method(globalThis, "fetch", async () => new Response(null, { status }));
+  assert.equal(await getProject("missing"), null);
+  for (status of [401, 403, 429, 500, 503]) {
+    await assert.rejects(getProject("real-article"), error => error.status === status);
+  }
+});
+
+test("article transport failures and invalid JSON propagate", async () => {
+  const fetch = mock.method(globalThis, "fetch", async () => { throw new Error("Connection failed"); });
+  await assert.rejects(getProject("real-article"), /Connection failed/);
+  fetch.mock.mockImplementation(async () => new Response("invalid JSON"));
+  await assert.rejects(getProject("real-article"), SyntaxError);
+});
+
+test("validates required list and article fields", async () => {
+  let payload;
+  mock.method(globalThis, "fetch", async () => Response.json(payload));
+  for (const invalid of [{ ...article, id: "" }, { ...article, title: "" }, { ...article, description: null }]) {
+    payload = invalid;
+    await assert.rejects(getProject("real-article"), /Invalid projects schema/);
+    payload = { contents: [invalid], totalCount: 1 };
+    await assert.rejects(getProjectList(), /Invalid projects schema/);
+  }
+  for (const content of [undefined, null, 42]) {
+    payload = { ...article, content };
+    await assert.rejects(getProject("real-article"), /content must be rich-editor HTML/);
+  }
+  for (payload of [{ contents: null, totalCount: 0 }, { contents: [], totalCount: "1" }]) {
+    await assert.rejects(getProjectList(), /Invalid microCMS list response/);
+  }
+});
+
+test("uses a placeholder for missing or untrusted thumbnails in lists and articles", async () => {
+  let payload;
+  mock.method(globalThis, "fetch", async () => Response.json(payload));
+  for (const url of [undefined, "http://images.microcms-assets.io/assets/image.jpg", "https://images.microcms-assets.io.evil.test/assets/image.jpg", "https://example.com/image.jpg"]) {
+    payload = { ...article, thumbnail: url ? { url } : undefined };
+    assert.equal((await getProject("real-article")).imageUrl, "/images/no-image.jpg");
+    payload = { contents: [payload], totalCount: 1 };
+    assert.equal((await getProjectList()).projects[0].imageUrl, "/images/no-image.jpg");
+  }
+});
+
+test("development article fallback marks samples and returns null for unknown slugs", async () => {
+  process.env.NODE_ENV = "development";
+  delete process.env.MICROCMS_SERVICE_DOMAIN;
+  delete process.env.MICROCMS_API_KEY;
+  const fetch = mock.method(globalThis, "fetch", () => { throw new Error("Unexpected fetch"); });
+  const sample = await getProject("project-alpha");
+  assert.equal(sample.slug, "project-alpha");
+  assert.equal(sample.isSample, true);
+  assert.match(sample.content, /サンプル/);
+  assert.equal(await getProject("missing"), null);
+  assert.equal(fetch.mock.callCount(), 0);
+});
+
+test("missing production configuration never returns sample articles or lists", async () => {
+  delete process.env.MICROCMS_SERVICE_DOMAIN;
+  delete process.env.MICROCMS_API_KEY;
+  const fetch = mock.method(globalThis, "fetch", () => { throw new Error("Unexpected fetch"); });
+  await assert.rejects(getProject("project-alpha"), /Sample projects are available only in development/);
+  await assert.rejects(getProjectList(), /Sample projects are available only in development/);
+  assert.equal(fetch.mock.callCount(), 0);
 });
