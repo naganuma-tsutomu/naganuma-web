@@ -4,6 +4,43 @@ Next.jsで実装したポートフォリオサイトです。トップページ�
 
 表示確認用のサンプルを追加するには、`.env.local` に `SHOW_SAMPLE_CONTENT=true` を設定してサーバーを再起動します。`/projects` と `/notes` では取得済みの記事の後ろにサンプルを各6件追加し、`/about` ではサンプル職歴を表示します。Homeでは実データが3件未満の場合に限り、空いた枠をサンプルで補います。サンプルカードにはリンクを付けません。`false` に戻すと追加表示を停止します。サンプル職歴は開発環境だけで表示され、本番では設定値にかかわらず非表示になります。
 
+## 開発環境とローカル起動
+
+- **Node.js**: `v22` 以上（`.nvmrc` あり）
+- **パッケージマネージャー**: `npm`
+
+```bash
+# 依存関係のインストール
+npm install
+
+# 開発サーバーの起動 (http://localhost:3000)
+npm run dev
+
+# テスト実行
+npm test
+
+# コード検証 (ESLint)
+npm run lint
+
+# 本番ビルド検証
+npm run build
+```
+
+## 環境変数
+
+環境変数の見本は [`.env.example`](.env.example) を参照してください。
+
+| 変数名 | 必須 | 説明 |
+| --- | --- | --- |
+| `SHOW_SAMPLE_CONTENT` | 任意 | 開発環境でサンプル記事・職歴を表示する場合は `true` |
+| `MICROCMS_SERVICE_DOMAIN` | 任意 | microCMSのサービスドメイン |
+| `MICROCMS_API_KEY` | 任意 | microCMSのAPIキー（サーバー側限定） |
+| `MICROCMS_PROJECTS_ENDPOINT` | 任意 | プロジェクト記事のエンドポイント（デフォルト: `projects`） |
+| `NOTE_USER_ID` | 任意 | noteのクリエイターID |
+| `HOMELAB_PROMETHEUS_URL` | 任意 | PrometheusサーバーのURL（未設定時はデモ表示） |
+| `HOMELAB_PROMETHEUS_INSTANCE` | 任意 | PrometheusのProxmox exporter対象instanceラベル |
+| `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` | 任意 | Google Analytics測定ID（クライアント配信） |
+
 ## 検索非掲載・SNS共有・セキュリティヘッダー
 
 正式URLは `lib/site-metadata.ts` の `https://naganuma-web.com` に統一しています。各ページに固有のタイトル・説明・canonical・Open Graph・Twitter Cardを設定し、共通画像は `/og` で1200×630のPNGを生成します。プロジェクト記事は、画像があればその画像と公開日時を使用します。
@@ -22,8 +59,6 @@ Next.jsで実装したポートフォリオサイトです。トップページ�
 
 [接続手順・APIスキーマ](docs/microcms.md)を参照してください。未接続時のサンプル記事は開発環境だけで表示します。本番で認証情報がない場合は読み込み失敗として扱います。
 
-環境変数の見本は [`.env.example`](.env.example) にあります。APIキーはサーバー側だけで使用します。
-
 ## noteの記事を表示する
 
 `.env.local` の `NOTE_USER_ID` に、noteプロフィールURL末尾のクリエイターIDを設定します。
@@ -36,9 +71,9 @@ NOTE_USER_ID=your_creator_id
 
 ## HOMELAB STATUSをPrometheusに接続する
 
-Kubernetesにデプロイするコンテナには、`HOMELAB_PROMETHEUS_URL=http://192.168.20.130:9090` を設定しています。サイトのサーバー側だけがPrometheusへ問い合わせ、ProxmoxノードのCPU・メモリ・ディスク使用率と、VM/LXCの受信・送信速度（Mb/s）および直近10分間の推移を表示します。画面を開いている間は30秒ごとに更新し、非表示のタブでは更新を止めます。サーバー側では結果を25秒間キャッシュします。CPU使用率はノードのCPU数で重み付けし、メモリとディスクは全ノードの使用量を合計して計算します。複数のProxmox exporterを収集している場合は、`HOMELAB_PROMETHEUS_INSTANCE` で対象の `instance` ラベルを指定できます。
+Kubernetesにデプロイするコンテナには、環境変数 `HOMELAB_PROMETHEUS_URL=http://192.168.20.130:9090` を設定して渡します。サイトのサーバー側だけがPrometheusへ問い合わせ、ProxmoxノードのCPU・メモリ・ディスク使用率と、VM/LXCの受信・送信速度（Mb/s）および直近10分間の推移を表示します。画面を開いている間は30秒ごとに更新し、非表示のタブでは更新を止めます。サーバー側では結果を25秒間キャッシュします。CPU使用率はノードのCPU数で重み付けし、メモリとディスクは全ノードの使用量を合計して計算します。複数のProxmox exporterを収集している場合は、`HOMELAB_PROMETHEUS_INSTANCE` で対象の `instance` ラベルを指定できます。
 
-接続できない場合は `OFFLINE` と `--` を表示します。URLを設定しないローカル開発環境では、デザイン用のサンプル値を表示します。必要な環境変数は [`.env.example`](.env.example) を参照してください。
+接続できない場合は `OFFLINE` と `--` を表示します。URLを設定しないローカル開発環境では、デザイン用のサンプル値を表示します。
 
 Podからの接続確認は、`kubectl` が使える端末で実行できます。
 
@@ -55,38 +90,3 @@ kubectl exec deployment/next-app -- node -e 'fetch("http://192.168.20.130:9090/a
 `INFRA_REPO_PAT` は `proxmox-iac-project` にアクセスできるトークンが必要です。Fine-grained PAT の場合、同リポジトリへの `Contents: write`（デプロイ通知）と `Secrets: write`（実行時設定の同期）を付与してください。権限が不足すると `Sync runtime secrets to infra repository` が失敗します。
 
 `main` への push 時にサイトのワークフローがイメージをビルドし、実行時設定をインフラリポジトリの Actions Secrets に暗号化して同期してからデプロイを通知します。インフラ側のワークフローが同じ namespace の Kubernetes Secret `next-app-runtime` を更新し、Deployment の Pod に環境変数として渡します。APIキーはイメージやデプロイ通知のペイロードには含めません。インフラ側のワークフローとマニフェストを先に反映してください。
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses `next/font` to load Oswald, Shippori Mincho, and Silkscreen.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

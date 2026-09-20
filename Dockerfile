@@ -1,5 +1,4 @@
-# 1行目を変更: node:18-alpine → node:20-alpine
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 FROM base AS deps
 WORKDIR /app
@@ -21,9 +20,7 @@ RUN npm run build
 
 FROM base AS runner
 WORKDIR /app
-# 警告修正: = を追加
 ENV NODE_ENV=production
-ENV HOMELAB_PROMETHEUS_URL=http://192.168.20.130:9090
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -35,7 +32,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 
 EXPOSE 3000
-# 警告修正: = を追加
 ENV PORT=3000
 
 CMD ["node", "server.js"]
