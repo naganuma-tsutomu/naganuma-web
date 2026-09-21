@@ -18,32 +18,32 @@ export function ProjectsSkeleton() {
           className="project-card relative h-full font-[family-name:var(--font-shippori-mincho)]"
         >
           {/* Shadow Effect */}
-          <div className="absolute top-2 left-2 w-full h-full bg-black dark:bg-white" />
+          <div className="absolute top-2 left-2 w-full h-full bg-[var(--ink)]" />
 
           {/* Main Card Content */}
-          <div className="relative bg-white dark:bg-zinc-800 overflow-hidden border-2 border-black dark:border-white h-full flex flex-col">
+          <div className="relative bg-white overflow-hidden border-2 border-[var(--ink)] h-full flex flex-col">
             {/* Browser Header */}
-            <div className="flex items-center justify-between gap-2 p-2 bg-gray-200 dark:bg-zinc-700 border-b-2 border-black dark:border-white">
-              <div className="min-w-0 flex-1 text-left text-sm text-gray-700 dark:text-gray-300 font-bold">
-                <span className="inline-block w-24 h-3 bg-gray-300 dark:bg-zinc-600 rounded animate-pulse" />
+            <div className="flex items-center justify-between gap-2 p-2 bg-gray-200 border-b-2 border-[var(--ink)]">
+              <div className="min-w-0 flex-1 text-left text-sm text-gray-700 font-bold">
+                <span className="inline-block w-24 h-3 bg-gray-300 rounded animate-pulse" />
               </div>
               <div className="flex shrink-0 space-x-1" aria-hidden="true">
-                <span className="w-3 h-3 rounded-full border border-black dark:border-white bg-transparent" />
-                <span className="w-3 h-3 rounded-full border border-black dark:border-white bg-transparent" />
-                <span className="w-3 h-3 rounded-full border border-black dark:border-white bg-transparent" />
+                <span className="w-3 h-3 rounded-full border border-[var(--ink)] bg-transparent" />
+                <span className="w-3 h-3 rounded-full border border-[var(--ink)] bg-transparent" />
+                <span className="w-3 h-3 rounded-full border border-[var(--ink)] bg-transparent" />
               </div>
             </div>
 
             {/* Image */}
-            <div className="relative h-48 bg-gray-200 dark:bg-zinc-700 border-b-2 border-black dark:border-white shrink-0 animate-pulse" />
+            <div className="relative h-48 bg-gray-200 border-b-2 border-[var(--ink)] shrink-0 animate-pulse" />
 
             {/* Text Content */}
             <div className="p-6 flex-grow space-y-3">
-              <div className="w-28 h-3 bg-gray-200 dark:bg-zinc-700 rounded animate-pulse" />
-              <div className="w-3/4 h-6 bg-gray-300 dark:bg-zinc-600 rounded animate-pulse" />
+              <div className="w-28 h-3 bg-gray-200 rounded animate-pulse" />
+              <div className="w-3/4 h-6 bg-gray-300 rounded animate-pulse" />
               <div className="space-y-2 pt-2">
-                <div className="w-full h-3 bg-gray-200 dark:bg-zinc-700 rounded animate-pulse" />
-                <div className="w-5/6 h-3 bg-gray-200 dark:bg-zinc-700 rounded animate-pulse" />
+                <div className="w-full h-3 bg-gray-200 rounded animate-pulse" />
+                <div className="w-5/6 h-3 bg-gray-200 rounded animate-pulse" />
               </div>
             </div>
           </div>

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* One paper-and-ink palette in either system theme. */
-@custom-variant dark (&:where(.dark, .dark *));
+
 
 :root {
   color-scheme: light;
@@ -342,7 +342,6 @@ html[data-page-transition="active"] footer {
 .section-palette i:nth-child(4) { background: transparent; border: 1px solid; }
 .project-card-preview .project-card-surface { transition: transform .3s, background-color .2s, border-color .2s; }
 .project-card-preview:hover .project-card-surface { border-color: var(--red); background: #fff8eb; }
-.dark .project-card-preview:hover .project-card-surface { background: #30251e; }
 .project-card-preview:hover .project-card-sample { background: var(--ink); color: var(--paper); }
 .project-card:focus-within h3 { color: var(--red); }
 

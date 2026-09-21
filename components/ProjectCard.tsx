@@ -32,45 +32,45 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
     <>
       {/* Shadow Effect */}
       <div
-        className={`absolute top-2 left-2 w-full h-full bg-black dark:bg-white transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] ${
+        className={`absolute top-2 left-2 w-full h-full bg-[var(--ink)] transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] ${
           isFullyInView ? "translate-x-[-2px] translate-y-[-2px]" : "translate-x-0 translate-y-0"
         }`}
       />
 
       {/* Main Card Content */}
       <div
-        className={`project-card-surface relative bg-white dark:bg-zinc-800 overflow-hidden border-2 border-black dark:border-white h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] ${
+        className={`project-card-surface relative bg-white overflow-hidden border-2 border-[var(--ink)] h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] ${
           isFullyInView ? "translate-x-[3px] translate-y-[3px]" : "translate-x-0 translate-y-0"
         }`}
       >
         {/* Browser Header */}
-        <div className="flex items-center justify-between gap-2 p-2 bg-gray-200 dark:bg-zinc-700 border-b-2 border-black dark:border-white transition-colors duration-300">
-          <div className="min-w-0 flex-1 truncate text-left text-sm text-gray-700 dark:text-gray-300 font-bold">
+        <div className="flex items-center justify-between gap-2 p-2 bg-gray-200 border-b-2 border-[var(--ink)] transition-colors duration-300">
+          <div className="min-w-0 flex-1 truncate text-left text-sm text-gray-700 font-bold">
             {project.title}.md
           </div>
           <div className="flex shrink-0 space-x-1" aria-hidden="true">
             <span
-              className={`w-3 h-3 rounded-full border border-black dark:border-white group-hover:bg-[#1C1C1C] dark:group-hover:bg-white transition-colors md:bg-transparent md:dark:bg-transparent ${
-                isFullyInView ? "bg-[#1C1C1C] dark:bg-white" : "bg-transparent dark:bg-transparent"
+              className={`w-3 h-3 rounded-full border border-[var(--ink)] group-hover:bg-[var(--ink)] transition-colors md:bg-transparent ${
+                isFullyInView ? "bg-[var(--ink)]" : "bg-transparent"
               }`}
             />
             <span
-              className={`w-3 h-3 rounded-full border border-black dark:border-white group-hover:bg-[#1C1C1C] dark:group-hover:bg-white transition-colors md:bg-transparent md:dark:bg-transparent ${
-                isFullyInView ? "bg-[#1C1C1C] dark:bg-white" : "bg-transparent dark:bg-transparent"
+              className={`w-3 h-3 rounded-full border border-[var(--ink)] group-hover:bg-[var(--ink)] transition-colors md:bg-transparent ${
+                isFullyInView ? "bg-[var(--ink)]" : "bg-transparent"
               }`}
             />
             <span
-              className={`w-3 h-3 rounded-full border border-black dark:border-white group-hover:bg-[#1C1C1C] dark:group-hover:bg-white transition-colors md:bg-transparent md:dark:bg-transparent ${
-                isFullyInView ? "bg-[#1C1C1C] dark:bg-white" : "bg-transparent dark:bg-transparent"
+              className={`w-3 h-3 rounded-full border border-[var(--ink)] group-hover:bg-[var(--ink)] transition-colors md:bg-transparent ${
+                isFullyInView ? "bg-[var(--ink)]" : "bg-transparent"
               }`}
             />
           </div>
         </div>
 
         {/* Image */}
-        <div className="relative h-48 bg-gray-100 dark:bg-zinc-900 border-b-2 border-black dark:border-white shrink-0">
+        <div className="relative h-48 bg-gray-100 border-b-2 border-[var(--ink)] shrink-0">
           {isLoading && !imageError && (
-            <div className="absolute inset-0 bg-gray-300 dark:bg-zinc-600 z-10 animate-[pulse_1.5s_ease-in-out_infinite] motion-reduce:animate-none" />
+            <div className="absolute inset-0 bg-gray-300 z-10 animate-[pulse_1.5s_ease-in-out_infinite] motion-reduce:animate-none" />
           )}
           <Image
             src={imageError ? "/images/no-image.jpg" : project.imageUrl}
@@ -91,19 +91,19 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
         <div className="p-6 flex-grow transition-colors duration-300">
           {sample && <span className="project-card-sample">SAMPLE</span>}
           {date && (
-            <div className="mb-3 font-mono text-xs tracking-wider text-[#52605e] dark:text-gray-300">
+            <div className="mb-3 font-mono text-xs tracking-wider text-[#52605e]">
               PUBLISHED / <time dateTime={project.publishedAt}>{date}</time>
             </div>
           )}
           <h3
             id={`${project.slug}-title`}
-            className={`text-2xl font-bold font-oswald mb-2 group-hover:text-[var(--red)] dark:group-hover:text-[var(--red)] transition-colors md:text-[#1C1C1C] md:dark:text-white ${
-              isFullyInView ? "text-[var(--red)] dark:text-[var(--red)]" : "text-[#1C1C1C] dark:text-white"
+            className={`text-2xl font-bold font-oswald mb-2 group-hover:text-[var(--red)] transition-colors md:text-[var(--ink)] ${
+              isFullyInView ? "text-[var(--red)]" : "text-[var(--ink)]"
             }`}
           >
             {project.title}
           </h3>
-          <p className="text-[#3a3a3a] dark:text-gray-300 line-clamp-3 transition-colors duration-300">
+          <p className="text-[#38484a] line-clamp-3 transition-colors duration-300">
             {project.description}
           </p>
         </div>
