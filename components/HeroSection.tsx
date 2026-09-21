@@ -151,6 +151,31 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
       onLostPointerCapture={(event) => endDrag(event.pointerId)}
       onKeyDown={handleKeyDown}
     >
+      <div className="pointer-events-none absolute inset-x-0 top-[22px] bottom-0 -z-10 grid grid-cols-[1.26fr_1fr] grid-rows-[290px_226px] gap-[18px] overflow-hidden font-[family-name:var(--mono)] text-[11px] leading-[1.4] tracking-[.04em] min-[1600px]:grid-rows-[316px_236px] max-[1200px]:grid-cols-[1.2fr_1fr] max-[1024px]:grid-cols-2 max-[1024px]:grid-rows-[295px_minmax(490px,auto)] max-[768px]:hidden" aria-hidden="true">
+        <div className="row-span-2 flex w-[92px] flex-col items-center self-center justify-self-center gap-[9px] text-center text-[#3f5553] max-[1024px]:col-span-2 max-[1024px]:row-start-2 max-[1024px]:row-span-1">
+          <span className="relative block h-10 w-[58px] border-2 border-[var(--ink)] bg-[#d8b95c] shadow-[4px_4px_0_rgb(10_23_29_/_16%)]">
+            <i className="absolute -top-[9px] -left-0.5 block h-[10px] w-[27px] border-2 border-b-0 border-[var(--ink)] bg-[#d8b95c]" />
+            <i className="absolute right-[7px] bottom-[7px] block h-0.5 w-4 bg-[var(--ink)] opacity-55" />
+          </span>
+          <span>ideas/</span>
+        </div>
+        <div className="relative col-start-2 row-start-1 w-[min(270px,72%)] self-center justify-self-center -rotate-[1.4deg] border-2 border-[var(--ink)] bg-[#fffdf7] px-6 pt-[30px] pb-[23px] shadow-[6px_6px_0_rgb(10_23_29_/_13%)] max-[1024px]:col-start-1 max-[1024px]:w-[min(250px,72%)]">
+          <i className="absolute top-5 right-[18px] block h-[7px] w-[7px] bg-[var(--red)]" />
+          <span className="absolute inset-x-0 top-0 border-b border-[#aeb7ad] px-[9px] py-1.5 text-[9px] text-[#526963]">README.txt</span>
+          <p className="mt-[5px] mb-1 font-[family-name:var(--font-pixel)] text-[21px] leading-none font-bold tracking-[-.05em] text-[var(--red)]">YOU FOUND IT.</p>
+          <small className="text-[10px] text-[#3f5553]">窓の下にも、まだ何かある。</small>
+          <span className="mt-[7px] block text-lg leading-[.5] text-[var(--red)]">_</span>
+        </div>
+        <div className="col-start-2 row-start-2 flex w-[92px] flex-col items-center self-center justify-self-center gap-[9px] text-center text-[#3f5553] max-[1024px]:row-start-1">
+          <span className="relative flex h-[47px] w-[42px] items-end justify-center gap-1 border-2 border-[var(--ink)] bg-[#dce5dd] pb-2 shadow-[4px_4px_0_rgb(10_23_29_/_13%)]">
+            <i className="absolute -top-[7px] -left-[5px] block h-[7px] w-12 border-2 border-[var(--ink)] bg-[#dce5dd]" />
+            <i className="h-[25px] w-0.5 bg-[var(--ink)] opacity-40" />
+            <i className="h-[25px] w-0.5 bg-[var(--ink)] opacity-40" />
+            <i className="h-[25px] w-0.5 bg-[var(--ink)] opacity-40" />
+          </span>
+          <span>archive/</span>
+        </div>
+      </div>
       <InteractiveTerminal />
       <div className="manifesto-panel" data-hero-window data-drag-handle role="group" tabIndex={0} aria-label="BUILD TWEAK LEARN REPEAT window">
         <span className="mobile-hero-eyebrow">NAGANUMA / PERSONAL WORKSPACE</span>
