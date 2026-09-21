@@ -109,6 +109,9 @@ jobs:
           MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
           MICROCMS_PROJECTS_ENDPOINT: ${{ secrets.MICROCMS_PROJECTS_ENDPOINT }}
           NOTE_USER_ID: ${{ secrets.NOTE_USER_ID }}
+          HOMELAB_PROMETHEUS_URL: ${{ secrets.HOMELAB_PROMETHEUS_URL }}
+          HOMELAB_PROMETHEUS_INSTANCE: ${{ secrets.HOMELAB_PROMETHEUS_INSTANCE }}
+          HOMELAB_PROMETHEUS_BEARER_TOKEN: ${{ secrets.HOMELAB_PROMETHEUS_BEARER_TOKEN }}
         run: |
           set -euo pipefail
           for name in GH_TOKEN MICROCMS_SERVICE_DOMAIN MICROCMS_API_KEY NOTE_USER_ID; do
@@ -124,6 +127,20 @@ jobs:
           printf '%s' "$MICROCMS_API_KEY" | gh secret set MICROCMS_API_KEY --repo "$infra_repo"
           printf '%s' "${MICROCMS_PROJECTS_ENDPOINT:-projects}" | gh secret set MICROCMS_PROJECTS_ENDPOINT --repo "$infra_repo"
           printf '%s' "$NOTE_USER_ID" | gh secret set NOTE_USER_ID --repo "$infra_repo"
+
+          if [[ -n "${HOMELAB_PROMETHEUS_URL:-}" ]]; then
+            printf '%s' "$HOMELAB_PROMETHEUS_URL" | gh secret set HOMELAB_PROMETHEUS_URL --repo "$infra_repo"
+          else
+            echo "::warning::HOMELAB_PROMETHEUS_URL is not set; homelab will display demo values in production"
+          fi
+
+          if [[ -n "${HOMELAB_PROMETHEUS_INSTANCE:-}" ]]; then
+            printf '%s' "$HOMELAB_PROMETHEUS_INSTANCE" | gh secret set HOMELAB_PROMETHEUS_INSTANCE --repo "$infra_repo"
+          fi
+
+          if [[ -n "${HOMELAB_PROMETHEUS_BEARER_TOKEN:-}" ]]; then
+            printf '%s' "$HOMELAB_PROMETHEUS_BEARER_TOKEN" | gh secret set HOMELAB_PROMETHEUS_BEARER_TOKEN --repo "$infra_repo"
+          fi
 
       - name: Trigger Infra Deploy
         uses: peter-evans/repository-dispatch@v3

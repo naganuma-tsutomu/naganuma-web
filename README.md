@@ -105,7 +105,7 @@ kubectl exec deployment/next-app -- node -e 'fetch("http://192.168.20.130:9090/a
 
 ## Kubernetesへのデプロイ
 
-`naganuma-web` リポジトリの GitHub Actions Secrets に `MICROCMS_SERVICE_DOMAIN`、`MICROCMS_API_KEY`、`NOTE_USER_ID`、`INFRA_REPO_PAT` を設定します。`MICROCMS_PROJECTS_ENDPOINT` は省略時に `projects` を使用します。Google Analytics を使う場合は `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` も設定します。
+`naganuma-web` リポジトリの GitHub Actions Secrets に `MICROCMS_SERVICE_DOMAIN`、`MICROCMS_API_KEY`、`NOTE_USER_ID`、`INFRA_REPO_PAT`、および本番で Prometheus を接続する場合は `HOMELAB_PROMETHEUS_URL`（例: `http://192.168.20.130:9090`）を設定します。`MICROCMS_PROJECTS_ENDPOINT` は省略時に `projects` を使用します。任意で `HOMELAB_PROMETHEUS_INSTANCE` や `HOMELAB_PROMETHEUS_BEARER_TOKEN`、Google Analytics を使う場合は `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` も設定します。
 
 `INFRA_REPO_PAT` は `proxmox-iac-project` にアクセスできるトークンが必要です。Fine-grained PAT の場合、同リポジトリへの `Contents: write`（デプロイ通知）と `Secrets: write`（実行時設定の同期）を付与してください。権限が不足すると `Sync runtime secrets to infra repository` が失敗します。
 

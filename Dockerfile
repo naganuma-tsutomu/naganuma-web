@@ -10,7 +10,7 @@ RUN npm ci
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY package.json package-lock.json* tsconfig.json next.config.ts ./
+COPY package.json package-lock.json* tsconfig.json next.config.ts proxy.ts* ./
 COPY eslint.config.mjs* postcss.config.mjs* tailwind.config.ts* next-env.d.ts* ./
 COPY app ./app
 COPY components ./components
