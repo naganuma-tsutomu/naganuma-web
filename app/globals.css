@@ -97,7 +97,7 @@
 }
 
 @utility interior-section-title {
-  @apply mb-[27px] font-[Arial,sans-serif] text-[clamp(29px,3.7vw,48px)] leading-[1.1] font-bold tracking-[0.04em];
+  @apply mb-[27px] font-[family-name:var(--font-oswald),sans-serif] text-[clamp(32px,3.8vw,52px)] leading-[1.1] font-bold tracking-[0.04em];
 }
 
 @utility contact-grid {
@@ -324,7 +324,7 @@ html[data-page-transition="active"] footer {
 @utility projects-section {
   @apply pt-[58px] max-[768px]:pt-[30px];
 }
-.section-heading h2 { margin: 0; color: var(--ink); font: 700 22px/1.2 Arial, sans-serif; letter-spacing: .12em; transition: color .2s ease; }
+.section-heading h2 { margin: 0; color: var(--ink); font: 700 24px/1.2 var(--font-oswald), sans-serif; letter-spacing: .12em; transition: color .2s ease; }
 .section-heading > .section-rule { background: #bac4b9; }
 @media (hover: hover) and (min-width: 768px) {
   .desktop-area:is(:hover, :focus-within) .desktop-heading-marker,
@@ -353,7 +353,7 @@ html[data-page-transition="active"] footer {
 .article-cover img { object-fit: cover; }
 .article-body { padding: 0 34px; font: 16px/2 Arial, "Helvetica Neue", var(--font-shippori-mincho), serif; overflow-wrap: anywhere; }
 .article-body > :first-child { margin-top: 0; }
-.article-body h1, .article-body h2, .article-body h3, .article-body h4 { font-family: Arial, "Helvetica Neue", var(--font-shippori-mincho), serif; font-weight: 700; line-height: 1.5; margin: 2em 0 .9em; }
+.article-body h1, .article-body h2, .article-body h3, .article-body h4 { font-family: var(--font-oswald), var(--font-shippori-mincho), serif; font-weight: 700; line-height: 1.5; margin: 2em 0 .9em; }
 .article-body h1, .article-body h2 { font-size: 25px; border-bottom: 2px solid var(--ink); padding-bottom: 10px; }
 .article-body h3 { font-size: 20px; }
 .article-body p, .article-body ul, .article-body ol, .article-body blockquote, .article-body figure, .article-body pre { margin-block: 1.4em; }
@@ -398,7 +398,7 @@ html[data-page-transition="active"] footer {
   .note-card-link:hover p { color: var(--ink); }
   .note-card-link:hover .note-card-action { color: var(--red); }
 }
-.notes-placeholder h3 { margin: 0 0 8px; font: 600 17px Arial, sans-serif; }
+.notes-placeholder h3 { margin: 0 0 8px; font: 700 19px var(--font-oswald), var(--font-shippori-mincho), sans-serif; }
 .notes-placeholder p { margin: 0; font-size: 13px; line-height: 1.8; color: #52605e; }
 .notes-placeholder > .section-tag { margin-left: auto; white-space: nowrap; }
 
@@ -523,7 +523,7 @@ html[data-page-transition="active"] footer {
 .about-terminal-ready i { width: 9px; height: 1.2em; background: var(--orange); animation: about-cursor-blink 1s steps(1, end) infinite; }
 @keyframes about-cursor-blink { 50% { opacity: 0; } }
 .about-identity-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 5px 10px; background: #86cec2; color: #08171b; font: 10px/1.5 var(--mono); letter-spacing: .02em; }
-.about-copy h2 { margin: 0 0 25px; font: 700 clamp(32px, 3.5vw, 48px)/1.2 Arial, sans-serif; letter-spacing: -.03em; }
+.about-copy h2 { margin: 0 0 25px; font: 700 clamp(34px, 3.6vw, 52px)/1.2 var(--font-oswald), sans-serif; letter-spacing: .02em; }
 .about-prose p { margin: 0 0 18px; }
 .interior-action { display: inline-flex; align-items: center; justify-content: space-between; gap: 42px; margin-top: 14px; border: 2px solid var(--ink); padding: 14px 18px; background: var(--ink); color: var(--paper); font: 12px/1.5 var(--mono); letter-spacing: .07em; transition: background-color .2s, color .2s; }
 .interior-action:hover { background: var(--orange); color: var(--ink); }
