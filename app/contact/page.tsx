@@ -41,13 +41,20 @@ export default function Contact() {
             <span className="section-rule" aria-hidden="true" />
           </div>
           <h2 id="contact-intro-title" className="interior-section-title">FIND ME ONLINE<span>.</span></h2>
-          <p className="contact-lead">{contactLead}</p>
+          <p className="mb-[55px] max-w-[570px] text-[15px] leading-[2] text-[#38484a] max-[768px]:mb-[34px]">{contactLead}</p>
 
-          <div className="contact-methods">
+          <div className="border-t-2 border-[var(--ink)]">
             {socialLinks.map((link, index) => (
-              <div className="contact-method" key={link.name}>
-                <span>{String(index + 1).padStart(2, "0")} / {link.name}</span>
-                <p>{link.description}</p>
+              <div
+                className="grid grid-cols-[125px_minmax(0,1fr)] items-start gap-[18px] border-b border-[#aeb7ad] py-6 max-[1024px]:grid-cols-1 max-[1024px]:gap-[7px] max-[768px]:grid-cols-[125px_minmax(0,1fr)] max-[768px]:gap-4 max-[480px]:grid-cols-1 max-[480px]:gap-[7px]"
+                key={link.name}
+              >
+                <span className="pt-[5px] font-[family-name:var(--mono)] text-[11px] leading-[1.5] text-[var(--teal)] whitespace-nowrap">
+                  {String(index + 1).padStart(2, "0")} / {link.name}
+                </span>
+                <p className="m-0 font-[family-name:var(--font-oswald),sans-serif] text-base leading-[1.6] font-bold">
+                  {link.description}
+                </p>
               </div>
             ))}
           </div>

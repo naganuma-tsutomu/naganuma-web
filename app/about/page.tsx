@@ -65,18 +65,22 @@ export default function About() {
             </div>
           </div>
         </div>
-        <div className="about-copy">
+        <div className="py-[6px]">
           <div className="interior-section-heading">
             <span>01 / INTRODUCTION</span>
             <span className="section-rule" aria-hidden="true" />
           </div>
-          <h2 id="about-intro-title">Who I Am<span>.</span></h2>
-          <div className="about-prose">
+          <h2 id="about-intro-title" className="m-0 mb-[25px] font-[family-name:var(--font-oswald),sans-serif] text-[clamp(34px,3.6vw,52px)] leading-[1.2] font-bold tracking-[0.02em] max-[768px]:mb-[18px]">
+            Who I Am<span className="text-[var(--red)]">.</span>
+          </h2>
+          <div className="max-w-[670px] text-[15px] leading-[2] text-[#38484a]">
             {bio.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
+              <p key={index} className="m-0 mb-[18px]">{paragraph}</p>
             ))}
           </div>
-          <Link href="/contact" className="interior-action">FIND ME ONLINE <span aria-hidden="true">↗</span></Link>
+          <Link href="/contact" className="mt-[14px] inline-flex items-center justify-between gap-[42px] border-2 border-[var(--ink)] bg-[var(--ink)] px-[18px] py-[14px] font-[family-name:var(--mono)] text-xs leading-[1.5] tracking-[0.07em] text-[var(--paper)] no-underline transition-colors duration-200 hover:bg-[var(--orange)] hover:text-[var(--ink)]">
+            FIND ME ONLINE <span className="text-lg" aria-hidden="true">↗</span>
+          </Link>
         </div>
       </section>
 
@@ -87,9 +91,20 @@ export default function About() {
           <span>TECH STACK</span>
         </div>
         <h2 id="skills-title" className="interior-section-title">MY SKILLS<span>.</span></h2>
-        <ul className="about-skills">
+        <ul className="m-0 grid list-none grid-cols-4 gap-[10px] p-0 max-[1024px]:grid-cols-2 max-[480px]:gap-[9px]">
           {skills.map((skill, index) => (
-            <li key={skill}><span>{String(index + 1).padStart(2, "0")}</span>{skill}<span aria-hidden="true">↗</span></li>
+            <li
+              key={skill}
+              className="group flex min-h-[84px] cursor-default items-center gap-[14px] border-2 border-[var(--ink)] bg-[#fffdf7] px-[19px] py-[17px] font-[family-name:var(--font-oswald),sans-serif] text-[clamp(15px,1.4vw,20px)] leading-[1.4] font-bold shadow-[4px_4px_0_var(--ink)] transition-all duration-300 hover:-translate-y-1 hover:bg-[var(--ink)] hover:text-white hover:shadow-[2px_2px_0_var(--ink)] max-[480px]:min-h-[73px] max-[480px]:gap-[7px] max-[480px]:p-[11px] max-[480px]:text-sm"
+            >
+              <span className="self-start font-[family-name:var(--mono)] text-[10px] leading-[1.5] text-[var(--red)] group-hover:text-[var(--orange)]">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span>{skill}</span>
+              <span className="ml-auto font-[family-name:var(--mono)] text-base leading-none max-[480px]:text-xs" aria-hidden="true">
+                ↗
+              </span>
+            </li>
           ))}
         </ul>
       </section>
@@ -102,16 +117,29 @@ export default function About() {
             <span>SAMPLE CONTENT</span>
           </div>
           <h2 id="experience-title" className="interior-section-title">EXPERIENCE<span>.</span></h2>
-          <ol className="about-experience">
+          <ol className="m-0 list-none border-t-2 border-[var(--ink)] p-0">
             {experiences.map((experience) => (
-              <li key={experience.year}>
-                <span className="about-experience-year">{experience.year}</span>
+              <li
+                key={experience.year}
+                className="grid grid-cols-[minmax(150px,.35fr)_minmax(0,1fr)_auto] gap-8 border-b border-[#aeb7ad] px-2 py-[27px] max-[768px]:grid-cols-[1fr_auto] max-[768px]:gap-x-[14px] max-[768px]:gap-y-2"
+              >
+                <span className="font-[family-name:var(--mono)] text-xs leading-[1.5] text-[var(--teal)] max-[768px]:col-span-full">
+                  {experience.year}
+                </span>
                 <div>
-                  <h3>{experience.title}</h3>
-                  <span className="about-experience-company">{experience.company}</span>
-                  <p>{experience.description}</p>
+                  <h3 className="m-0 mb-1 font-[family-name:var(--font-oswald),sans-serif] text-[clamp(20px,2vw,27px)] leading-[1.3] font-bold">
+                    {experience.title}
+                  </h3>
+                  <span className="font-[family-name:var(--mono)] text-xs leading-[1.5] text-[var(--red)]">
+                    {experience.company}
+                  </span>
+                  <p className="mt-[13px] mb-0 max-w-[740px] text-sm leading-[1.8] text-[#52605e]">
+                    {experience.description}
+                  </p>
                 </div>
-                <span className="about-experience-mark" aria-hidden="true">↗</span>
+                <span className="font-[family-name:var(--mono)] text-[19px] leading-none" aria-hidden="true">
+                  ↗
+                </span>
               </li>
             ))}
           </ol>
