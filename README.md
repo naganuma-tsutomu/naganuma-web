@@ -69,11 +69,11 @@ Playwright専用サーバーは `e2e/fixtures/mock-cms.mjs` をNodeの`--import`
 
 `next.config.ts` から `X-Content-Type-Options: nosniff`、`Referrer-Policy: strict-origin-when-cross-origin`、`Permissions-Policy: camera=(), microphone=(), geolocation=()` を配信します。HSTSはTLS終端側の設定確認後に対応します。
 
-本番ビルドには `Content-Security-Policy-Report-Only` を追加しています。これは違反を観測するための設定で、リソースをブロックしません。収集サーバーは設けていないため、確認はブラウザの開発者ツールのConsoleで行います。`npm run build` → `npm start` で起動し、初回・再訪問時のログイン演出、ページ遷移、記事画像、Analyticsを確認してください。開発サーバーではHMRのノイズを避けるためCSPを配信しません。
+本番ビルドには強制適用の `Content-Security-Policy` を追加しています。`proxy.ts` がリクエストごとにnonceを生成し、Next.jsの初期化、ログイン演出、Google Analyticsのスクリプトだけに同じnonceを付与します。Cloudflare Web Analyticsは公式要件に従ってスクリプト配信元と送信先を許可しています。開発サーバーではHMRのノイズを避けるためCSPを配信しません。
 
-現状の候補ポリシーでは、ログイン演出・Next.jsの初期化・Google Analyticsのインラインスクリプトが違反として報告される想定です。これらはReport-Onlyなので実行されます。強制適用は、nonce/hash方式と静的ページへの影響を検討し、違反を解消してから行ってください。スタイルは既存のアニメーションに合わせてインラインを許可し、記事内画像はサニタイズと同様にHTTPSを許可しています。
+CSPを変更するときは、`npm run build` → `npm start` で起動し、初回・再訪問時のログイン演出、ページ遷移、記事画像、Google Analytics、Cloudflare Web AnalyticsをブラウザのConsoleとNetworkで確認してください。nonce方式により全ページが動的レンダリングされます。スタイルは既存の動的インラインスタイルに合わせてインラインを許可し、記事内画像はサニタイズと同様にHTTPSを許可しています。
 
-参考: [Next.js CSPガイド](https://nextjs.org/docs/app/guides/content-security-policy)、[GoogleのCSPガイド](https://developers.google.com/tag-platform/security/guides/csp)。
+参考: [Next.js CSPガイド](https://nextjs.org/docs/app/guides/content-security-policy)、[GoogleのCSPガイド](https://developers.google.com/tag-platform/security/guides/csp)、[CloudflareのCSP要件](https://developers.cloudflare.com/fundamentals/reference/policies-compliances/content-security-policies/)。
 
 ## microCMSで記事を管理する
 

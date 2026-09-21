@@ -20,6 +20,13 @@ test.describe("Page Navigation and Security Headers", () => {
       expect(headers["x-robots-tag"]).toContain("noindex");
       expect(headers["x-content-type-options"]).toBe("nosniff");
       expect(headers["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+      expect(headers["content-security-policy-report-only"]).toBeUndefined();
+      expect(headers["content-security-policy"]).toMatch(/script-src 'self' 'nonce-[^']+'/);
+      expect(headers["content-security-policy"]).toContain("https://static.cloudflareinsights.com");
+
+      const nonce = headers["content-security-policy"].match(/'nonce-([^']+)'/)?.[1];
+      expect(nonce).toBeTruthy();
+      expect(await page.locator("script[nonce]").first().evaluate((script) => script.nonce)).toBe(nonce);
 
       // Verify robots meta tag in HTML
       const robotsMeta = page.locator('meta[name="robots"]');

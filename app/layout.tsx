@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -35,16 +36,18 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html lang="ja" className={`${oswald.variable} ${shipporiMincho.variable} ${silkscreen.variable} scroll-smooth scroll-pt-28 [scrollbar-gutter:stable] max-[768px]:scroll-pt-[88px] motion-reduce:scroll-auto`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {process.env.NODE_ENV === "production" && (
-          <script dangerouslySetInnerHTML={{
+          <script nonce={nonce} dangerouslySetInnerHTML={{
             __html: `try { if (localStorage.getItem(${JSON.stringify(LOGIN_INTRO_STORAGE_KEY)}) === "1") document.documentElement.dataset.loginIntroSeen = "true"; } catch {}`,
           }} />
         )}
@@ -57,7 +60,7 @@ export default function RootLayout({
         <PageTransition>{children}</PageTransition>
         <Footer />
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} nonce={nonce} />
         )}
       </body>
     </html>
