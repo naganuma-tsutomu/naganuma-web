@@ -1,6 +1,6 @@
 import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
-import { githubProfileUrl, xProfileUrl } from "@/app/data/links";
+import { contactLead, socialLinks } from "@/app/data/contact";
 
 const profileLinkClass = "grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-[7px] border border-[#8ca6a7] bg-[#102c32] px-5 py-[18px] text-[var(--paper)] no-underline transition-colors duration-200 hover:border-[var(--aqua)] hover:bg-[#17383d] focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-[var(--orange)]";
 const profileLabelClass = "col-start-1 font-[family-name:var(--mono)] text-[11px] leading-normal tracking-[0.08em] text-[var(--aqua)]";
@@ -41,17 +41,15 @@ export default function Contact() {
             <span className="section-rule" aria-hidden="true" />
           </div>
           <h2 id="contact-intro-title" className="interior-section-title">FIND ME ONLINE<span>.</span></h2>
-          <p className="contact-lead">コードやプロジェクトはGitHubで、日々の投稿はXで公開しています。気になるものから覗いてみてください。</p>
+          <p className="contact-lead">{contactLead}</p>
 
           <div className="contact-methods">
-            <div className="contact-method">
-              <span>01 / GITHUB</span>
-              <p>ソースコードとプロジェクト</p>
-            </div>
-            <div className="contact-method">
-              <span>02 / X</span>
-              <p>日々の投稿と近況</p>
-            </div>
+            {socialLinks.map((link, index) => (
+              <div className="contact-method" key={link.name}>
+                <span>{String(index + 1).padStart(2, "0")} / {link.name}</span>
+                <p>{link.description}</p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -66,16 +64,13 @@ export default function Contact() {
               <h2 id="contact-links-title" className="mt-3 font-[family-name:var(--font-pixel)] text-[clamp(23px,2.4vw,34px)] leading-[1.3] font-bold tracking-[-0.08em] max-[480px]:text-[22px]">SOCIAL LINKS<span className="text-[var(--aqua)]">_</span></h2>
             </div>
             <div className="grid gap-[15px]">
-              <a className={profileLinkClass} href={githubProfileUrl} target="_blank" rel="noopener noreferrer">
-                <span className={profileLabelClass}>01 / GITHUB</span>
-                <span className={profileUrlClass}>github.com/naganuma-tsutomu</span>
-                <span className={profileArrowClass} aria-hidden="true">↗</span>
-              </a>
-              <a className={profileLinkClass} href={xProfileUrl} target="_blank" rel="noopener noreferrer">
-                <span className={profileLabelClass}>02 / X</span>
-                <span className={profileUrlClass}>x.com/naganuma_web</span>
-                <span className={profileArrowClass} aria-hidden="true">↗</span>
-              </a>
+              {socialLinks.map((link, index) => (
+                <a className={profileLinkClass} href={link.url} key={link.name} target="_blank" rel="noopener noreferrer">
+                  <span className={profileLabelClass}>{String(index + 1).padStart(2, "0")} / {link.name}</span>
+                  <span className={profileUrlClass}>{link.displayText}</span>
+                  <span className={profileArrowClass} aria-hidden="true">↗</span>
+                </a>
+              ))}
             </div>
             <p className="mt-7 flex flex-wrap justify-between gap-x-4 gap-y-2 border-t border-[#597174] pt-[14px] font-[family-name:var(--mono)] text-[10px] leading-normal tracking-[0.08em] text-[#b9c7c9]">EXTERNAL LINKS <span>OPEN IN NEW TAB ↗</span></p>
           </div>

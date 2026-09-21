@@ -13,5 +13,4 @@ export function pageNumber(pathname: string) {
   return index === -1 ? "--" : String(index + 1).padStart(2, "0");
 }
 
-export const githubProfileUrl = "https://github.com/naganuma-tsutomu/";
-export const xProfileUrl = "https://x.com/naganuma_web";
+export { githubProfileUrl, xProfileUrl } from "./contact";

@@ -1,6 +1,9 @@
 import Link from "next/link";
 import ProjectCard from "./ProjectCard";
-import { projects as projectSamples } from "@/app/data/projects";
+import {
+  projects as projectSamples,
+  projectsPageMessages,
+} from "@/app/data/projects";
 import { buildProjectEntries } from "@/lib/project-list";
 import { getProjectList } from "@/lib/projects";
 import type { ProjectListSource, ProjectSummary } from "@/lib/project-types";
@@ -74,9 +77,9 @@ export default async function ProjectsSection() {
   return (
     <>
       {projectsUnavailable ? (
-        <p className="projects-message" role="status">{showSamples ? "プロジェクトを読み込めませんでした。以下は表示サンプルです。" : "プロジェクトを読み込めませんでした。時間をおいて再度アクセスしてください。"}</p>
+        <p className="projects-message" role="status">{showSamples ? projectsPageMessages.unavailableWithSamples : projectsPageMessages.unavailable}</p>
       ) : projects.length === 0 ? (
-        <p className="projects-message">{showSamples ? "プロジェクトは準備中です。以下は表示サンプルです。" : "プロジェクトは準備中です。"}</p>
+        <p className="projects-message">{showSamples ? projectsPageMessages.emptyWithSamples : projectsPageMessages.empty}</p>
       ) : null}
       <div className="projects-grid">
         {entries.map(({ project, sample }, index) => (

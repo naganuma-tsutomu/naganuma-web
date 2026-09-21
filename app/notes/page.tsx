@@ -3,7 +3,11 @@ import Link from "next/link";
 import { connection } from "next/server";
 import NoteCard from "@/components/NoteCard";
 import ListPagination from "@/components/ListPagination";
-import { noteSamples } from "@/app/data/note-samples";
+import {
+  noteSamples,
+  notesPageHeader,
+  notesPageMessages,
+} from "@/app/data/notes";
 import { getNoteFeed } from "@/lib/note";
 import type { NoteFeed } from "@/lib/note-types";
 import { paginate, sampleContentEnabled } from "@/lib/sample-content";
@@ -42,30 +46,32 @@ export default async function NotesPage({ searchParams }: { searchParams: Promis
 
       <header className="interior-hero projects-index-header">
         <div className="interior-hero-main">
-          <span className="interior-kicker">ARTICLES / NOTE</span>
-          <h1 id="notes-index-title">NOTES<span className="interior-title-period">.</span></h1>
-          <p>つくったこと、試したこと。noteの最新記事を最大20件掲載しています。</p>
+          <span className="interior-kicker">{notesPageHeader.kicker}</span>
+          <h1 id="notes-index-title">{notesPageHeader.title}<span className="interior-title-period">.</span></h1>
+          <p>{notesPageHeader.description}</p>
           <span className="interior-hero-underscore" aria-hidden="true">_</span>
         </div>
         <div className="interior-hero-side">
-          <span>LATEST FROM NOTE / FIELD LOG</span>
-          <p>READ<br />LEARN<br />WRITE<br />SHARE.</p>
+          <span>{notesPageHeader.sideTagline}</span>
+          <p>{notesPageHeader.sideMotto.map((word, index) => (
+            <span key={word}>{word}{index < notesPageHeader.sideMotto.length - 1 && <br />}</span>
+          ))}</p>
           {noteFeed?.profileUrl ? (
             <a
               href={noteFeed.profileUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
-              ALL POSTS ON NOTE ↗
+              {notesPageHeader.sideLinkText}
             </a>
           ) : (
-            <span>NOTE JOURNAL ↗</span>
+            <span>{notesPageHeader.sideFallbackLabel}</span>
           )}
         </div>
       </header>
 
       {noteUnavailable ? (
-        <p className="notes-message" role="status">{showSamples ? "noteの記事を読み込めませんでした。以下は表示サンプルです。" : "noteの記事を読み込めませんでした。時間をおいて再度アクセスしてください。"}</p>
+        <p className="notes-message" role="status">{showSamples ? notesPageMessages.unavailableWithSamples : notesPageMessages.unavailable}</p>
       ) : null}
       {entries.length > 0 ? (
         <>
@@ -80,10 +86,10 @@ export default async function NotesPage({ searchParams }: { searchParams: Promis
         <div className="notes-placeholder">
           <span className="notes-symbol" aria-hidden="true">&gt;_</span>
           <div>
-            <h3>{noteFeed ? "RSSに記事はまだありません。" : "つくったこと、試したこと。"}</h3>
-            <p>{noteFeed ? "noteから記事が配信されると、ここに最新記事が表示されます。" : "サーバー構築や開発の記録を、noteからお届けします。"}</p>
+            <h3>{noteFeed ? notesPageMessages.emptyTitle : notesPageMessages.unconfiguredTitle}</h3>
+            <p>{noteFeed ? notesPageMessages.emptyDescription : notesPageMessages.unconfiguredDescription}</p>
           </div>
-          <span className="section-tag">{noteFeed ? "WAITING FOR POSTS" : "READY TO CONNECT"}</span>
+          <span className="section-tag">{noteFeed ? notesPageMessages.emptyTag : notesPageMessages.unconfiguredTag}</span>
         </div>
       ) : null}
     </section>

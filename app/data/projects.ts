@@ -1,3 +1,35 @@
+export interface ProjectPageHeader {
+  kicker: string;
+  title: string;
+  description: string;
+  sideTagline: string;
+  sideMotto: readonly string[];
+  sideLabel: string;
+}
+
+export interface ProjectPageMessages {
+  unavailableWithSamples: string;
+  unavailable: string;
+  empty: string;
+  emptyWithSamples: string;
+}
+
+export const projectsPageHeader: ProjectPageHeader = {
+  kicker: "WORK / ARCHIVE",
+  title: "PROJECTS",
+  description: "制作したものなどをまとめています。",
+  sideTagline: "SELECTED WORK / FIELD NOTES",
+  sideMotto: ["BUILD", "TEST", "TWEAK", "REPEAT."],
+  sideLabel: "PROJECT JOURNAL ↗",
+};
+
+export const projectsPageMessages: ProjectPageMessages = {
+  unavailableWithSamples: "プロジェクトを読み込めませんでした。以下は表示サンプルです。",
+  unavailable: "プロジェクトを読み込めませんでした。時間をおいて再度アクセスしてください。",
+  empty: "プロジェクトは準備中です。",
+  emptyWithSamples: "プロジェクトは準備中です。以下は表示サンプルです。",
+};
+
 export const projects = [
   {
     title: "Project Alpha",

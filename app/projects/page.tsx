@@ -3,7 +3,11 @@ import Link from "next/link";
 import { connection } from "next/server";
 import ProjectCard from "@/components/ProjectCard";
 import ListPagination from "@/components/ListPagination";
-import { projects as projectSamples } from "@/app/data/projects";
+import {
+  projects as projectSamples,
+  projectsPageHeader,
+  projectsPageMessages,
+} from "@/app/data/projects";
 import { buildProjectEntries } from "@/lib/project-list";
 import { getProjectPage } from "@/lib/projects";
 import { paginate, sampleContentEnabled } from "@/lib/sample-content";
@@ -40,21 +44,23 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
 
       <header className="interior-hero projects-index-header">
         <div className="interior-hero-main">
-          <span className="interior-kicker">WORK / ARCHIVE</span>
-          <h1 id="projects-index-title">PROJECTS<span className="interior-title-period">.</span></h1>
-          <p>制作したものや、試してきたことをまとめています。</p>
+          <span className="interior-kicker">{projectsPageHeader.kicker}</span>
+          <h1 id="projects-index-title">{projectsPageHeader.title}<span className="interior-title-period">.</span></h1>
+          <p>{projectsPageHeader.description}</p>
           <span className="interior-hero-underscore" aria-hidden="true">_</span>
         </div>
         <div className="interior-hero-side">
-          <span>SELECTED WORK / FIELD NOTES</span>
-          <p>BUILD<br />TEST<br />TWEAK<br />REPEAT.</p>
-          <span>PROJECT JOURNAL ↗</span>
+          <span>{projectsPageHeader.sideTagline}</span>
+          <p>{projectsPageHeader.sideMotto.map((word, index) => (
+            <span key={word}>{word}{index < projectsPageHeader.sideMotto.length - 1 && <br />}</span>
+          ))}</p>
+          <span>{projectsPageHeader.sideLabel}</span>
         </div>
       </header>
       {projectsUnavailable ? (
-        <p className="projects-message" role="status">{showSamples ? "プロジェクトを読み込めませんでした。以下は表示サンプルです。" : "プロジェクトを読み込めませんでした。時間をおいて再度アクセスしてください。"}</p>
+        <p className="projects-message" role="status">{showSamples ? projectsPageMessages.unavailableWithSamples : projectsPageMessages.unavailable}</p>
       ) : items.length === 0 ? (
-        <p className="projects-message">プロジェクトは準備中です。</p>
+        <p className="projects-message">{projectsPageMessages.empty}</p>
       ) : null}
       {items.length > 0 && (
         <>

@@ -1,6 +1,9 @@
 import Link from "next/link";
 import NoteCard from "./NoteCard";
-import { noteSamples } from "@/app/data/note-samples";
+import {
+  noteSamples,
+  notesPageMessages,
+} from "@/app/data/notes";
 import { getNoteFeed } from "@/lib/note";
 import type { NoteFeed } from "@/lib/note-types";
 import { sampleContentEnabled } from "@/lib/sample-content";
@@ -50,9 +53,9 @@ export default async function NotesSection() {
   return (
     <>
       {noteUnavailable ? (
-        <p className="notes-message" role="status">{showSamples ? "noteの記事を読み込めませんでした。以下は表示サンプルです。" : "noteの記事を読み込めませんでした。時間をおいて再度アクセスしてください。"}</p>
+        <p className="notes-message" role="status">{showSamples ? notesPageMessages.unavailableWithSamples : notesPageMessages.unavailable}</p>
       ) : articles.length === 0 && showSamples ? (
-        <p className="notes-message">noteの記事は準備中です。以下は表示サンプルです。</p>
+        <p className="notes-message">{notesPageMessages.emptyWithSamples}</p>
       ) : null}
       {hasCards ? (
         <div className="notes-grid">
@@ -67,10 +70,10 @@ export default async function NotesSection() {
         <div className="notes-placeholder">
           <span className="notes-symbol" aria-hidden="true">&gt;_</span>
           <div>
-            <h3>{noteFeed ? "RSSに記事はまだありません。" : "つくったこと、試したこと。"}</h3>
-            <p>{noteFeed ? "noteから記事が配信されると、ここに最新記事が表示されます。" : "サーバー構築や開発の記録を、noteからお届けします。"}</p>
+            <h3>{noteFeed ? notesPageMessages.emptyTitle : notesPageMessages.unconfiguredTitle}</h3>
+            <p>{noteFeed ? notesPageMessages.emptyDescription : notesPageMessages.unconfiguredDescription}</p>
           </div>
-          <span className="section-tag">{noteFeed ? "WAITING FOR POSTS" : "READY TO CONNECT"}</span>
+          <span className="section-tag">{noteFeed ? notesPageMessages.emptyTag : notesPageMessages.unconfiguredTag}</span>
         </div>
       ) : null}
       {noteFeed && articles.length > 0 ? (

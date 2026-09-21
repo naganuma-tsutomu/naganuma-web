@@ -1,47 +1,18 @@
 import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
 import { sampleExperienceEnabled } from "@/lib/sample-content";
+import {
+  terminalProfile,
+  bio,
+  skills,
+  experiences,
+} from "@/app/data/about";
 
 export const metadata = createPageMetadata({
   title: "About",
   description: "プロフィール、スキル、取り組んでいる技術について。",
   path: "/about",
 });
-
-const skills = [
-  "React",
-  "Next.js",
-  "TypeScript",
-  "Tailwind CSS",
-  "Node.js",
-  "Kubernetes",
-  "Docker",
-  "AWS",
-];
-
-const experiences = [
-  {
-    year: "2024 - Present",
-    title: "Senior Frontend Engineer",
-    company: "Tech Innovation Inc.",
-    description:
-      "Leading the frontend team in building scalable web applications using Next.js and React.",
-  },
-  {
-    year: "2021 - 2024",
-    title: "Web Developer",
-    company: "Creative Solutions Ltd.",
-    description:
-      "Developed responsive websites and e-commerce platforms for various clients.",
-  },
-  {
-    year: "2019 - 2021",
-    title: "Junior Developer",
-    company: "StartUp Hub",
-    description:
-      "Collaborated with designers to implement user interfaces and improve UX.",
-  },
-];
 
 export default function About() {
   const showSampleExperience = sampleExperienceEnabled();
@@ -69,27 +40,27 @@ export default function About() {
       <section className="about-intro" aria-labelledby="about-intro-title">
         <div className="about-identity dark-panel">
           <div className="panel-titlebar">
-            <span>profile.txt</span>
+            <span>{terminalProfile.filename}</span>
             <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
           </div>
           <div className="about-identity-body">
             <div className="about-terminal-content">
-              <p className="about-terminal-command"><span>naganuma@home:~</span>$ whoami</p>
-              <p className="about-terminal-response">naganuma</p>
-              <p className="about-terminal-command"><span>naganuma@home:~</span>$ cat profile.txt</p>
+              <p className="about-terminal-command"><span>{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ whoami</p>
+              <p className="about-terminal-response">{terminalProfile.username}</p>
+              <p className="about-terminal-command"><span>{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ cat {terminalProfile.filename}</p>
               <div className="about-terminal-profile">
                 <div className="about-monogram" aria-hidden="true">N<span>_</span></div>
                 <dl>
-                  <div><dt>NAME</dt><dd>NAGANUMA</dd></div>
-                  <div><dt>ROLE</dt><dd>SOFTWARE ENGINEER</dd></div>
-                  <div><dt>FOCUS</dt><dd>WEB / SERVER / HOMELAB</dd></div>
+                  <div><dt>NAME</dt><dd>{terminalProfile.name}</dd></div>
+                  <div><dt>ROLE</dt><dd>{terminalProfile.role}</dd></div>
+                  <div><dt>FOCUS</dt><dd>{terminalProfile.focus}</dd></div>
                 </dl>
               </div>
-              <p className="about-terminal-comment"># BUILD / TWEAK / LEARN / REPEAT</p>
-              <p className="about-terminal-command about-terminal-ready"><span>naganuma@home:~</span>$ <i aria-hidden="true" /></p>
+              <p className="about-terminal-comment">{terminalProfile.comment}</p>
+              <p className="about-terminal-command about-terminal-ready"><span>{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ <i aria-hidden="true" /></p>
             </div>
             <div className="about-identity-footer">
-              <span>1:profile.txt*</span>
+              <span>1:{terminalProfile.filename}*</span>
               <span>READ ONLY / UTF-8</span>
             </div>
           </div>
@@ -101,9 +72,9 @@ export default function About() {
           </div>
           <h2 id="about-intro-title">Who I Am<span>.</span></h2>
           <div className="about-prose">
-            <p>こんにちは。私はWeb開発に情熱を注ぐソフトウェアエンジニアです。シンプルで使いやすく、かつ印象に残るデジタル体験を創造することを目指しています。</p>
-            <p>技術の進化は早いですが、変わらない「良さ」を大切にしながら、最新のトレンド（Next.js, Reactなど）を取り入れた開発を行っています。このポートフォリオサイトも、レトロモダンなデザインと最新の技術スタックを融合させて作りました。</p>
-            <p>コードを書くこと以外にも、デザイン、写真、そして新しいコーヒーショップを探すことが好きです。</p>
+            {bio.map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
           </div>
           <Link href="/contact" className="interior-action">FIND ME ONLINE <span aria-hidden="true">↗</span></Link>
         </div>
