@@ -11,10 +11,10 @@
         "http://localhost:3000/notes",
         "http://localhost:3000/contact"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
-        "chromeFlags": "--no-sandbox --headless --disable-gpu"
+        "chromeFlags": "--no-sandbox --headless --disable-gpu --user-data-dir=.lighthouseci/chrome-profile"
       }
     },
     "assert": {

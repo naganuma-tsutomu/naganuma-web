@@ -15,6 +15,8 @@
 /test-results
 /playwright-report
 /.lighthouseci
+# chrome-launcher may create Windows-style profile directories in the repository on WSL.
+/C:*lighthouse.*/
 
 # local review documents
 /review-markdown/
