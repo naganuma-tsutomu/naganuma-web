@@ -111,7 +111,7 @@ export default function HomelabStatus({ configured }: { configured: boolean }) {
     <div className="status-panel dark-panel" data-hero-window>
       <div className="mobile-status-summary">
         <strong>HOMELAB STATUS</strong>
-        <span className="status-demo" data-state={status?.state} aria-live="polite">{status ? labels[status.state] : "CONNECTING"}</span>
+        <span className="status-demo" data-state={status?.state}>{status ? labels[status.state] : "CONNECTING"}</span>
       </div>
       <div className="panel-titlebar status-titlebar" data-drag-handle role="group" tabIndex={0} aria-label="Homelab status window. Drag or use arrow keys to move.">
         <h2>HOMELAB STATUS</h2>

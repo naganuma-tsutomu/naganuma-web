@@ -15,17 +15,17 @@ export function NotesSkeleton() {
         <article key={index} className="note-card">
           <div className="note-card-link pointer-events-none">
             <div className="note-card-meta">
-              <span className="inline-block w-6 h-3 bg-gray-300 rounded animate-pulse" />
-              <span className="inline-block w-20 h-3 bg-gray-200 rounded animate-pulse" />
+              <span className="inline-block w-6 h-3 bg-[#bcc8c9] animate-pulse" />
+              <span className="inline-block w-20 h-3 bg-[#dce5dd] animate-pulse" />
             </div>
-            <div className="note-card-thumbnail bg-gray-200 animate-pulse" />
-            <div className="my-6 h-6 bg-gray-300 rounded w-4/5 animate-pulse" />
+            <div className="note-card-thumbnail bg-[#dce5dd] animate-pulse" />
+            <div className="my-6 h-6 bg-[#bcc8c9] w-4/5 animate-pulse" />
             <div className="space-y-2 mb-6">
-              <div className="h-3 bg-gray-200 rounded w-full animate-pulse" />
-              <div className="h-3 bg-gray-200 rounded w-2/3 animate-pulse" />
+              <div className="h-3 bg-[#dce5dd] w-full animate-pulse" />
+              <div className="h-3 bg-[#dce5dd] w-2/3 animate-pulse" />
             </div>
             <div className="note-card-action">
-              <span className="inline-block w-24 h-3 bg-gray-200 rounded animate-pulse" />
+              <span className="inline-block w-24 h-3 bg-[#dce5dd] animate-pulse" />
             </div>
           </div>
         </article>
@@ -81,6 +81,7 @@ export default async function NotesSection() {
           <div className="flex flex-wrap items-center justify-between gap-4 mt-5">
             <a className="notes-profile-link !m-0" href={noteFeed.profileUrl} target="_blank" rel="noopener noreferrer">
               ALL POSTS ON NOTE ↗
+              <span className="sr-only">（新しいタブで開きます）</span>
             </a>
             <Link className="projects-all-link !m-0" href="/notes">
               LATEST NOTES →

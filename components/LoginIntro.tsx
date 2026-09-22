@@ -67,8 +67,17 @@ export default function LoginIntro() {
     };
 
     skipButton.current?.focus({ preventScroll: true });
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        dismiss();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
     autoTimer.current = window.setTimeout(dismiss, window.matchMedia("(max-width: 767px)").matches ? MOBILE_INTRO_DURATION : INTRO_DURATION);
     return () => {
+      window.removeEventListener("keydown", handleKeyDown);
       if (autoTimer.current !== null) window.clearTimeout(autoTimer.current);
       if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);
       restorePage.current?.();

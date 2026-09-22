@@ -218,9 +218,11 @@ export default function HamburgerMenu() {
             <span className="text-[10px] text-[#526963]">EXTERNAL:</span>
             <a className={externalLinkClass} href={githubProfileUrl} target="_blank" rel="noopener noreferrer">
               GITHUB ↗
+              <span className="sr-only">（新しいタブで開きます）</span>
             </a>
             <a className={externalLinkClass} href={xProfileUrl} target="_blank" rel="noopener noreferrer">
               X ↗
+              <span className="sr-only">（新しいタブで開きます）</span>
             </a>
           </div>
         </div>
