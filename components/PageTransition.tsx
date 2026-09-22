@@ -8,8 +8,8 @@ import styles from "./PageTransition.module.css";
 
 type Phase = "idle" | "closing" | "opening";
 
-const CLOSE_DURATION = 460;
-const OPEN_DURATION = 560;
+const CLOSE_DURATION = 280;
+const OPEN_DURATION = 360;
 const NAVIGATION_TIMEOUT = 4000;
 const desktopChromeClass = "absolute right-[max(38px,calc((100vw-1400px)/2))] left-[max(38px,calc((100vw-1400px)/2))] flex justify-between gap-[18px] border-[#a8aaa0] font-[family-name:var(--mono)] text-[10px] tracking-[0.08em] whitespace-nowrap text-[#52605e] max-[768px]:right-[22px] max-[768px]:left-[22px]";
 

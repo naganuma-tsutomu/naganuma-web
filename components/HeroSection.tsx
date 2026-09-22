@@ -177,9 +177,9 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
         </div>
       </div>
       <InteractiveTerminal />
-      <div className="manifesto-panel" data-hero-window data-drag-handle role="group" tabIndex={0} aria-label="BUILD TWEAK LEARN REPEAT window">
+      <div className="manifesto-panel" data-hero-window data-drag-handle role="group" tabIndex={0} aria-label="BUILD TWEAK LEARN REPEAT window. Drag or use arrow keys to move.">
         <span className="mobile-hero-eyebrow">NAGANUMA / PERSONAL WORKSPACE</span>
-        <h1 id="hero-title"><span className="manifesto-desktop-title">BUILD<br />TWEAK<br />LEARN<br />REPEAT.</span><span className="manifesto-mobile-title">BUILD. TWEAK.<br />LEARN. REPEAT.</span></h1>
+        <h1 id="hero-title"><span className="manifesto-desktop-title">BUILD<br />TWEAK<br />LEARN<br />REPEAT.</span><span className="manifesto-mobile-title" aria-hidden="true">BUILD. TWEAK.<br />LEARN. REPEAT.</span></h1>
         <div className="manifesto-caption">
           <p>WEB / SERVER / HOMELAB<br />CODE / DESIGN / LIFE</p>
           <span className="short-rule" aria-hidden="true" />
