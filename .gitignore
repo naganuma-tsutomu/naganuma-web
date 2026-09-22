@@ -21,6 +21,11 @@
 # local review documents
 /review-markdown/
 
+# local AI agent instructions and settings
+/AGENTS.md
+/.agents/
+/.codex/
+
 # next.js
 /.next/
 /out/
