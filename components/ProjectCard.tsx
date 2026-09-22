@@ -97,7 +97,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
           )}
           <h3
             id={`${project.slug}-title`}
-            className={`text-2xl font-bold font-oswald mb-2 group-hover:text-[var(--red)] group-focus-within:text-[var(--red)] transition-colors md:text-[var(--ink)] ${
+            className={`text-2xl font-bold font-[family-name:var(--font-oswald),sans-serif] mb-2 group-hover:text-[var(--red)] group-focus-within:text-[var(--red)] transition-colors md:text-[var(--ink)] ${
               isFullyInView ? "text-[var(--red)]" : "text-[var(--ink)]"
             }`}
           >

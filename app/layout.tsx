@@ -17,9 +17,10 @@ const oswald = Oswald({
 });
 
 const shipporiMincho = Shippori_Mincho({
-  subsets: ["latin"],
   weight: ["400"],
   variable: "--font-shippori-mincho",
+  preload: false,
+  display: "swap",
 });
 
 const silkscreen = Silkscreen({

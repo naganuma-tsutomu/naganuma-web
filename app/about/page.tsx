@@ -101,8 +101,8 @@ export default function About() {
                 {String(index + 1).padStart(2, "0")}
               </span>
               <span>{skill}</span>
-              <span className="ml-auto font-[family-name:var(--mono)] text-base leading-none max-[480px]:text-xs" aria-hidden="true">
-                ↗
+              <span className="ml-auto font-[family-name:var(--mono)] text-xs leading-none max-[480px]:text-[10px] text-[#86cec2]" aria-hidden="true">
+                ◆
               </span>
             </li>
           ))}
@@ -137,8 +137,8 @@ export default function About() {
                     {experience.description}
                   </p>
                 </div>
-                <span className="font-[family-name:var(--mono)] text-[19px] leading-none" aria-hidden="true">
-                  ↗
+                <span className="font-[family-name:var(--mono)] text-xs leading-none text-[#86cec2]" aria-hidden="true">
+                  ◆
                 </span>
               </li>
             ))}

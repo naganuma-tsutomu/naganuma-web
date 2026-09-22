@@ -128,7 +128,7 @@ export default function InteractiveTerminal({ draggable = true, inputId = "termi
               <NeofetchOutput />
             </>
           )}
-          <div className="grid gap-2" aria-live="polite">
+          <div className="grid gap-2" aria-live="polite" aria-atomic="false">
             {history.map((entry, index) => (
               <div key={index}>
                 <p className="m-0 max-[768px]:text-xs"><span className="text-[var(--aqua)]">naganuma@home:~</span>$ <span className="whitespace-pre-wrap [overflow-wrap:anywhere]">{entry.command}</span></p>

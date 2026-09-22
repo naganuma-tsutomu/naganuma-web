@@ -11,7 +11,7 @@
   --aqua: #43dfc7;
   --orange: #ffbd76;
   --red: #d93626;
-  --mono: "SFMono-Regular", Consolas, "Liberation Mono", var(--font-shippori-mincho), monospace;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 @layer base {
   ::selection { background: var(--orange); color: var(--ink); }
@@ -20,7 +20,7 @@
   input, textarea { cursor: text; }
   button:disabled, input:disabled, textarea:disabled { cursor: not-allowed; }
   a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--red); outline-offset: 6px; }
-  h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), var(--font-shippori-mincho), serif; }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-oswald), sans-serif; }
 }
 @utility site-shell {
   @apply mx-auto w-[min(100%-96px,1400px)] max-[1200px]:w-[calc(100%-64px)] max-[768px]:w-[calc(100%-32px)];
