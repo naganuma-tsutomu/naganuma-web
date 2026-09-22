@@ -4,6 +4,7 @@ import HeroSection from "../components/HeroSection";
 import ProjectsSection, { ProjectsSkeleton } from "../components/ProjectsSection";
 import NotesSection, { NotesSkeleton } from "../components/NotesSection";
 import InteractiveTerminal from "../components/InteractiveTerminal";
+import { HomelabProvider } from "../components/HomelabProvider";
 import { connection } from "next/server";
 
 export const metadata = createPageMetadata({ title: SITE_NAME, description: SITE_DESCRIPTION, path: "/" });
@@ -13,7 +14,7 @@ export default async function Home() {
   await connection();
 
   return (
-    <>
+    <HomelabProvider configured={Boolean(process.env.HOMELAB_PROMETHEUS_URL)}>
       {/* Hero Section */}
       <div className="desktop-area">
         <div className="desktop-info site-shell flex h-[26px] items-center gap-[14px] pt-3 font-[family-name:var(--mono)] text-[10px] leading-[1.4] tracking-[0.08em] whitespace-nowrap text-[#526963] max-[768px]:hidden" aria-hidden="true">
@@ -24,7 +25,7 @@ export default async function Home() {
           </span>
           <span className="h-px flex-1 bg-[#bac4b9]" />
         </div>
-        <HeroSection homelabConfigured={Boolean(process.env.HOMELAB_PROMETHEUS_URL)} />
+        <HeroSection />
       </div>
 
       <section id="projects" className="projects-section site-shell" aria-labelledby="projects-title">
@@ -67,6 +68,6 @@ export default async function Home() {
           <NotesSection />
         </Suspense>
       </section>
-    </>
+    </HomelabProvider>
   );
 }

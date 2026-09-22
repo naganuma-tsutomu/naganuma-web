@@ -25,7 +25,7 @@ function layoutSize(width: number) {
   return width <= 767 ? 0 : width <= 1023 ? 1 : 2;
 }
 
-export default function HeroSection({ homelabConfigured }: { homelabConfigured: boolean }) {
+export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const positions = useRef(new Map<HTMLElement, Position>());
   const activeDrag = useRef<Drag | null>(null);
@@ -191,7 +191,7 @@ export default function HeroSection({ homelabConfigured }: { homelabConfigured: 
         </div>
         <span className="manifesto-underscore" aria-hidden="true">_</span>
       </div>
-      <HomelabStatus configured={homelabConfigured} />
+      <HomelabStatus />
     </section>
   );
 }

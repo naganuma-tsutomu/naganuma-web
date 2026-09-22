@@ -32,6 +32,14 @@ function nameOf(url) {
   if (query.includes("pve_network_receive_bytes")) return "receive";
   if (query.includes("pve_network_transmit_bytes")) return "transmit";
   if (query.includes("pve_cpu_usage_ratio")) return "CPU";
+  if (query.includes('id=~"qemu/.+"')) return "virtualMachines";
+  if (query.includes('id=~"lxc/.+"')) return "containers";
+  if (query.startsWith("count(pve_up")) return "nodes";
+  if (query.startsWith("sum(pve_up")) return "onlineNodes";
+  if (query.startsWith("sum(pve_cpu_usage_limit")) return "cpuCores";
+  if (query.includes("pve_uptime_seconds")) return "uptime";
+  if (query.startsWith("sum(pve_memory_usage_bytes")) return "memoryUsed";
+  if (query.startsWith("sum(pve_memory_size_bytes")) return "memoryTotal";
   if (query.includes("pve_memory_usage_bytes")) return "MEM";
   if (query.includes("pve_disk_usage_bytes")) return "DISK";
   throw new Error(`Unexpected query: ${query}`);
@@ -42,7 +50,11 @@ function payload(url) {
     const end = Number(url.searchParams.get("end"));
     return range([[end - 30, "1"], [end, name === "receive" ? "2.5" : "0"]]);
   }
-  return instant({ CPU: 12.4, MEM: 38.6, DISK: 105 }[name]);
+  return instant({
+    CPU: 12.4, MEM: 38.6, DISK: 105, nodes: 3, onlineNodes: 3,
+    virtualMachines: 8, containers: 5, cpuCores: 24, uptime: 2_098_800,
+    memoryUsed: 12.1 * 1024 ** 3, memoryTotal: 64 * 1024 ** 3,
+  }[name]);
 }
 function respond(handler = url => Response.json(payload(url))) {
   globalThis.fetch.mock.mockImplementation(handler);
@@ -54,6 +66,13 @@ function assertUnavailable(status) {
     ["CPU", null, null], ["MEM", null, null], ["DISK", null, null],
   ]);
   assert.deepEqual(status.network, { receiveMbps: null, transmitMbps: null, history: [] });
+  assert.equal(status.system.state, "unavailable");
+  assert.deepEqual(
+    [status.system.nodeCount, status.system.onlineNodeCount, status.system.virtualMachineCount,
+      status.system.containerCount, status.system.cpuCoreCount, status.system.uptimeSeconds,
+      status.system.memoryUsedBytes, status.system.memoryTotalBytes],
+    [null, null, null, null, null, null, null, null],
+  );
 }
 
 test("missing configuration returns demo values without fetching", async () => {
@@ -62,6 +81,12 @@ test("missing configuration returns demo values without fetching", async () => {
   assert.equal(status.state, "demo");
   assert.deepEqual(status.metrics.map(({ value }) => value), [12, 38, 42]);
   assert.ok(status.network.history.length > 0);
+  assert.equal(status.system.state, "demo");
+  assert.equal(status.system.nodeCount, 3);
+  assert.equal(status.system.onlineNodeCount, 3);
+  assert.equal(status.system.virtualMachineCount, 8);
+  assert.equal(status.system.containerCount, 5);
+  assert.equal(status.system.cpuCoreCount, 24);
   assert.equal(globalThis.fetch.mock.callCount(), 0);
 });
 
@@ -71,7 +96,7 @@ test("invalid URL configuration fails closed without fetching", async () => {
   assert.equal(globalThis.fetch.mock.callCount(), 0);
 });
 
-test("all five successful queries produce live status with bounded metrics and current network values", async () => {
+test("all successful queries produce live status, system facts and current network values", async () => {
   process.env.HOMELAB_PROMETHEUS_INSTANCE = " home:9100 ";
   process.env.HOMELAB_PROMETHEUS_BEARER_TOKEN = "test-secret";
   const fetch = respond();
@@ -84,7 +109,14 @@ test("all five successful queries produce live status with bounded metrics and c
   ]);
   assert.equal(status.network.receiveMbps, 2.5);
   assert.equal(status.network.transmitMbps, 0);
-  assert.equal(fetch.mock.callCount(), 5);
+  assert.deepEqual(status.system, {
+    state: "live", os: "Proxmox VE", host: "Home Cluster",
+    cpu: "AMD Ryzen 5 5600G", gpu: "NVIDIA GeForce RTX 3060",
+    nodeCount: 3, onlineNodeCount: 3, virtualMachineCount: 8,
+    containerCount: 5, cpuCoreCount: 24, uptimeSeconds: 2_098_800,
+    memoryUsedBytes: 12.1 * 1024 ** 3, memoryTotalBytes: 64 * 1024 ** 3,
+  });
+  assert.equal(fetch.mock.callCount(), 13);
   const end = 1_800_000_000;
   for (const { arguments: [url, options] } of fetch.mock.calls) {
     assert.equal(url.origin, "https://prometheus.example.test");
@@ -116,10 +148,23 @@ test("one failed metric and one failed network query preserve other results as p
   assert.ok(status.network.history.every(point => point.transmitMbps === null));
 });
 
+test("one failed system query only marks neofetch data as partial", async () => {
+  respond(url => nameOf(url) === "onlineNodes"
+    ? new Response(null, { status: 503 }) : Response.json(payload(url)));
+  const status = await getHomelabStatus();
+  assert.equal(status.state, "live");
+  assert.equal(status.system.state, "partial");
+  assert.equal(status.system.nodeCount, 3);
+  assert.equal(status.system.onlineNodeCount, null);
+  assert.equal(status.system.virtualMachineCount, 8);
+  assert.equal(status.system.containerCount, 5);
+  assert.equal(status.system.cpuCoreCount, 24);
+});
+
 test("all HTTP failures produce unavailable status", async () => {
   const fetch = respond(() => new Response(null, { status: 503 }));
   assertUnavailable(await getHomelabStatus());
-  assert.equal(fetch.mock.callCount(), 5);
+  assert.equal(fetch.mock.callCount(), 13);
 });
 
 test("transport errors, invalid JSON and Prometheus error payloads do not reject the status", async () => {
@@ -142,7 +187,7 @@ test("timeouts use a five-second abort signal and resolve as unavailable", async
     options.signal.throwIfAborted();
   });
   assertUnavailable(await getHomelabStatus());
-  assert.equal(timeout.mock.callCount(), 5);
+  assert.equal(timeout.mock.callCount(), 13);
 });
 
 test("network histories merge by timestamp and never substitute stale values for the current step", async () => {
@@ -185,20 +230,20 @@ test("simultaneous callers share the in-flight request and cached result until 2
   const first = getHomelabStatus();
   const concurrent = Array.from({ length: 10 }, () => getHomelabStatus());
   assert.ok(concurrent.every(result => result === first));
-  assert.equal(fetch.mock.callCount(), 5);
+  assert.equal(fetch.mock.callCount(), 13);
   release();
   const result = await first;
   await Promise.all(concurrent);
   now += 24_999;
   assert.equal(getHomelabStatus(), first);
   assert.equal(await getHomelabStatus(), result);
-  assert.equal(fetch.mock.callCount(), 5);
+  assert.equal(fetch.mock.callCount(), 13);
   now += 1;
   const refreshed = getHomelabStatus();
   assert.notEqual(refreshed, first);
   assert.equal(getHomelabStatus(), refreshed);
   assert.equal((await refreshed).state, "live");
-  assert.equal(fetch.mock.callCount(), 10);
+  assert.equal(fetch.mock.callCount(), 26);
 });
 
 test("an unavailable result is cached briefly and recovers after expiry", async () => {
@@ -207,8 +252,8 @@ test("an unavailable result is cached briefly and recovers after expiry", async 
   respond();
   now += 24_999;
   assertUnavailable(await getHomelabStatus());
-  assert.equal(fetch.mock.callCount(), 5);
+  assert.equal(fetch.mock.callCount(), 13);
   now += 1;
   assert.equal((await getHomelabStatus()).state, "live");
-  assert.equal(fetch.mock.callCount(), 10);
+  assert.equal(fetch.mock.callCount(), 26);
 });

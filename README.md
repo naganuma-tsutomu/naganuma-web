@@ -91,9 +91,9 @@ NOTE_USER_ID=your_creator_id
 
 ## HOMELAB STATUSをPrometheusに接続する
 
-Kubernetesにデプロイするコンテナには、環境変数 `HOMELAB_PROMETHEUS_URL=http://192.168.20.130:9090` を設定して渡します。サイトのサーバー側だけがPrometheusへ問い合わせ、ProxmoxノードのCPU・メモリ・ディスク使用率と、VM/LXCの受信・送信速度（Mb/s）および直近10分間の推移を表示します。画面を開いている間は30秒ごとに更新し、非表示のタブでは更新を止めます。サーバー側では結果を25秒間キャッシュします。CPU使用率はノードのCPU数で重み付けし、メモリとディスクは全ノードの使用量を合計して計算します。複数のProxmox exporterを収集している場合は、`HOMELAB_PROMETHEUS_INSTANCE` で対象の `instance` ラベルを指定できます。
+Kubernetesにデプロイするコンテナには、環境変数 `HOMELAB_PROMETHEUS_URL=http://192.168.20.130:9090` を設定して渡します。サイトのサーバー側だけがPrometheusへ問い合わせ、ProxmoxノードのCPU・メモリ・ディスク使用率と、VM/LXCの受信・送信速度（Mb/s）および直近10分間の推移を表示します。トップのneofetchには、オンライン・総ノード数、VM/LXC数、合計CPUコア数、全ノードのうち最短の稼働時間、合計使用・総メモリも表示します。画面を開いている間は30秒ごとに更新し、非表示のタブでは更新を止めます。サーバー側では結果を25秒間キャッシュします。CPU使用率はノードのCPU数で重み付けし、メモリとディスクは全ノードの使用量を合計して計算します。複数のProxmox exporterを収集している場合は、`HOMELAB_PROMETHEUS_INSTANCE` で対象の `instance` ラベルを指定できます。
 
-接続できない場合は `OFFLINE` と `--` を表示します。URLを設定しないローカル開発環境では、デザイン用のサンプル値を表示します。
+接続できない場合は `OFFLINE` と `--` を表示します。一部のメトリクスだけ取得できた場合は `PARTIAL DATA` を表示します。URLを設定しないローカル開発環境では、デザイン用のサンプル値を表示します。neofetchのOS・ホスト名・CPU・GPUは公開用の構成情報として `app/data/homelab.ts` で管理し、Kernelやパッケージ数は公開しません。
 
 Podからの接続確認は、`kubectl` が使える端末で実行できます。
 

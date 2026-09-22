@@ -1,10 +1,11 @@
 import "server-only";
 
-import { homelabPreview } from "../app/data/homelab.ts";
-import type { HomelabMetric, HomelabNetwork, HomelabStatus } from "@/lib/homelab-types";
-import { homelabQueries, networkQueries, normalizeMetric, parseInstantValue, parseRangeValues, rangeValueAt } from "./prometheus-metrics.ts";
+import { homelabIdentity, homelabPreview } from "../app/data/homelab.ts";
+import type { HomelabMetric, HomelabNetwork, HomelabStatus, HomelabSystem } from "@/lib/homelab-types";
+import { homelabQueries, networkQueries, normalizeMetric, parseInstantValue, parseRangeValues, rangeValueAt, systemQueries } from "./prometheus-metrics.ts";
 
 const LABELS = ["CPU", "MEM", "DISK"] as const;
+const SYSTEM_LABELS = ["nodes", "onlineNodes", "virtualMachines", "containers", "cpuCores", "uptime", "memoryUsed", "memoryTotal"] as const;
 const CACHE_MS = 25_000;
 const REQUEST_TIMEOUT_MS = 5_000;
 const EMPTY_NETWORK: HomelabNetwork = { receiveMbps: null, transmitMbps: null, history: [] };
@@ -21,6 +22,22 @@ function demoStatus(): HomelabStatus {
       fillPercent: value,
     })),
     network: homelabPreview.network,
+    system: { state: "demo", ...homelabIdentity, ...homelabPreview.system },
+  };
+}
+
+function unavailableSystem(): HomelabSystem {
+  return {
+    state: "unavailable",
+    ...homelabIdentity,
+    nodeCount: null,
+    onlineNodeCount: null,
+    virtualMachineCount: null,
+    containerCount: null,
+    cpuCoreCount: null,
+    uptimeSeconds: null,
+    memoryUsedBytes: null,
+    memoryTotalBytes: null,
   };
 }
 
@@ -53,18 +70,20 @@ async function loadStatus(): Promise<HomelabStatus> {
     if (!["http:", "https:"].includes(baseUrl.protocol)) throw new Error("Invalid protocol");
   } catch {
     console.error("HOMELAB_PROMETHEUS_URL is not a valid HTTP URL.");
-    return { state: "unavailable", metrics: LABELS.map((label) => normalizeMetric(label, null)), network: EMPTY_NETWORK };
+    return { state: "unavailable", metrics: LABELS.map((label) => normalizeMetric(label, null)), network: EMPTY_NETWORK, system: unavailableSystem() };
   }
 
   const instance = process.env.HOMELAB_PROMETHEUS_INSTANCE?.trim() || undefined;
-  const queries = homelabQueries(instance);
+  const queries = { ...homelabQueries(instance), ...systemQueries(instance) };
   const netQueries = networkQueries(instance);
   const bearerToken = process.env.HOMELAB_PROMETHEUS_BEARER_TOKEN;
-  const names = [...LABELS, "receive", "transmit"] as const;
+  const names = [...LABELS, "receive", "transmit", ...SYSTEM_LABELS] as const;
   const rangeEnd = Math.floor(Date.now() / 30_000) * 30;
   const results = await Promise.allSettled(names.map((name) => queryPrometheus(
     baseUrl,
-    name === "receive" || name === "transmit" ? netQueries[name] : queries[name],
+    name === "receive" || name === "transmit"
+      ? netQueries[name]
+      : queries[name],
     name === "receive" || name === "transmit" ? rangeEnd : null,
     bearerToken,
   )));
@@ -100,10 +119,53 @@ async function loadStatus(): Promise<HomelabStatus> {
   };
   const available = metrics.filter(({ value }) => value !== null).length + Number(network.receiveMbps !== null) + Number(network.transmitMbps !== null);
 
+  const readSystemValue = (name: typeof SYSTEM_LABELS[number]) => {
+    const index = names.indexOf(name);
+    const result = results[index];
+    if (result.status === "rejected") {
+      console.error(`HOMELAB ${name} query failed:`, result.reason instanceof Error ? result.reason.message : "Unknown error");
+    }
+    const value = result.status === "fulfilled" ? parseInstantValue(result.value) : null;
+    return value !== null && value >= 0 ? value : null;
+  };
+  const rawNodeCount = readSystemValue("nodes");
+  const rawOnlineNodeCount = readSystemValue("onlineNodes");
+  const rawVirtualMachineCount = readSystemValue("virtualMachines");
+  const rawContainerCount = readSystemValue("containers");
+  const rawCpuCoreCount = readSystemValue("cpuCores");
+  const rawUptime = readSystemValue("uptime");
+  const rawMemoryUsed = readSystemValue("memoryUsed");
+  const rawMemoryTotal = readSystemValue("memoryTotal");
+  const nodeCount = rawNodeCount === null ? null : Math.round(rawNodeCount);
+  const onlineNodeCount = rawOnlineNodeCount === null ? null : Math.round(rawOnlineNodeCount);
+  const virtualMachineCount = rawVirtualMachineCount === null ? null : Math.round(rawVirtualMachineCount);
+  const containerCount = rawContainerCount === null ? null : Math.round(rawContainerCount);
+  const cpuCoreCount = rawCpuCoreCount === null ? null : Math.round(rawCpuCoreCount);
+  const uptimeSeconds = rawUptime === null ? null : Math.floor(rawUptime);
+  const validMemory = rawMemoryUsed !== null && rawMemoryTotal !== null && rawMemoryTotal > 0;
+  const systemAvailable = Number(nodeCount !== null && onlineNodeCount !== null)
+    + Number(virtualMachineCount !== null && containerCount !== null)
+    + Number(cpuCoreCount !== null)
+    + Number(uptimeSeconds !== null)
+    + Number(validMemory);
+  const system: HomelabSystem = {
+    state: systemAvailable === 0 ? "unavailable" : systemAvailable === 5 ? "live" : "partial",
+    ...homelabIdentity,
+    nodeCount,
+    onlineNodeCount,
+    virtualMachineCount,
+    containerCount,
+    cpuCoreCount,
+    uptimeSeconds,
+    memoryUsedBytes: validMemory ? rawMemoryUsed : null,
+    memoryTotalBytes: validMemory ? rawMemoryTotal : null,
+  };
+
   return {
-    state: available === 0 ? "unavailable" : available === names.length ? "live" : "partial",
+    state: available === 0 ? "unavailable" : available === LABELS.length + 2 ? "live" : "partial",
     metrics,
     network,
+    system,
   };
 }
 

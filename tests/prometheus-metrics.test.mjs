@@ -1,16 +1,25 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { homelabQueries, networkQueries, normalizeMetric, parseInstantValue, parseRangeValues, rangeValueAt } from "../lib/prometheus-metrics.ts";
+import { homelabQueries, networkQueries, normalizeMetric, parseInstantValue, parseRangeValues, rangeValueAt, systemQueries } from "../lib/prometheus-metrics.ts";
 
 test("queries Proxmox node and guest metrics for the selected exporter", () => {
   const queries = homelabQueries("home:9100");
   const network = networkQueries("home:9100");
+  const system = systemQueries("home:9100");
   assert.match(queries.CPU, /pve_cpu_usage_ratio\{job="proxmox",id=~"node\/\.\+",instance="home:9100"\}/);
   assert.match(queries.CPU, /pve_cpu_usage_limit/);
   assert.match(queries.MEM, /pve_memory_usage_bytes/);
   assert.match(queries.DISK, /pve_disk_usage_bytes/);
   assert.match(network.receive, /pve_network_receive_bytes\{job="proxmox",id=~"\(qemu\|lxc\)\/\.\+",instance="home:9100"\}\[2m\]/);
   assert.match(network.transmit, /pve_network_transmit_bytes/);
+  assert.match(system.nodes, /count\(pve_up\{job="proxmox",id=~"node\/\.\+",instance="home:9100"\}\)/);
+  assert.match(system.onlineNodes, /sum\(pve_up\{job="proxmox",id=~"node\/\.\+",instance="home:9100"\}\)/);
+  assert.match(system.virtualMachines, /count\(pve_up\{job="proxmox",id=~"qemu\/\.\+",instance="home:9100"\}\)/);
+  assert.match(system.containers, /count\(pve_up\{job="proxmox",id=~"lxc\/\.\+",instance="home:9100"\}\)/);
+  assert.match(system.cpuCores, /sum\(pve_cpu_usage_limit\{job="proxmox",id=~"node\/\.\+",instance="home:9100"\}\)/);
+  assert.match(system.uptime, /min\(pve_uptime_seconds/);
+  assert.match(system.memoryUsed, /sum\(pve_memory_usage_bytes/);
+  assert.match(system.memoryTotal, /sum\(pve_memory_size_bytes/);
 });
 
 test("reads one finite Prometheus instant-vector sample", () => {

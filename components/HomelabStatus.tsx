@@ -1,21 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { homelabPreview } from "@/app/data/homelab";
-import type { HomelabMetric, HomelabNetwork, HomelabStatus as Status } from "@/lib/homelab-types";
+import { useHomelabStatus } from "@/components/HomelabProvider";
+import type { HomelabNetwork } from "@/lib/homelab-types";
 
-const REFRESH_MS = 30_000;
 const emptyNetwork: HomelabNetwork = { receiveMbps: null, transmitMbps: null, history: [] };
-
-const preview: Status = {
-  state: "demo",
-  metrics: homelabPreview.metrics.map(({ label, value }) => ({
-    label: label as HomelabMetric["label"], value, unit: "%", fillPercent: value,
-  })),
-  network: homelabPreview.network,
-};
-
-const unavailableMetrics: HomelabMetric[] = (["CPU", "MEM", "DISK"] as const).map((label) => ({
+const unavailableMetrics = (["CPU", "MEM", "DISK"] as const).map((label) => ({
   label, value: null, unit: "%", fillPercent: null,
 }));
 
@@ -59,52 +48,8 @@ function NetworkLine({ direction, value, values }: { direction: "receive" | "tra
   );
 }
 
-export default function HomelabStatus({ configured }: { configured: boolean }) {
-  const [status, setStatus] = useState<Status | null>(configured ? null : preview);
-
-  useEffect(() => {
-    if (!configured) return;
-
-    let active = true;
-    let request: AbortController | null = null;
-    let interval: number | null = null;
-    async function refresh() {
-      request?.abort();
-      const controller = new AbortController();
-      request = controller;
-      try {
-        const response = await fetch("/api/homelab", { cache: "no-store", signal: controller.signal });
-        if (!response.ok) throw new Error("Unable to load homelab status.");
-        const nextStatus = await response.json() as Status;
-        if (active && !controller.signal.aborted) setStatus(nextStatus);
-      } catch {
-        if (active && !controller.signal.aborted) setStatus({ state: "unavailable", metrics: unavailableMetrics, network: emptyNetwork });
-      } finally {
-        if (request === controller) request = null;
-      }
-    }
-
-    function onVisibilityChange() {
-      if (document.visibilityState === "visible") {
-        if (interval !== null) window.clearInterval(interval);
-        void refresh();
-        interval = window.setInterval(() => void refresh(), REFRESH_MS);
-      } else {
-        if (interval !== null) window.clearInterval(interval);
-        interval = null;
-        request?.abort();
-      }
-    }
-
-    onVisibilityChange();
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    return () => {
-      active = false;
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-      if (interval !== null) window.clearInterval(interval);
-      request?.abort();
-    };
-  }, [configured]);
+export default function HomelabStatus() {
+  const status = useHomelabStatus();
 
   const network = status?.network ?? emptyNetwork;
   return (

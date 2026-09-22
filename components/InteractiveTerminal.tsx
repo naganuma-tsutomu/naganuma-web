@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { homelabPreview } from "@/app/data/homelab";
+import { homelabIdentity, homelabPreview } from "@/app/data/homelab";
 import { links } from "@/app/data/links";
+import { useHomelabStatus } from "@/components/HomelabProvider";
+import type { HomelabSystem } from "@/lib/homelab-types";
 
 const monogram = [
   "    /#####\\           /#####\\",
@@ -25,6 +27,63 @@ const monogram = [
 type CommandResult = { kind: "text"; output: string } | { kind: "neofetch" };
 type Entry = { command: string; result: CommandResult };
 const pageNames = links.filter(({ href }) => href !== "/").map(({ name }) => name.toLowerCase());
+const stateLabels = {
+  demo: "DEMO · NOT LIVE",
+  live: "LIVE",
+  partial: "PARTIAL DATA",
+  unavailable: "OFFLINE",
+} as const;
+
+const emptySystem: HomelabSystem = {
+  state: "unavailable",
+  ...homelabIdentity,
+  nodeCount: null,
+  onlineNodeCount: null,
+  virtualMachineCount: null,
+  containerCount: null,
+  cpuCoreCount: null,
+  uptimeSeconds: null,
+  memoryUsedBytes: null,
+  memoryTotalBytes: null,
+};
+
+function formatUptime(seconds: number | null) {
+  if (seconds === null) return "--";
+  const days = Math.floor(seconds / 86_400);
+  const hours = Math.floor(seconds % 86_400 / 3_600);
+  const minutes = Math.floor(seconds % 3_600 / 60);
+  if (days > 0) return `${days} day${days === 1 ? "" : "s"}, ${hours} hour${hours === 1 ? "" : "s"}`;
+  if (hours > 0) return `${hours} hour${hours === 1 ? "" : "s"}, ${minutes} minute${minutes === 1 ? "" : "s"}`;
+  return `${minutes} minute${minutes === 1 ? "" : "s"}`;
+}
+
+function formatGibibytes(bytes: number) {
+  return (bytes / 1024 ** 3).toFixed(1).replace(/\.0$/, "");
+}
+
+function systemSpecs(system: HomelabSystem): Array<[string, string]> {
+  const nodes = system.onlineNodeCount === null && system.nodeCount === null
+    ? "--"
+    : `${system.onlineNodeCount ?? "--"} / ${system.nodeCount ?? "--"} online`;
+  const guests = system.virtualMachineCount === null && system.containerCount === null
+    ? "--"
+    : `${system.virtualMachineCount ?? "--"} VMs · ${system.containerCount ?? "--"} LXCs`;
+  const cpu = `${system.cpu} · ${system.cpuCoreCount ?? "--"} cores`;
+  const memory = system.memoryUsedBytes === null || system.memoryTotalBytes === null
+    ? "--"
+    : `${formatGibibytes(system.memoryUsedBytes)} GiB / ${formatGibibytes(system.memoryTotalBytes)} GiB`;
+
+  return [
+    ["OS", system.os],
+    ["Host", system.host],
+    ["Nodes", nodes],
+    ["Guests", guests],
+    ["Uptime", formatUptime(system.uptimeSeconds)],
+    ["CPU", cpu],
+    ["GPU", system.gpu],
+    ["Memory", memory],
+  ];
+}
 
 function getOutput(command: string): CommandResult {
   const [name, ...args] = command.split(/\s+/);
@@ -48,13 +107,16 @@ function getOutput(command: string): CommandResult {
 }
 
 function NeofetchOutput() {
+  const status = useHomelabStatus();
+  const system = status?.system ?? emptySystem;
+
   return (
     <div className="grid grid-cols-[.9fr_1.1fr] items-center gap-6 py-2 max-[1200px]:grid-cols-[.72fr_1fr] max-[1200px]:gap-[10px] max-[1024px]:grid-cols-[.9fr_1.1fr] max-[1024px]:gap-[30px] max-[1024px]:py-[15px] max-[768px]:grid-cols-[.72fr_1fr] max-[768px]:gap-3 max-[768px]:py-[13px] max-[641px]:grid-cols-1 max-[641px]:py-[10px]">
       <pre className="m-0 justify-self-center font-[family-name:var(--mono)] text-[clamp(10px,1.03vw,16px)] leading-[1.12] font-bold whitespace-pre text-[var(--aqua)] select-none max-[1200px]:text-[10px] max-[1024px]:text-[15px] max-[768px]:text-[clamp(7px,1.95vw,13px)] max-[641px]:hidden" aria-hidden="true">{monogram}</pre>
       <div className="min-w-0">
         <dl className="m-0">
-          {homelabPreview.specs.map(([label, value]) => (
-            <div className={`grid grid-cols-[87px_1fr] gap-2 text-[clamp(11px,1.05vw,16px)] leading-[1.55] max-[1200px]:grid-cols-[62px_1fr] max-[1200px]:text-[11px] max-[1024px]:grid-cols-[83px_1fr] max-[1024px]:text-sm max-[768px]:grid-cols-[61px_1fr] max-[768px]:gap-1 max-[768px]:text-[11px] max-[768px]:leading-[1.8] max-[641px]:grid-cols-[76px_1fr] max-[641px]:text-[13px] max-[641px]:leading-[1.9] max-[375px]:grid-cols-[70px_1fr] max-[375px]:text-xs ${["Kernel", "Packages", "Shell", "Terminal"].includes(label) ? "max-[641px]:hidden" : ""}`} key={label}>
+          {systemSpecs(system).map(([label, value]) => (
+            <div className="grid grid-cols-[87px_1fr] gap-2 text-[clamp(11px,1.05vw,16px)] leading-[1.55] max-[1200px]:grid-cols-[62px_1fr] max-[1200px]:text-[11px] max-[1024px]:grid-cols-[83px_1fr] max-[1024px]:text-sm max-[768px]:grid-cols-[61px_1fr] max-[768px]:gap-1 max-[768px]:text-[11px] max-[768px]:leading-[1.8] max-[641px]:grid-cols-[76px_1fr] max-[641px]:text-[13px] max-[641px]:leading-[1.9] max-[375px]:grid-cols-[70px_1fr] max-[375px]:text-xs" key={label}>
               <dt className="text-[var(--aqua)]">{label}:</dt><dd className="m-0 [overflow-wrap:anywhere]">{value}</dd>
             </div>
           ))}
@@ -62,7 +124,7 @@ function NeofetchOutput() {
         <div className="mt-[17px] flex h-[21px] w-[245px] max-w-full max-[768px]:h-4 [&_span]:flex-1" aria-hidden="true">
           {homelabPreview.palette.map((color) => <span key={color} style={{ backgroundColor: color }} />)}
         </div>
-        <p className="mt-[9px] text-[9px] tracking-[0.13em] text-[#93a8ae] max-[768px]:text-[8px]">SAMPLE CONFIGURATION</p>
+        <p className="status-demo mt-[9px]" data-state={system.state} aria-live="polite">{status ? stateLabels[system.state] : "CONNECTING"}</p>
       </div>
     </div>
   );

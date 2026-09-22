@@ -29,6 +29,22 @@ export function networkQueries(instance?: string): { receive: string; transmit: 
   };
 }
 
+export function systemQueries(instance?: string) {
+  const nodes = selector(instance, ['job="proxmox"', 'id=~"node/.+"']);
+  const virtualMachines = selector(instance, ['job="proxmox"', 'id=~"qemu/.+"']);
+  const containers = selector(instance, ['job="proxmox"', 'id=~"lxc/.+"']);
+  return {
+    nodes: `count(pve_up${nodes})`,
+    onlineNodes: `sum(pve_up${nodes})`,
+    virtualMachines: `(count(pve_up${virtualMachines}) or vector(0))`,
+    containers: `(count(pve_up${containers}) or vector(0))`,
+    cpuCores: `sum(pve_cpu_usage_limit${nodes})`,
+    uptime: `min(pve_uptime_seconds${nodes})`,
+    memoryUsed: `sum(pve_memory_usage_bytes${nodes})`,
+    memoryTotal: `sum(pve_memory_size_bytes${nodes})`,
+  };
+}
+
 export function parseInstantValue(payload: unknown): number | null {
   if (!payload || typeof payload !== "object") return null;
   const result = payload as {
