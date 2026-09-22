@@ -119,7 +119,7 @@ export default function InteractiveTerminal({ draggable = true, inputId = "termi
         <span>naganuma@home:~</span>
         <span className="inline-flex shrink-0 gap-[10px] [&_i]:block [&_i]:h-3 [&_i]:w-3 [&_i]:rounded-full [&_i]:border [&_i]:border-current" aria-hidden="true"><i /><i /><i /></span>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col border border-t-0 border-[#bcc8c9] px-5 pt-[18px] pb-6 max-[768px]:px-3 max-[768px]:pt-[13px] max-[768px]:pb-[17px]">
+      <div className="flex min-h-0 flex-1 flex-col border border-t-0 border-[var(--border)] px-5 pt-[18px] pb-6 max-[768px]:px-3 max-[768px]:pt-[13px] max-[768px]:pb-[17px]">
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto [scrollbar-color:#537175_transparent] [scrollbar-width:thin]" ref={screenRef} onClick={() => inputRef.current?.focus()}>
           {showWelcome && (
             <>
@@ -159,7 +159,7 @@ export default function InteractiveTerminal({ draggable = true, inputId = "termi
             </span>
           </form>
         </div>
-        <div className="mx-[-20px] mt-0 mb-[-24px] flex shrink-0 items-center gap-3 bg-[#86cec2] px-2 py-0.5 text-xs leading-[1.4] text-[#08171b] max-[768px]:mx-[-12px] max-[768px]:mb-[-17px]" aria-label="tmux session home, window 0 bash">
+        <div className="mx-[-20px] mt-0 mb-[-24px] flex shrink-0 items-center gap-3 bg-[var(--terminal-accent)] px-2 py-0.5 text-xs leading-[1.4] text-[#08171b] max-[768px]:mx-[-12px] max-[768px]:mb-[-17px]" aria-label="tmux session home, window 0 bash">
           <span className="font-bold">[home]</span>
           <span className="whitespace-nowrap">0:bash*</span>
           <span className="ml-auto whitespace-nowrap text-[#24464b]">naganuma@home</span>

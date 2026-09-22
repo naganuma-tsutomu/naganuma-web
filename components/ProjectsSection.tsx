@@ -23,9 +23,9 @@ export function ProjectsSkeleton() {
           {/* Main Card Content */}
           <div className="relative bg-[var(--paper)] overflow-hidden border-2 border-[var(--ink)] h-full flex flex-col">
             {/* Browser Header */}
-            <div className="flex items-center justify-between gap-2 p-2 bg-[#e9e4d8] border-b-2 border-[var(--ink)]">
+            <div className="flex items-center justify-between gap-2 p-2 bg-[var(--surface-alt)] border-b-2 border-[var(--ink)]">
               <div className="min-w-0 flex-1 text-left text-sm text-[var(--ink)] font-bold">
-                <span className="inline-block w-24 h-3 bg-[#bcc8c9] animate-pulse" />
+                <span className="inline-block w-24 h-3 bg-[var(--border)] animate-pulse" />
               </div>
               <div className="flex shrink-0 space-x-1" aria-hidden="true">
                 <span className="w-3 h-3 rounded-full border border-[var(--ink)] bg-transparent" />
@@ -35,15 +35,15 @@ export function ProjectsSkeleton() {
             </div>
 
             {/* Image */}
-            <div className="relative h-48 bg-[#e9e4d8] border-b-2 border-[var(--ink)] shrink-0 animate-pulse" />
+            <div className="relative h-48 bg-[var(--surface-alt)] border-b-2 border-[var(--ink)] shrink-0 animate-pulse" />
 
             {/* Text Content */}
             <div className="p-6 flex-grow space-y-3">
-              <div className="w-28 h-3 bg-[#e9e4d8] animate-pulse" />
-              <div className="w-3/4 h-6 bg-[#bcc8c9] animate-pulse" />
+              <div className="w-28 h-3 bg-[var(--surface-alt)] animate-pulse" />
+              <div className="w-3/4 h-6 bg-[var(--border)] animate-pulse" />
               <div className="space-y-2 pt-2">
-                <div className="w-full h-3 bg-[#e9e4d8] animate-pulse" />
-                <div className="w-5/6 h-3 bg-[#e9e4d8] animate-pulse" />
+                <div className="w-full h-3 bg-[var(--surface-alt)] animate-pulse" />
+                <div className="w-5/6 h-3 bg-[var(--surface-alt)] animate-pulse" />
               </div>
             </div>
           </div>

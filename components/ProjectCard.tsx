@@ -91,7 +91,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
         <div className="p-6 flex-grow transition-colors duration-300">
           {sample && <span className="project-card-sample transition-colors duration-200 group-hover:bg-[var(--ink)] group-hover:text-[var(--paper)]">SAMPLE</span>}
           {date && (
-            <div className="mb-3 font-mono text-xs tracking-wider text-[#52605e]">
+            <div className="mb-3 font-[family-name:var(--mono)] text-xs tracking-wider text-[var(--text-sub)]">
               PUBLISHED / <time dateTime={project.publishedAt}>{date}</time>
             </div>
           )}
@@ -103,7 +103,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
           >
             {project.title}
           </h3>
-          <p className="text-[#38484a] line-clamp-3 transition-colors duration-300">
+          <p className="text-[var(--text-sub)] line-clamp-3 transition-colors duration-300">
             {project.description}
           </p>
         </div>

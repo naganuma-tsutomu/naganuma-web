@@ -73,7 +73,7 @@ export default function About() {
           <h2 id="about-intro-title" className="m-0 mb-[25px] font-[family-name:var(--font-oswald),sans-serif] text-[clamp(34px,3.6vw,52px)] leading-[1.2] font-bold tracking-[0.02em] max-[768px]:mb-[18px]">
             Who I Am<span className="text-[var(--red)]">.</span>
           </h2>
-          <div className="max-w-[670px] text-[15px] leading-[2] text-[#38484a]">
+          <div className="max-w-[670px] text-[15px] leading-[2] text-[var(--text-sub)]">
             {bio.map((paragraph, index) => (
               <p key={index} className="m-0 mb-[18px]">{paragraph}</p>
             ))}
@@ -95,13 +95,13 @@ export default function About() {
           {skills.map((skill, index) => (
             <li
               key={skill}
-              className="group flex min-h-[84px] cursor-default items-center gap-[14px] border-2 border-[var(--ink)] bg-[#fffdf7] px-[19px] py-[17px] font-[family-name:var(--font-oswald),sans-serif] text-[clamp(15px,1.4vw,20px)] leading-[1.4] font-bold shadow-[4px_4px_0_var(--ink)] transition-all duration-300 hover:-translate-y-1 hover:bg-[var(--ink)] hover:text-white hover:shadow-[2px_2px_0_var(--ink)] max-[480px]:min-h-[73px] max-[480px]:gap-[7px] max-[480px]:p-[11px] max-[480px]:text-sm"
+              className="group flex min-h-[84px] cursor-default items-center gap-[14px] border-2 border-[var(--ink)] bg-[var(--surface)] px-[19px] py-[17px] font-[family-name:var(--font-oswald),sans-serif] text-[clamp(15px,1.4vw,20px)] leading-[1.4] font-bold shadow-[4px_4px_0_var(--ink)] transition-all duration-300 hover:-translate-y-1 hover:bg-[var(--ink)] hover:text-white hover:shadow-[2px_2px_0_var(--ink)] max-[480px]:min-h-[73px] max-[480px]:gap-[7px] max-[480px]:p-[11px] max-[480px]:text-sm"
             >
               <span className="self-start font-[family-name:var(--mono)] text-[10px] leading-[1.5] text-[var(--red)] group-hover:text-[var(--orange)]">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <span>{skill}</span>
-              <span className="ml-auto font-[family-name:var(--mono)] text-xs leading-none max-[480px]:text-[10px] text-[#86cec2]" aria-hidden="true">
+              <span className="ml-auto font-[family-name:var(--mono)] text-xs leading-none max-[480px]:text-[10px] text-[var(--terminal-accent)]" aria-hidden="true">
                 ◆
               </span>
             </li>
@@ -133,11 +133,11 @@ export default function About() {
                   <span className="font-[family-name:var(--mono)] text-xs leading-[1.5] text-[var(--red)]">
                     {experience.company}
                   </span>
-                  <p className="mt-[13px] mb-0 max-w-[740px] text-sm leading-[1.8] text-[#52605e]">
+                  <p className="mt-[13px] mb-0 max-w-[740px] text-sm leading-[1.8] text-[var(--text-sub)]">
                     {experience.description}
                   </p>
                 </div>
-                <span className="font-[family-name:var(--mono)] text-xs leading-none text-[#86cec2]" aria-hidden="true">
+                <span className="font-[family-name:var(--mono)] text-xs leading-none text-[var(--terminal-accent)]" aria-hidden="true">
                   ◆
                 </span>
               </li>

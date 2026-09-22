@@ -15,11 +15,11 @@ export function NotesSkeleton() {
         <article key={index} className="note-card">
           <div className="note-card-link pointer-events-none">
             <div className="note-card-meta">
-              <span className="inline-block w-6 h-3 bg-[#bcc8c9] animate-pulse" />
+              <span className="inline-block w-6 h-3 bg-[var(--border)] animate-pulse" />
               <span className="inline-block w-20 h-3 bg-[#dce5dd] animate-pulse" />
             </div>
             <div className="note-card-thumbnail bg-[#dce5dd] animate-pulse" />
-            <div className="my-6 h-6 bg-[#bcc8c9] w-4/5 animate-pulse" />
+            <div className="my-6 h-6 bg-[var(--border)] w-4/5 animate-pulse" />
             <div className="space-y-2 mb-6">
               <div className="h-3 bg-[#dce5dd] w-full animate-pulse" />
               <div className="h-3 bg-[#dce5dd] w-2/3 animate-pulse" />

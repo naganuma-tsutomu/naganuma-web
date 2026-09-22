@@ -41,7 +41,7 @@ export default function Contact() {
             <span className="section-rule" aria-hidden="true" />
           </div>
           <h2 id="contact-intro-title" className="interior-section-title">FIND ME ONLINE<span>.</span></h2>
-          <p className="mb-[55px] max-w-[570px] text-[15px] leading-[2] text-[#38484a] max-[768px]:mb-[34px]">{contactLead}</p>
+          <p className="mb-[55px] max-w-[570px] text-[15px] leading-[2] text-[var(--text-sub)] max-[768px]:mb-[34px]">{contactLead}</p>
 
           <div className="border-t-2 border-[var(--ink)]">
             {socialLinks.map((link, index) => (
@@ -65,7 +65,7 @@ export default function Contact() {
             <span>profiles.txt</span>
             <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
           </div>
-          <div className="border border-[#bcc8c9] border-t-0 p-[clamp(20px,3vw,37px)]">
+          <div className="border border-[var(--border)] border-t-0 p-[clamp(20px,3vw,37px)]">
             <div className="mb-[29px]">
               <span className="font-[family-name:var(--mono)] text-xs leading-normal text-[var(--aqua)]">&gt; ls /profiles</span>
               <h2 id="contact-links-title" className="mt-3 font-[family-name:var(--font-pixel)] text-[clamp(23px,2.4vw,34px)] leading-[1.3] font-bold tracking-[-0.08em] max-[480px]:text-[22px]">SOCIAL LINKS<span className="text-[var(--aqua)]">_</span></h2>
