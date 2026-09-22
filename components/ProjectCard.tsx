@@ -39,7 +39,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
 
       {/* Main Card Content */}
       <div
-        className={`project-card-surface relative bg-[var(--surface)] overflow-hidden border-2 border-[var(--ink)] h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] ${
+        className={`project-card-surface relative bg-[var(--surface)] overflow-hidden border-2 border-[var(--ink)] h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] group-hover:border-[var(--red)] group-focus-within:border-[var(--red)] ${
           isFullyInView ? "translate-x-[3px] translate-y-[3px]" : "translate-x-0 translate-y-0"
         }`}
       >
