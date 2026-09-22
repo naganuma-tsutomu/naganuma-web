@@ -39,7 +39,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
 
       {/* Main Card Content */}
       <div
-        className={`project-card-surface relative bg-white overflow-hidden border-2 border-[var(--ink)] h-full flex flex-col transition-[transform,background-color,border-color] duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] group-hover:border-[var(--red)] group-hover:bg-[#fff8eb] group-focus-within:border-[var(--red)] ${
+        className={`project-card-surface relative bg-[var(--surface)] overflow-hidden border-2 border-[var(--ink)] h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] ${
           isFullyInView ? "translate-x-[3px] translate-y-[3px]" : "translate-x-0 translate-y-0"
         }`}
       >
@@ -89,7 +89,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
 
         {/* Text Content */}
         <div className="p-6 flex-grow transition-colors duration-300">
-          {sample && <span className="project-card-sample transition-colors duration-200 group-hover:bg-[var(--ink)] group-hover:text-[var(--paper)]">SAMPLE</span>}
+          {sample && <span className="project-card-sample">SAMPLE</span>}
           {date && (
             <div className="mb-3 font-[family-name:var(--mono)] text-xs tracking-wider text-[var(--text-sub)]">
               PUBLISHED / <time dateTime={project.publishedAt}>{date}</time>
