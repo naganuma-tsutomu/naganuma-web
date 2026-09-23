@@ -119,6 +119,44 @@
   @apply max-w-[920px] pt-6 pb-12 max-[768px]:pt-[14px];
 }
 
+.project-article-shell.has-toc {
+  max-width: 1240px;
+}
+
+.project-article-layout {
+  display: block;
+}
+
+.project-article-sidebar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .project-article-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 36px;
+    align-items: start;
+  }
+  .project-article-main {
+    min-width: 0;
+  }
+  .project-article-sidebar {
+    display: block;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 96px;
+    max-height: calc(100vh - 116px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .project-article-layout {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 48px;
+  }
+}
+
 @utility article-breadcrumb {
   @apply mb-11 flex items-baseline gap-3 font-[family-name:var(--mono)] text-xs leading-[1.6] max-[768px]:mb-[30px];
 }

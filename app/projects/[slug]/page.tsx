@@ -7,6 +7,8 @@ import { connection } from "next/server";
 import { cookies } from "next/headers";
 import { getProject, getProjectPreview } from "@/lib/projects";
 import { sanitizeArticle } from "@/lib/article-html";
+import { extractTocAndInjectIds } from "@/lib/toc";
+import TableOfContents from "@/components/TableOfContents";
 import { decodeProjectPreviewToken, PROJECT_PREVIEW_COOKIE } from "@/lib/project-preview";
 
 interface Props {
@@ -46,27 +48,39 @@ export default async function ProjectPage({ params }: Props) {
   const publishedAt = project.publishedAt ? new Date(project.publishedAt) : null;
   const hasDate = publishedAt && !Number.isNaN(publishedAt.getTime());
 
+  const sanitizedContent = sanitizeArticle(project.content);
+  const { html: contentHtml, toc } = extractTocAndInjectIds(sanitizedContent);
+  const hasToc = toc.length > 0;
+
   return (
-    <div className="project-article-shell site-shell">
+    <div className={`project-article-shell site-shell ${hasToc ? "has-toc" : ""}`}>
       <nav className="article-breadcrumb" aria-label="パンくずリスト">
         <Link href="/projects">PROJECTS</Link><span aria-hidden="true">/</span><span>{project.title}</span>
       </nav>
-      <article>
-        <header className="article-header">
-          <div className="article-meta">
-            <span>PROJECT JOURNAL</span>
-            {isPreview && <span className="article-sample">PREVIEW</span>}
-            {project.isSample && <span className="article-sample">SAMPLE</span>}
-            {hasDate && <time dateTime={project.publishedAt}>{new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Tokyo" }).format(publishedAt)}</time>}
+      <div className={hasToc ? "project-article-layout" : undefined}>
+        <article className={hasToc ? "project-article-main" : undefined}>
+          <header className="article-header">
+            <div className="article-meta">
+              <span>PROJECT JOURNAL</span>
+              {isPreview && <span className="article-sample">PREVIEW</span>}
+              {project.isSample && <span className="article-sample">SAMPLE</span>}
+              {hasDate && <time dateTime={project.publishedAt}>{new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Tokyo" }).format(publishedAt)}</time>}
+            </div>
+            <h1>{project.title}</h1>
+            <p className="article-description">{project.description}</p>
+          </header>
+          <div className="article-cover">
+            <Image src={project.imageUrl} alt={project.title} fill sizes="(max-width: 767px) calc(100vw - 32px), 920px" priority />
           </div>
-          <h1>{project.title}</h1>
-          <p className="article-description">{project.description}</p>
-        </header>
-        <div className="article-cover">
-          <Image src={project.imageUrl} alt={project.title} fill sizes="(max-width: 767px) calc(100vw - 32px), 920px" priority />
-        </div>
-        <div className="article-body" dangerouslySetInnerHTML={{ __html: sanitizeArticle(project.content) }} />
-      </article>
+          {hasToc && <TableOfContents items={toc} mode="inline" />}
+          <div className="article-body" dangerouslySetInnerHTML={{ __html: contentHtml }} />
+        </article>
+        {hasToc && (
+          <aside className="project-article-sidebar" aria-label="サイドバー">
+            <TableOfContents items={toc} mode="sidebar" />
+          </aside>
+        )}
+      </div>
       <footer className="article-footer"><Link href="/projects">← PROJECTS 一覧へ戻る</Link></footer>
     </div>
   );
