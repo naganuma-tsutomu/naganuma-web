@@ -280,23 +280,29 @@ html[data-page-transition="active"] footer {
 .article-cover img { object-fit: cover; }
 .article-body { padding: 0 34px; font: 16px/2 Arial, "Helvetica Neue", var(--font-shippori-mincho), serif; overflow-wrap: anywhere; }
 .article-body > :first-child { margin-top: 0; }
-.article-body h1, .article-body h2, .article-body h3, .article-body h4 { font-family: var(--font-oswald), var(--font-shippori-mincho), serif; font-weight: 700; line-height: 1.5; margin: 2em 0 .9em; }
+.article-body h1, .article-body h2, .article-body h3, .article-body h4 { scroll-margin-top: 120px; font-family: var(--font-oswald), var(--font-shippori-mincho), serif; font-weight: 700; line-height: 1.5; margin: 2em 0 .9em; text-wrap: pretty; }
 .article-body h1, .article-body h2 { font-size: 25px; border-bottom: 2px solid var(--ink); padding-bottom: 10px; }
 .article-body h3 { font-size: 20px; }
 .article-body p, .article-body ul, .article-body ol, .article-body blockquote, .article-body figure, .article-body pre { margin-block: 1.4em; }
 .article-body ul { list-style: disc; padding-left: 1.6em; }
 .article-body ol { list-style: decimal; padding-left: 1.6em; }
+.article-body li + li { margin-top: .55em; }
+.article-body li > p { margin-block: .4em; }
 .article-body li > ul, .article-body li > ol { margin-block: .4em; }
 .article-body a { color: #006974; text-decoration: underline; text-underline-offset: 4px; }
 .article-body blockquote { border-left: 4px solid var(--orange); padding: 1px 24px; background: #eae7dc; color: #38484a; }
+.article-body blockquote > :first-child { margin-top: 1em; }
+.article-body blockquote > :last-child { margin-bottom: 1em; }
 .article-body pre { overflow-x: auto; padding: 20px; background: var(--ink); color: #edf3ee; font: 13px/1.8 var(--mono); }
-.article-body code { font-family: var(--mono); font-size: .9em; background: #e8e4d7; padding: 2px 5px; }
+.article-body code { font-family: var(--mono); font-size: .9em; background: #e8e4d7; padding: 2px 5px; overflow-wrap: anywhere; }
 .article-body pre code { padding: 0; background: none; font-size: inherit; }
 .article-body img { max-width: 100%; height: auto; margin-block: 24px; }
 .article-body figcaption { font-size: 13px; color: #586467; }
-.article-body table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin-block: 28px; font-size: 14px; }
-.article-body th, .article-body td { border: 1px solid #8e9998; padding: 10px 14px; }
-.article-body th { background: #e4e8e2; text-align: left; }
+.article-body table { display: block; width: 100%; max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; border-collapse: collapse; margin-block: 28px; font-size: 14px; scrollbar-color: var(--teal) #d7dcd5; }
+.article-body th, .article-body td { min-width: 120px; border: 1px solid #8e9998; padding: 10px 14px; vertical-align: top; }
+.article-body th { background: #dfe6df; text-align: left; white-space: nowrap; }
+.article-body th:not(:last-child), .article-body td:not(:last-child) { white-space: nowrap; }
+.article-body tbody tr:nth-child(even) td { background: #f2f1e9; }
 .article-body hr { border: 0; border-top: 1px solid #a4aca6; margin-block: 36px; }
 .article-footer a:hover, .article-breadcrumb a:hover { color: var(--red); }
 .article-state h1 { font-size: clamp(26px, 5vw, 42px); line-height: 1.5; margin: 16px 0; }
@@ -389,8 +395,11 @@ html[data-page-transition="active"] footer {
   .section-heading h2 { font-size: 16px; }
   .section-palette i { width: 14px; height: 14px; }
   .article-body { padding-inline: 0; font-size: 15px; }
+  .article-body h1, .article-body h2, .article-body h3, .article-body h4 { scroll-margin-top: 96px; }
   .article-body h1, .article-body h2 { font-size: 22px; }
   .article-body h3 { font-size: 18px; }
+  .article-body blockquote { padding-inline: 16px; }
+  .article-body th, .article-body td { min-width: 108px; padding: 8px 10px; font-size: 13px; }
   .notes-section .note-card-thumbnail { transition: transform .45s ease-out, box-shadow .25s ease-out; }
   .notes-section .note-card.is-in-view .note-card-thumbnail { transform: translateY(-5px); box-shadow: 4px 4px 0 var(--ink); }
   .note-card h3 { margin-top: 25px; font-size: 20px; }

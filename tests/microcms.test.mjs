@@ -120,3 +120,22 @@ test("a missing list endpoint explains which settings to check", async () => {
     return true;
   });
 });
+
+test("draft queries bypass the public cache without exposing the API key", async () => {
+  process.env.MICROCMS_SERVICE_DOMAIN = "portfolio";
+  process.env.MICROCMS_API_KEY = "test-secret-never-in-url";
+  const response = { id: "draft-article", title: "Draft" };
+  const fetch = mock.method(globalThis, "fetch", async (url, options) => {
+    assert.equal(url.pathname, "/api/v1/projects/draft-article");
+    assert.equal(url.searchParams.get("draftKey"), "draft_key-123");
+    assert.equal(url.href.includes(process.env.MICROCMS_API_KEY), false);
+    assert.equal(options.cache, "no-store");
+    assert.equal(options.next, undefined);
+    return Response.json(response);
+  });
+  assert.deepEqual(
+    await microCMSGet("projects/draft-article", { draftKey: "draft_key-123" }, { noStore: true }),
+    response,
+  );
+  assert.equal(fetch.mock.callCount(), 1);
+});

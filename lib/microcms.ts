@@ -37,7 +37,15 @@ export function getMicroCMSConfig() {
 
 const MICROCMS_TIMEOUT_MS = 4000;
 
-export async function microCMSGet<T>(path: string, query: Record<string, string> = {}): Promise<T> {
+interface MicroCMSGetOptions {
+  noStore?: boolean;
+}
+
+export async function microCMSGet<T>(
+  path: string,
+  query: Record<string, string> = {},
+  options: MicroCMSGetOptions = {},
+): Promise<T> {
   const config = getMicroCMSConfig();
   if (!config) throw new Error("microCMS is not configured.");
 
@@ -45,7 +53,7 @@ export async function microCMSGet<T>(path: string, query: Record<string, string>
   url.search = new URLSearchParams(query).toString();
   const response = await fetch(url, {
     headers: { "X-MICROCMS-API-KEY": config.apiKey },
-    next: { revalidate: 60 },
+    ...(options.noStore ? { cache: "no-store" as const } : { next: { revalidate: 60 } }),
     signal: AbortSignal.timeout(MICROCMS_TIMEOUT_MS),
   });
   if (!response.ok) throw new MicroCMSError(response.status, path);

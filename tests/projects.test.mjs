@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, mock, test } from "node:test";
-import { getProject, getProjectList, getProjectPage } from "../lib/projects.ts";
+import { getProject, getProjectList, getProjectPage, getProjectPreview } from "../lib/projects.ts";
 
 let saved;
 beforeEach(() => {
@@ -178,7 +178,7 @@ test("validates required list and article fields", async () => {
   }
   for (const content of [undefined, null, 42]) {
     payload = { ...article, content };
-    await assert.rejects(getProject("real-article"), /content must be rich-editor HTML/);
+    await assert.rejects(getProject("real-article"), /content or contentMarkdown is required/);
   }
   for (payload of [{ contents: null, totalCount: 0 }, { contents: [], totalCount: "1" }]) {
     await assert.rejects(getProjectList(), /Invalid microCMS list response/);
@@ -216,4 +216,50 @@ test("missing production configuration never returns sample articles or lists", 
   await assert.rejects(getProject("project-alpha"), /Sample projects are available only in development/);
   await assert.rejects(getProjectList(), /Sample projects are available only in development/);
   assert.equal(fetch.mock.callCount(), 0);
+});
+
+test("loads an uncached draft article with its draft key", async () => {
+  const fetch = mock.method(globalThis, "fetch", async (url, options) => {
+    assert.equal(url.pathname, "/api/v1/projects/draft-article");
+    assert.equal(url.searchParams.get("draftKey"), "draft_key-123");
+    assert.equal(options.cache, "no-store");
+    assert.equal(options.next, undefined);
+    return Response.json({ ...article, id: "draft-article", publishedAt: null });
+  });
+  assert.deepEqual(await getProjectPreview("draft-article", "draft_key-123"), {
+    slug: "draft-article", title: article.title, description: article.description,
+    content: article.content, publishedAt: undefined, imageUrl: article.thumbnail.url, isSample: false,
+  });
+  assert.equal(fetch.mock.callCount(), 1);
+});
+
+test("rejects invalid preview identifiers before making a request", async () => {
+  const fetch = mock.method(globalThis, "fetch", () => { throw new Error("Unexpected fetch"); });
+  for (const [slug, draftKey] of [["../secret", "valid_key"], ["article", ""], ["article", "bad/key"], ["article", "日本語"]]) {
+    assert.equal(await getProjectPreview(slug, draftKey), null);
+  }
+  assert.equal(fetch.mock.callCount(), 0);
+});
+
+test("prefers sanitized Markdown content while keeping rich HTML compatibility", async () => {
+  const fetch = mock.method(globalThis, "fetch", async () => Response.json({
+    ...article,
+    content: "<p>old rich editor body</p>",
+    contentMarkdown: `---
+title: "front matter"
+---
+## Markdown body
+
+| Node | Role |
+
+| --- | --- |
+
+| pve-1 | main |
+<script>alert(1)</script>`,
+  }));
+  const project = await getProject("real-article");
+  assert.doesNotMatch(project.content, /front matter|old rich editor body|<script|alert\(/);
+  assert.match(project.content, /<h2>Markdown body<\/h2>/);
+  assert.match(project.content, /<table>/);
+  assert.equal(fetch.mock.callCount(), 1);
 });

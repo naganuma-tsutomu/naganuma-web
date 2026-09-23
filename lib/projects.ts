@@ -7,6 +7,8 @@ import type { ProjectArticle, ProjectListResult, ProjectSummary } from "@/lib/pr
 
 import { LIST_PAGE_SIZE } from "./sample-content.ts";
 import { buildProjectEntries } from "./project-list.ts";
+import { markdownToArticleHtml } from "./article-html.ts";
+import { isValidDraftKey, isValidProjectContentId } from "./project-preview.ts";
 
 interface CMSProject {
   id: string;
@@ -14,7 +16,8 @@ interface CMSProject {
   description: string;
   thumbnail?: { url: string };
   content?: string;
-  publishedAt?: string;
+  contentMarkdown?: string | null;
+  publishedAt?: string | null;
 }
 
 interface CMSList {
@@ -31,11 +34,18 @@ function toSummary(project: CMSProject): ProjectSummary {
     slug: project.id,
     title: project.title,
     description: project.description,
-    publishedAt: project.publishedAt,
+    publishedAt: typeof project.publishedAt === "string" ? project.publishedAt : undefined,
     imageUrl: imageUrl?.startsWith("https://images.microcms-assets.io/assets/")
       ? imageUrl
       : "/images/no-image.jpg",
   };
+}
+
+function toArticleContent(project: CMSProject): string {
+  const markdown = typeof project.contentMarkdown === "string" ? project.contentMarkdown.trim() : "";
+  if (markdown) return markdownToArticleHtml(markdown);
+  if (typeof project.content === "string") return project.content;
+  throw new Error("Invalid projects schema: content or contentMarkdown is required.");
 }
 
 export async function getProjectList(limit = LIST_PAGE_SIZE, offset = 0): Promise<ProjectListResult> {
@@ -96,7 +106,7 @@ export async function getProjectPage(rawPage: string | string[] | undefined, inc
 }
 
 export const getProject = cache(async (slug: string): Promise<ProjectArticle | null> => {
-  if (!/^[a-zA-Z0-9_-]+$/.test(slug)) return null;
+  if (!isValidProjectContentId(slug)) return null;
   const config = getMicroCMSConfig();
   if (!config) {
     const sample = samples.find(project => project.slug === slug);
@@ -110,13 +120,31 @@ export const getProject = cache(async (slug: string): Promise<ProjectArticle | n
 
   try {
     const project = await microCMSGet<CMSProject>(`${config.projectsEndpoint}/${encodeURIComponent(slug)}`);
-    if (typeof project.content !== "string") {
-      throw new Error("Invalid projects schema: content must be rich-editor HTML.");
-    }
     return {
       ...toSummary(project),
-      content: project.content,
-      publishedAt: project.publishedAt,
+      content: toArticleContent(project),
+      isSample: false,
+    };
+  } catch (error) {
+    if (error instanceof MicroCMSError && error.status === 404) return null;
+    throw error;
+  }
+});
+
+export const getProjectPreview = cache(async (slug: string, draftKey: string): Promise<ProjectArticle | null> => {
+  if (!isValidProjectContentId(slug) || !isValidDraftKey(draftKey)) return null;
+  const config = getMicroCMSConfig();
+  if (!config) throw new Error("microCMS is not configured.");
+
+  try {
+    const project = await microCMSGet<CMSProject>(
+      `${config.projectsEndpoint}/${encodeURIComponent(slug)}`,
+      { draftKey },
+      { noStore: true },
+    );
+    return {
+      ...toSummary(project),
+      content: toArticleContent(project),
       isSample: false,
     };
   } catch (error) {

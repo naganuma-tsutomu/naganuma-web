@@ -4,17 +4,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
-import { getProject } from "@/lib/projects";
+import { cookies } from "next/headers";
+import { getProject, getProjectPreview } from "@/lib/projects";
 import { sanitizeArticle } from "@/lib/article-html";
+import { decodeProjectPreviewToken, PROJECT_PREVIEW_COOKIE } from "@/lib/project-preview";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
+async function loadProject(slug: string) {
+  const token = decodeProjectPreviewToken((await cookies()).get(PROJECT_PREVIEW_COOKIE)?.value);
+  const isPreview = token?.contentId === slug;
+  const project = isPreview
+    ? await getProjectPreview(slug, token.draftKey)
+    : await getProject(slug);
+  return { project, isPreview };
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   await connection();
   const { slug } = await params;
-  const project = await getProject(slug);
+  const { project } = await loadProject(slug);
   if (!project) return { title: "記事が見つかりません", robots: { index: false, follow: false } };
   return createPageMetadata({
     title: project.title,
@@ -29,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectPage({ params }: Props) {
   await connection();
   const { slug } = await params;
-  const project = await getProject(slug);
+  const { project, isPreview } = await loadProject(slug);
   if (!project) notFound();
 
   const publishedAt = project.publishedAt ? new Date(project.publishedAt) : null;
@@ -44,6 +55,7 @@ export default async function ProjectPage({ params }: Props) {
         <header className="article-header">
           <div className="article-meta">
             <span>PROJECT JOURNAL</span>
+            {isPreview && <span className="article-sample">PREVIEW</span>}
             {project.isSample && <span className="article-sample">SAMPLE</span>}
             {hasDate && <time dateTime={project.publishedAt}>{new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Tokyo" }).format(publishedAt)}</time>}
           </div>

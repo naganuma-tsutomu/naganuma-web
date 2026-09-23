@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LoginIntro from "@/components/LoginIntro";
 import PageTransition from "@/components/PageTransition";
 import { LOGIN_INTRO_STORAGE_KEY } from "@/lib/login-intro";
+import { PROJECT_PREVIEW_COOKIE } from "@/lib/project-preview";
 import "./globals.css";
 import { Oswald, Shippori_Mincho, Silkscreen } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -43,6 +44,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const isProjectPreview = Boolean((await cookies()).get(PROJECT_PREVIEW_COOKIE));
 
   return (
     <html lang="ja" className={`${oswald.variable} ${shipporiMincho.variable} ${silkscreen.variable} scroll-smooth scroll-pt-28 [scrollbar-gutter:stable] max-[768px]:scroll-pt-[88px] motion-reduce:scroll-auto`} data-scroll-behavior="smooth" suppressHydrationWarning>
@@ -60,7 +62,7 @@ export default async function RootLayout({
         <Header />
         <PageTransition>{children}</PageTransition>
         <Footer />
-        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && !isProjectPreview && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} nonce={nonce} />
         )}
       </body>
