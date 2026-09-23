@@ -11,7 +11,7 @@ import { sampleContentEnabled } from "@/lib/sample-content";
 
 export function ProjectsSkeleton() {
   return (
-    <div className="projects-grid" aria-busy="true" aria-label="プロジェクト一覧を読み込み中">
+    <div className="grid grid-cols-3 gap-8 max-[1024px]:grid-cols-2 max-[768px]:grid-cols-1" aria-busy="true" aria-label="プロジェクト一覧を読み込み中">
       {Array.from({ length: 3 }).map((_, index) => (
         <div
           key={index}
@@ -77,17 +77,17 @@ export default async function ProjectsSection() {
   return (
     <>
       {projectsUnavailable ? (
-        <p className="projects-message" role="status">{showSamples ? projectsPageMessages.unavailableWithSamples : projectsPageMessages.unavailable}</p>
+        <p className="border-2 border-[var(--ink)] bg-[#fffdf7] p-7 leading-[1.8]" role="status">{showSamples ? projectsPageMessages.unavailableWithSamples : projectsPageMessages.unavailable}</p>
       ) : projects.length === 0 ? (
-        <p className="projects-message">{showSamples ? projectsPageMessages.emptyWithSamples : projectsPageMessages.empty}</p>
+        <p className="border-2 border-[var(--ink)] bg-[#fffdf7] p-7 leading-[1.8]">{showSamples ? projectsPageMessages.emptyWithSamples : projectsPageMessages.empty}</p>
       ) : null}
-      <div className="projects-grid">
+      <div className="grid grid-cols-3 gap-8 max-[1024px]:grid-cols-2 max-[768px]:grid-cols-1">
         {entries.map(({ project, sample }, index) => (
           <ProjectCard key={`${sample ? "sample" : "project"}-${project.slug}`} project={project} index={index} sample={sample} />
         ))}
       </div>
       {!projectsUnavailable && projects.length > 0 && (
-        <Link className="projects-all-link" href="/projects">ALL PROJECTS →</Link>
+        <Link className="mt-7 ml-auto block w-fit border-b border-current pb-1 font-[family-name:var(--mono)] text-xs leading-[1.6] no-underline hover:text-[var(--red)]" href="/projects">ALL PROJECTS →</Link>
       )}
     </>
   );

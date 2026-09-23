@@ -58,13 +58,13 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
         </div>
       </header>
       {projectsUnavailable ? (
-        <p className="projects-message" role="status">{showSamples ? projectsPageMessages.unavailableWithSamples : projectsPageMessages.unavailable}</p>
+        <p className="border-2 border-[var(--ink)] bg-[#fffdf7] p-7 leading-[1.8]" role="status">{showSamples ? projectsPageMessages.unavailableWithSamples : projectsPageMessages.unavailable}</p>
       ) : items.length === 0 ? (
-        <p className="projects-message">{projectsPageMessages.empty}</p>
+        <p className="border-2 border-[var(--ink)] bg-[#fffdf7] p-7 leading-[1.8]">{projectsPageMessages.empty}</p>
       ) : null}
       {items.length > 0 && (
         <>
-        <div className="projects-grid">
+        <div className="grid grid-cols-3 gap-8 max-[1024px]:grid-cols-2 max-[768px]:grid-cols-1">
           {items.map(({ project, sample }, index) => (
             <ProjectCard key={`${sample ? "sample" : "project"}-${project.slug}`} project={project} index={index} sample={sample} />
           ))}

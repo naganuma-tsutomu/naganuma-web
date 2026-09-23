@@ -31,18 +31,6 @@
   @apply mx-auto w-[min(100%-96px,1400px)] max-[1200px]:w-[calc(100%-64px)] max-[768px]:w-[calc(100%-32px)];
 }
 
-@utility projects-grid {
-  @apply grid grid-cols-3 gap-8 max-[1024px]:grid-cols-2 max-[768px]:grid-cols-1;
-}
-
-@utility projects-message {
-  @apply border-2 border-[var(--ink)] bg-[#fffdf7] p-7 leading-[1.8];
-}
-
-@utility projects-all-link {
-  @apply mt-7 ml-auto block w-fit border-b border-current pb-1 font-[family-name:var(--mono)] text-xs leading-[1.6] no-underline hover:text-[var(--red)];
-}
-
 @utility projects-index {
   @apply pb-20 max-[768px]:pb-[60px];
 }
@@ -53,10 +41,6 @@
 
 @utility notes-grid {
   @apply grid grid-cols-3 border-y-2 border-[var(--ink)] max-[1024px]:grid-cols-1;
-}
-
-@utility notes-message {
-  @apply m-0 border-y border-[#b1b5ab] py-[27px] text-[13px] leading-[1.8];
 }
 
 @utility dark-panel {
@@ -169,34 +153,6 @@
 
 @utility note-card-link {
   @apply flex h-full min-h-[280px] flex-col px-[26px] pt-[22px] pb-6 font-[family-name:var(--font-shippori-mincho)] text-inherit no-underline transition-colors duration-200 focus-visible:relative focus-visible:z-[1] focus-visible:outline-offset-[-5px] max-[1024px]:min-h-[220px] max-[768px]:min-h-0 max-[768px]:px-0.5 max-[768px]:pt-5 max-[768px]:pb-[22px];
-}
-
-@utility note-card-meta {
-  @apply flex items-center justify-between gap-4 font-[family-name:var(--mono)] text-[11px] leading-normal tracking-[0.08em];
-}
-
-@utility note-card-thumbnail {
-  @apply relative mt-[18px] aspect-[1.91/1] w-full overflow-hidden border border-[var(--ink)] bg-[#dce5dd] transition-[transform,box-shadow] duration-250;
-}
-
-@utility note-card-sample-thumbnail {
-  @apply flex flex-col justify-between px-[18px] py-[15px] font-[family-name:var(--mono)] text-[10px] leading-[1.4] tracking-[0.1em];
-}
-
-@utility note-card-action {
-  @apply mt-auto pt-4 font-[family-name:var(--mono)] text-[11px] leading-normal tracking-[0.08em] transition-colors duration-200;
-}
-
-@utility notes-profile-link {
-  @apply mt-5 ml-auto block w-fit border-b border-current pb-1 font-[family-name:var(--mono)] text-[11px] leading-normal tracking-[0.08em] hover:text-[var(--red)];
-}
-
-@utility notes-placeholder {
-  @apply flex items-center gap-6 border-y border-[#b1b5ab] py-[27px] max-[768px]:gap-4;
-}
-
-@utility notes-symbol {
-  @apply font-[family-name:var(--mono)] text-[34px] text-[var(--teal)];
 }
 
 @utility section-heading {
@@ -356,10 +312,6 @@ html[data-page-transition="active"] footer {
   .notes-grid > .note-card:nth-child(3n + 1) { border-left: none; }
 }
 .note-card-thumbnail img { object-fit: cover; }
-.note-card-sample-thumbnail strong { align-self: flex-end; font: 700 clamp(34px, 5vw, 60px)/1 var(--mono); }
-.note-card-sample-0 { background: #0a171d; color: var(--surface); }
-.note-card-sample-1 { background: #ffc18b; color: #0a171d; }
-.note-card-sample-2 { background: #bcd7d1; color: #0a171d; }
 .note-card h3 { margin: 34px 0 13px; font: 700 23px/1.45 var(--font-shippori-mincho), serif; overflow-wrap: anywhere; }
 .note-card-thumbnail-view + h3 { margin-top: 19px; }
 .note-card p { display: -webkit-box; overflow: hidden; margin: 0 0 24px; color: var(--text-sub); font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
@@ -369,9 +321,6 @@ html[data-page-transition="active"] footer {
   .note-card-link:hover p { color: var(--ink); }
   .note-card-link:hover .note-card-action { color: var(--red); }
 }
-.notes-placeholder h3 { margin: 0 0 8px; font: 700 19px var(--font-oswald), var(--font-shippori-mincho), sans-serif; }
-.notes-placeholder p { margin: 0; font-size: 13px; line-height: 1.8; color: var(--text-sub); }
-.notes-placeholder > .section-tag { margin-left: auto; white-space: nowrap; }
 
 @media (min-width: 1600px) {
   .manifesto-panel h1 { font-size: 53px; }
@@ -445,7 +394,6 @@ html[data-page-transition="active"] footer {
   .notes-section .note-card-thumbnail { transition: transform .45s ease-out, box-shadow .25s ease-out; }
   .notes-section .note-card.is-in-view .note-card-thumbnail { transform: translateY(-5px); box-shadow: 4px 4px 0 var(--ink); }
   .note-card h3 { margin-top: 25px; font-size: 20px; }
-  .notes-placeholder > .section-tag { display: none; }
 }
 @media (max-width: 639px) {
   .manifesto-caption { top: auto; bottom: 26px; font-size: 9px; }

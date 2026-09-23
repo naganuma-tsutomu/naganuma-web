@@ -71,11 +71,11 @@ export default async function NotesPage({ searchParams }: { searchParams: Promis
       </header>
 
       {noteUnavailable ? (
-        <p className="notes-message" role="status">{showSamples ? notesPageMessages.unavailableWithSamples : notesPageMessages.unavailable}</p>
+        <p className="m-0 border-y border-[#b1b5ab] py-[27px] text-[13px] leading-[1.8]" role="status">{showSamples ? notesPageMessages.unavailableWithSamples : notesPageMessages.unavailable}</p>
       ) : null}
       {entries.length > 0 ? (
         <>
-        <div className="notes-grid">
+        <div className="grid grid-cols-3 border-y-2 border-[var(--ink)] max-[1024px]:grid-cols-1">
           {items.map(({ article, sample }, index) => (
             <NoteCard key={sample ? `sample-${article.title}` : article.url} article={article} index={startIndex + index} sample={sample} />
           ))}
@@ -83,13 +83,13 @@ export default async function NotesPage({ searchParams }: { searchParams: Promis
         <ListPagination path="/notes" page={page} totalPages={totalPages} />
         </>
       ) : !noteUnavailable ? (
-        <div className="notes-placeholder">
-          <span className="notes-symbol" aria-hidden="true">&gt;_</span>
+        <div className="flex items-center gap-6 border-y border-[#b1b5ab] py-[27px] max-[768px]:gap-4">
+          <span className="font-[family-name:var(--mono)] text-[34px] text-[var(--teal)]" aria-hidden="true">&gt;_</span>
           <div>
-            <h3>{noteFeed ? notesPageMessages.emptyTitle : notesPageMessages.unconfiguredTitle}</h3>
-            <p>{noteFeed ? notesPageMessages.emptyDescription : notesPageMessages.unconfiguredDescription}</p>
+            <h3 className="m-0 mb-2 font-[family-name:var(--font-oswald),var(--font-shippori-mincho),sans-serif] text-[19px] font-bold">{noteFeed ? notesPageMessages.emptyTitle : notesPageMessages.unconfiguredTitle}</h3>
+            <p className="m-0 text-[13px] leading-[1.8] text-[var(--text-sub)]">{noteFeed ? notesPageMessages.emptyDescription : notesPageMessages.unconfiguredDescription}</p>
           </div>
-          <span className="section-tag">{noteFeed ? notesPageMessages.emptyTag : notesPageMessages.unconfiguredTag}</span>
+          <span className="ml-auto font-[family-name:var(--mono)] text-[10px] leading-normal tracking-[0.08em] whitespace-nowrap max-[768px]:hidden">{noteFeed ? notesPageMessages.emptyTag : notesPageMessages.unconfiguredTag}</span>
         </div>
       ) : null}
     </section>
