@@ -1,8 +1,61 @@
-# NAGANUMA Portfolio
+# NAGANUMA Personal Workspace & Homelab Console
 
-Next.jsで実装したポートフォリオサイトです。トップページにはProjectsとNotesの新着を各最大3件表示します。`/projects` と `/notes` はそれぞれ6件ずつページを切り替えて表示します。
+![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=flat-square&logo=tailwind-css)
+![Prometheus](https://img.shields.io/badge/Prometheus-Monitoring-E6522C?style=flat-square&logo=prometheus)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Deployed-326CE5?style=flat-square&logo=kubernetes)
+![Playwright](https://img.shields.io/badge/Playwright-E2E_Tested-2EAD33?style=flat-square&logo=playwright)
 
-表示確認用のサンプルを追加するには、`.env.local` に `SHOW_SAMPLE_CONTENT=true` を設定してサーバーを再起動します。`/projects` と `/notes` では取得済みの記事の後ろにサンプルを各6件追加し、`/about` ではサンプル職歴を表示します。Homeでは実データが3件未満の場合に限り、空いた枠をサンプルで補います。サンプルカードにはリンクを付けません。`false` に戻すと追加表示を停止します。サンプル職歴は開発環境だけで表示され、本番では設定値にかかわらず非表示になります。
+Proxmox Cluster / Ubuntu ホームラボ環境と連動した、ターミナル風コンソール型ポートフォリオサイト（`https://naganuma-web.com`）のソースコードです。
+
+---
+
+## Overview & Concept
+
+「**MAKE A BETTER DIGITAL LIFE.**」をコンセプトに掲げ、単なる静的な実績公開サイトではなく、ホームラボのリアルタイムステータスやnoteの最新記事を統合した「デジタルワークスペース・コマンドセンター」として構築されています。
+
+- **Terminal-Style UI**: `neofetch` や `tmux` 風の質感を再現した個性的デザイン
+- **Live Telemetry**: Proxmoxクラスタのメトリクスをリアルタイム可視化
+- **Unified Output**: note記事の自動取得・同期機能
+
+## Key Features
+
+### Real-time Homelab Telemetry (Prometheus)
+- Prometheus APIを経由し、CPU・メモリ・ディスク使用率およびネットワーク通信量（Mb/s）を取得・描画
+- **25秒間のサーバーキャッシュ** と **非表示タブでの自動更新停止** により、監視サーバーへのクエリ負荷を最適化
+- Prometheus未接続時やローカル環境では、デザイン確認用のサンプルモードへ自動フォールバック
+
+### Automated note Integration
+- `NOTE_USER_ID` の設定により、noteのRSSフィードから最新記事を自動取得（最大5分間キャッシュ）
+- 外部での情報発信が自サイトトップページへリアルタイムに自動還元される仕組み
+
+### Strict Nonce-based CSP
+- リクエストごとに一意の `nonce` を生成し、厳格な Content Security Policy (CSP) を動的適用
+- セキュアな配信構造とモダンなWebパフォーマンスを両立
+
+### Bulletproof Testing & Audit
+- PlaywrightモックCMS（固定データ13記事）によるE2Eテスト環境を完備
+- Lighthouse CIを用いた表示パフォーマンスおよび品質の自動監査を実施
+
+## Architecture
+
+```mermaid
+graph TD
+    User[Browser / User] -->|HTTPS| Next[Next.js App Router]
+    Next -->|API Server-side| microCMS[microCMS]
+    Next -->|RSS Sync| Note[note.com]
+    Next -->|Internal API Query| Prom[Prometheus]
+    Prom -->|Exporter| Proxmox[Proxmox Cluster]
+
+    subgraph CI/CD & Deploy Pipeline
+        GHA[GitHub Actions] -->|E2E / Audit| Playwright[Playwright & Lighthouse]
+        GHA -->|Sync Secrets| InfraRepo[proxmox-iac-project]
+        InfraRepo -->|Deploy| K8s[Kubernetes Cluster]
+    end
+```
+
+---
 
 ## 開発環境とローカル起動
 
@@ -32,6 +85,8 @@ npm run test:e2e
 npm run test:lighthouse
 ```
 
+表示確認用のサンプルを追加するには、`.env.local` に `SHOW_SAMPLE_CONTENT=true` を設定してサーバーを再起動します。`/projects` と `/notes` では取得済みの記事の後ろにサンプルを各6件追加し、`/about` ではサンプル職歴を表示します。Homeでは実データが3件未満の場合に限り、空いた枠をサンプルで補います。サンプルカードにはリンクを付けません。`false` に戻すと追加表示を停止します。サンプル職歴は開発環境だけで表示され、本番では設定値にかかわらず非表示になります。
+
 ## ユニットテスト
 
 `npm test` はサーバー用テスト（`test:server`）とクライアント用テスト（`test:client`）を順に実行します。クライアント側はjsdom上にReactをマウントし、`useInView`の表示率・一度だけの表示・監視解除・非対応環境でのフォールバックを検証します。サーバー用のReact条件はクライアントテストには適用しません。
@@ -59,6 +114,7 @@ Playwright専用サーバーは `e2e/fixtures/mock-cms.mjs` をNodeの`--import`
 | `NOTE_USER_ID` | 任意 | noteのクリエイターID |
 | `HOMELAB_PROMETHEUS_URL` | 任意 | PrometheusサーバーのURL（未設定時はデモ表示） |
 | `HOMELAB_PROMETHEUS_INSTANCE` | 任意 | PrometheusのProxmox exporter対象instanceラベル |
+| `HOMELAB_PROMETHEUS_BEARER_TOKEN` | 任意 | Prometheusがbearer tokenを要求する場合のトークン |
 | `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` | 任意 | Google Analytics測定ID（クライアント配信） |
 
 ## 検索非掲載・SNS共有・セキュリティヘッダー
@@ -91,21 +147,21 @@ NOTE_USER_ID=your_creator_id
 
 ## HOMELAB STATUSをPrometheusに接続する
 
-Kubernetesにデプロイするコンテナには、環境変数 `HOMELAB_PROMETHEUS_URL=http://192.168.20.130:9090` を設定して渡します。サイトのサーバー側だけがPrometheusへ問い合わせ、ProxmoxノードのCPU・メモリ・ディスク使用率と、VM/LXCの受信・送信速度（Mb/s）および直近10分間の推移を表示します。トップのneofetchには、オンライン・総ノード数、VM/LXC数、合計CPUコア数、全ノードのうち最短の稼働時間、合計使用・総メモリも表示します。画面を開いている間は30秒ごとに更新し、非表示のタブでは更新を止めます。サーバー側では結果を25秒間キャッシュします。CPU使用率はノードのCPU数で重み付けし、メモリとディスクは全ノードの使用量を合計して計算します。複数のProxmox exporterを収集している場合は、`HOMELAB_PROMETHEUS_INSTANCE` で対象の `instance` ラベルを指定できます。
+Kubernetesにデプロイするコンテナには、環境変数 `HOMELAB_PROMETHEUS_URL` にPrometheusサーバーのURLを設定して渡します。サイトのサーバー側だけがPrometheusへ問い合わせ、ProxmoxノードのCPU・メモリ・ディスク使用率と、VM/LXCの受信・送信速度（Mb/s）および直近10分間の推移を表示します。トップのneofetchには、オンライン・総ノード数、VM/LXC数、合計CPUコア数、全ノードのうち最短の稼働時間、合計使用・総メモリも表示します。画面を開いている間は30秒ごとに更新し、非表示のタブでは更新を止めます。サーバー側では結果を25秒間キャッシュします。CPU使用率はノードのCPU数で重み付けし、メモリとディスクは全ノードの使用量を合計して計算します。複数のProxmox exporterを収集している場合は、`HOMELAB_PROMETHEUS_INSTANCE` で対象の `instance` ラベルを指定できます。
 
 接続できない場合は `OFFLINE` と `--` を表示します。一部のメトリクスだけ取得できた場合は `PARTIAL DATA` を表示します。URLを設定しないローカル開発環境では、デザイン用のサンプル値を表示します。neofetchのOS・ホスト名・CPU・GPUは公開用の構成情報として `app/data/homelab.ts` で管理し、Kernelやパッケージ数は公開しません。
 
 Podからの接続確認は、`kubectl` が使える端末で実行できます。
 
 ```bash
-kubectl exec deployment/next-app -- node -e 'fetch("http://192.168.20.130:9090/api/v1/query?query=up", {signal: AbortSignal.timeout(5000)}).then(async r => console.log(r.status, (await r.json()).status)).catch(e => {console.error(e.message); process.exit(1)})'
+kubectl exec deployment/next-app -- node -e 'fetch("$HOMELAB_PROMETHEUS_URL/api/v1/query?query=up", {signal: AbortSignal.timeout(5000)}).then(async r => console.log(r.status, (await r.json()).status)).catch(e => {console.error(e.message); process.exit(1)})'
 ```
 
-`200 success` 以外やタイムアウトなら、Kubernetes側のPodまたはノードから `192.168.20.130` の TCP 9090 への通信経路とファイアウォールを確認してください。
+`200 success` 以外やタイムアウトなら、Kubernetes側のPodまたはノードからPrometheusサーバーへの通信経路とファイアウォールを確認してください。
 
 ## Kubernetesへのデプロイ
 
-`naganuma-web` リポジトリの GitHub Actions Secrets に `MICROCMS_SERVICE_DOMAIN`、`MICROCMS_API_KEY`、`NOTE_USER_ID`、`INFRA_REPO_PAT`、および本番で Prometheus を接続する場合は `HOMELAB_PROMETHEUS_URL`（例: `http://192.168.20.130:9090`）を設定します。`MICROCMS_PROJECTS_ENDPOINT` は省略時に `projects` を使用します。任意で `HOMELAB_PROMETHEUS_INSTANCE` や `HOMELAB_PROMETHEUS_BEARER_TOKEN`、Google Analytics を使う場合は `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` も設定します。
+`naganuma-web` リポジトリの GitHub Actions Secrets に `MICROCMS_SERVICE_DOMAIN`、`MICROCMS_API_KEY`、`NOTE_USER_ID`、`INFRA_REPO_PAT`、および本番で Prometheus を接続する場合は `HOMELAB_PROMETHEUS_URL` を設定します。`MICROCMS_PROJECTS_ENDPOINT` は省略時に `projects` を使用します。任意で `HOMELAB_PROMETHEUS_INSTANCE` や `HOMELAB_PROMETHEUS_BEARER_TOKEN`、Google Analytics を使う場合は `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` も設定します。
 
 `INFRA_REPO_PAT` は `proxmox-iac-project` にアクセスできるトークンが必要です。Fine-grained PAT の場合、同リポジトリへの `Contents: write`（デプロイ通知）と `Secrets: write`（実行時設定の同期）を付与してください。権限が不足すると `Sync runtime secrets to infra repository` が失敗します。
 
