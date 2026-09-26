@@ -31,11 +31,15 @@ export default function NoteCard({ article, index, sample = false, scrollHighlig
   const date = article.publishedAt ? dateFormatter.format(new Date(article.publishedAt)) : null;
   const hasThumbnail = Boolean(article.thumbnailUrl || sample);
 
-  const thumbnailClasses = `relative mt-[18px] aspect-[1.91/1] w-full overflow-hidden border border-[var(--ink)] bg-[#dce5dd] transition-[transform,box-shadow] duration-250 group-hover/notecard:-translate-y-[3px] group-hover/notecard:shadow-[4px_4px_0_var(--ink)] ${
+  const thumbnailViewClasses = `note-card-thumbnail-view relative isolate mt-[18px] aspect-[1.91/1] w-full transition-transform duration-300 ease-in-out will-change-transform group-hover/notecard:-translate-y-[3px] ${
     scrollHighlight && isInView
-      ? "max-[768px]:-translate-y-[5px] max-[768px]:shadow-[4px_4px_0_var(--ink)] max-[768px]:duration-450"
+      ? "max-[768px]:-translate-y-[5px] max-[768px]:duration-450"
       : ""
   }`;
+  const thumbnailShadowClasses = `pointer-events-none absolute inset-0 bg-[var(--ink)] opacity-0 transition-[translate,opacity] duration-300 ease-in-out will-change-[translate,opacity] group-hover/notecard:translate-x-1 group-hover/notecard:translate-y-1 group-hover/notecard:opacity-100 ${
+    scrollHighlight && isInView ? "max-[768px]:translate-x-1 max-[768px]:translate-y-1 max-[768px]:opacity-100 max-[768px]:duration-450" : ""
+  }`;
+  const thumbnailClasses = "relative z-[1] h-full w-full overflow-hidden border border-[var(--ink)] bg-[#dce5dd]";
 
   const linkClasses = "group/notecard flex h-full min-h-[280px] max-[1024px]:min-h-[220px] max-[768px]:min-h-0 flex-col px-[26px] pt-[22px] pb-6 max-[768px]:px-0.5 max-[768px]:pt-5 max-[768px]:pb-[22px] font-[family-name:var(--font-shippori-mincho)] text-inherit no-underline transition-colors duration-200 hover:bg-[var(--orange)] focus-visible:relative focus-visible:z-[1] focus-visible:outline-offset-[-5px]";
 
@@ -46,7 +50,8 @@ export default function NoteCard({ article, index, sample = false, scrollHighlig
         {sample ? <span>SAMPLE</span> : date ? <time dateTime={article.publishedAt ?? undefined}>{date}</time> : null}
       </div>
       {hasThumbnail ? (
-        <div ref={thumbnailRef} className="note-card-thumbnail-view">
+        <div ref={thumbnailRef} className={thumbnailViewClasses}>
+          <span className={thumbnailShadowClasses} aria-hidden="true" />
           {article.thumbnailUrl ? (
             <div className={thumbnailClasses}>
               <Image

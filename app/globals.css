@@ -194,11 +194,15 @@
 }
 
 @utility section-heading {
-  @apply mb-[30px] flex min-h-[34px] items-center gap-[18px] max-[768px]:gap-3;
+  @apply flex min-h-[34px] items-center gap-[18px] max-[768px]:gap-3;
 }
 
 @utility section-heading-label {
   @apply inline-flex shrink-0 items-center gap-[10px] max-[768px]:gap-2;
+}
+
+@utility section-heading-title {
+  @apply m-0 font-[family-name:var(--font-oswald),sans-serif] text-[24px] font-bold leading-[1.2] tracking-[0.12em] text-[var(--ink)] transition-colors duration-200 max-[768px]:text-[16px];
 }
 
 @utility section-heading-marker {
@@ -293,17 +297,10 @@ html[data-page-transition="active"] footer {
 @utility projects-section {
   @apply pt-[58px] max-[768px]:pt-[30px];
 }
-.section-heading h2 { margin: 0; color: var(--ink); font: 700 24px/1.2 var(--font-oswald), sans-serif; letter-spacing: .12em; transition: color .2s ease; }
-.section-heading > .section-rule { background: #bac4b9; }
 @media (hover: hover) and (min-width: 768px) {
-  .desktop-area:is(:hover, :focus-within) .desktop-heading-marker,
-  .projects-section:is(:hover, :focus-within) .section-heading-marker,
-  .notes-section:is(:hover, :focus-within) .section-heading-marker { box-shadow: 0 0 8px var(--red); }
-  .desktop-area:is(:hover, :focus-within) .desktop-info-title,
-  .projects-section:is(:hover, :focus-within) .section-heading h2,
-  .notes-section:is(:hover, :focus-within) .section-heading h2 { color: #000; }
-  .projects-section:is(:hover, :focus-within) .section-heading-index,
-  .notes-section:is(:hover, :focus-within) .section-heading-index { color: var(--teal); }
+  .home-section:is(:hover, :focus-within) .section-heading-marker { box-shadow: 0 0 8px var(--red); }
+  .home-section:is(:hover, :focus-within) .section-heading-title { color: #000; }
+  .home-section:is(:hover, :focus-within) .section-heading-index { color: var(--teal); }
 }
 .section-palette i { width: 19px; height: 19px; background: var(--ink); }
 .section-palette i:nth-child(2) { background: var(--teal); }
@@ -430,7 +427,6 @@ html[data-page-transition="active"] footer {
   .mobile-terminal-indicator { width: 9px; height: 9px; margin-left: auto; border-right: 2px solid var(--aqua); border-bottom: 2px solid var(--aqua); transform: rotate(45deg); transition: transform .2s; }
   .mobile-terminal-disclosure[open] .mobile-terminal-indicator { transform: rotate(225deg); }
   .mobile-terminal-disclosure > .terminal-panel { margin-top: 10px; }
-  .section-heading h2 { font-size: 16px; }
   .section-palette i { width: 14px; height: 14px; }
   .article-body { padding-inline: 0; font-size: 15px; }
   .article-body h1, .article-body h2, .article-body h3, .article-body h4 { scroll-margin-top: 96px; }
