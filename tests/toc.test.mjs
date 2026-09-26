@@ -69,3 +69,23 @@ test("ignores h1, h5, h6 headings", () => {
   assert.equal(toc[0].level, 2);
   assert.equal(toc[0].text, "中見出し");
 });
+
+test("ignores headings inside <pre> code blocks and preserves code contents", () => {
+  const html = `
+    <h2>通常の見出し</h2>
+    <pre><code class="language-html">
+      <h2>コードブロック内の見出し</h2>
+      <h3>コードブロック内の小見出し</h3>
+    </code></pre>
+    <h3>次の見出し</h3>
+  `;
+  const { html: transformedHtml, toc } = extractTocAndInjectIds(html);
+
+  assert.equal(toc.length, 2);
+  assert.equal(toc[0].text, "通常の見出し");
+  assert.equal(toc[1].text, "次の見出し");
+
+  // <pre> 内の <h2> がそのまま保持され、id 属性が勝手に注入されていないこと
+  assert.match(transformedHtml, /<h2>コードブロック内の見出し<\/h2>/);
+  assert.doesNotMatch(transformedHtml, /<h2 id="[^"]+">コードブロック内の見出し<\/h2>/);
+});

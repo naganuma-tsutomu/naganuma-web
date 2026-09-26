@@ -40,6 +40,25 @@ test("security headers preserve noindex independently of the per-request CSP", (
   assert.equal(headers["Content-Security-Policy-Report-Only"], undefined);
 });
 
+test("enabling indexing via environment variable updates metadata robots and removes X-Robots-Tag", () => {
+  const saved = process.env.NEXT_PUBLIC_ENABLE_INDEXING;
+  try {
+    process.env.NEXT_PUBLIC_ENABLE_INDEXING = "true";
+    const metadata = createPageMetadata({ title: "About", description: "プロフィール", path: "/about" });
+    assert.deepEqual(metadata.robots, { index: true, follow: true });
+
+    const headers = Object.fromEntries(securityHeaders().map(({ key, value }) => [key, value]));
+    assert.equal(headers["X-Robots-Tag"], undefined);
+    assert.equal(headers["X-Content-Type-Options"], "nosniff");
+  } finally {
+    if (saved === undefined) {
+      delete process.env.NEXT_PUBLIC_ENABLE_INDEXING;
+    } else {
+      process.env.NEXT_PUBLIC_ENABLE_INDEXING = saved;
+    }
+  }
+});
+
 test("enforced CSP allows only nonce-bearing inline scripts and required analytics origins", () => {
   const csp = contentSecurityPolicy("test-nonce");
   assert.match(csp, /script-src 'self' 'nonce-test-nonce'/);

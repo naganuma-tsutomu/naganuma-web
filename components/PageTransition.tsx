@@ -126,7 +126,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
     <>
       <main
         id="main-content"
-        className={`flex-grow ${phase === "closing" ? styles.mainClosing : ""} ${phase === "opening" ? styles.mainOpening : ""}`}
+        tabIndex={-1}
+        className={`flex-grow focus:outline-none ${phase === "closing" ? styles.mainClosing : ""} ${phase === "opening" ? styles.mainOpening : ""}`}
         inert={phase !== "idle"}
       >
         {children}

@@ -16,8 +16,9 @@ export function contentSecurityPolicy(nonce: string) {
 }
 
 export function securityHeaders() {
+  const isIndexEnabled = process.env.NEXT_PUBLIC_ENABLE_INDEXING === "true";
   return [
-    { key: "X-Robots-Tag", value: "noindex, nofollow" },
+    ...(isIndexEnabled ? [] : [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]),
     { key: "X-Content-Type-Options", value: "nosniff" },
     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
     { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },

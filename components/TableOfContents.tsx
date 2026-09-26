@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useTransition } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { TocItem } from "@/lib/toc";
 
 interface TableOfContentsProps {
@@ -10,7 +10,6 @@ interface TableOfContentsProps {
 
 export default function TableOfContents({ items, mode = "sidebar" }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("");
-  const [, startTransition] = useTransition();
 
   // スクロール位置に応じてアクティブな見出しを判定
   const updateActiveHeading = useCallback(() => {
@@ -79,7 +78,7 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
     // ヘッダー固定分の余白を考慮してスクロール
     const headerOffset = 100;
     const elementPosition = el.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
     window.scrollTo({
       top: offsetPosition,
@@ -148,7 +147,7 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
         </span>
       </div>
 
-      <div className="max-h-[calc(100vh-220px)] overflow-y-auto pr-1 scrollbar-thin">
+      <div className="max-h-[calc(100vh-220px)] overflow-y-auto pr-1 [scrollbar-width:thin]">
         <ul className="space-y-1 font-[family-name:var(--mono)] text-[12px] leading-snug">
           {items.map((item) => {
             const isActive = activeId === item.id;

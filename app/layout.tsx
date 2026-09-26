@@ -35,7 +35,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
-  robots: { index: false, follow: false },
+  robots: process.env.NEXT_PUBLIC_ENABLE_INDEXING === "true"
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
 };
 
 export default async function RootLayout({

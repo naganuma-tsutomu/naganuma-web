@@ -15,15 +15,16 @@ const menuLinks = [
 ];
 const externalLinkClass = "border-b border-current pb-px text-[var(--ink)] no-underline transition-colors duration-150 hover:text-[var(--red)]";
 
-function MenuClock() {
+function MenuClock({ active }: { active: boolean }) {
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
+    if (!active) return;
     const update = () => setNow(new Date());
     update();
     const interval = window.setInterval(update, 1000);
     return () => window.clearInterval(interval);
-  }, []);
+  }, [active]);
 
   const twoDigits = (value: number) => String(value).padStart(2, "0");
   const hours = now ? twoDigits(now.getHours()) : "--";
@@ -45,6 +46,7 @@ export default function HamburgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const shouldRestoreFocus = useRef(true);
   const pathname = usePathname();
 
   const isCurrent = (href: string): boolean => {
@@ -55,10 +57,12 @@ export default function HamburgerMenu() {
   };
 
   const toggleMenu = () => {
+    shouldRestoreFocus.current = true;
     setIsOpen((prev) => !prev);
   };
 
-  const closeMenu = () => {
+  const closeMenu = (restoreFocus = true) => {
+    shouldRestoreFocus.current = restoreFocus;
     setIsOpen(false);
   };
 
@@ -112,7 +116,9 @@ export default function HamburgerMenu() {
       window.removeEventListener("keydown", handleKeyDown);
       desktop.removeEventListener("change", closeOnDesktop);
       document.body.style.overflow = previousOverflow;
-      triggerElement?.focus({ preventScroll: true });
+      if (shouldRestoreFocus.current) {
+        triggerElement?.focus({ preventScroll: true });
+      }
     };
   }, [isOpen]);
 
@@ -185,7 +191,7 @@ export default function HamburgerMenu() {
               <Link
                 key={link.name}
                 href={link.href}
-                onClick={closeMenu}
+                onClick={() => closeMenu(false)}
                 className="group relative flex min-h-[52px] items-center justify-between gap-3 border-2 border-[var(--ink)] bg-[#f7f5ea] px-[14px] py-[10px] text-[var(--ink)] no-underline shadow-[4px_4px_0_var(--ink)] transition-[transform,box-shadow,background-color] duration-150 hover:bg-[#fffaf0] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--red)] data-[current=true]:bg-[#ffdfb8] data-[current=true]:after:absolute data-[current=true]:after:inset-x-0 data-[current=true]:after:bottom-0 data-[current=true]:after:h-[3px] data-[current=true]:after:bg-[var(--red)] data-[current=true]:after:content-['']"
                 data-current={current}
                 aria-current={current ? "page" : undefined}
@@ -212,7 +218,7 @@ export default function HamburgerMenu() {
               <span className="h-[6px] w-[6px] bg-[var(--orange)] shadow-[0_0_6px_var(--orange)]" aria-hidden="true" />
               SYSTEM CLOCK
             </span>
-            <MenuClock />
+            <MenuClock active={isOpen} />
           </div>
           <div className="flex items-center gap-[14px] border-t border-[#bdc9bd] pt-2 text-[11px] tracking-[0.08em]">
             <span className="text-[10px] text-[#526963]">EXTERNAL:</span>

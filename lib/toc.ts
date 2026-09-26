@@ -35,13 +35,21 @@ function generateSlug(text: string, fallbackIndex: number): string {
  * 記事HTMLから h2, h3, h4 の見出しを抽出し、一意な id 属性を付与したHTMLと目次一覧を返します。
  */
 export function extractTocAndInjectIds(html: string): TocResult {
+  // <pre>...</pre> コードブロック内のタグを見出しとして誤抽出しないよう一時退避
+  const codeBlocks: string[] = [];
+  const codePlaceholder = `__TOC_CODE_BLOCK_${Math.random().toString(36).slice(2)}__`;
+  const htmlWithoutCode = html.replace(/<pre\b[\s\S]*?<\/pre>/gi, (match) => {
+    codeBlocks.push(match);
+    return `${codePlaceholder}_${codeBlocks.length - 1}__`;
+  });
+
   const toc: TocItem[] = [];
   const usedIds = new Map<string, number>();
 
   // h2, h3, h4 タグを検索
   const headingRegex = /<h([2-4])(\s+[^>]*)?>([\s\S]*?)<\/h\1>/gi;
 
-  const transformedHtml = html.replace(headingRegex, (match, levelStr, attrsStr = "", innerHtml) => {
+  const transformedHtml = htmlWithoutCode.replace(headingRegex, (match, levelStr, attrsStr = "", innerHtml) => {
     const level = Number(levelStr);
     const plainText = stripHtmlTags(innerHtml);
 
@@ -81,8 +89,14 @@ export function extractTocAndInjectIds(html: string): TocResult {
     return `<h${level} id="${id}"${attrsStr}>${innerHtml}</h${level}>`;
   });
 
+  // コードブロックを復元
+  const finalHtml = transformedHtml.replace(
+    new RegExp(`${codePlaceholder}_(\\d+)__`, "g"),
+    (_, indexStr) => codeBlocks[Number(indexStr)] ?? ""
+  );
+
   return {
-    html: transformedHtml,
+    html: finalHtml,
     toc,
   };
 }

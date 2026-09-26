@@ -5,7 +5,7 @@ import { projects as samples } from "../app/data/projects.ts";
 import { getMicroCMSConfig, MicroCMSError, microCMSGet } from "./microcms.ts";
 import type { ProjectArticle, ProjectListResult, ProjectSummary } from "@/lib/project-types";
 
-import { LIST_PAGE_SIZE } from "./sample-content.ts";
+import { LIST_PAGE_SIZE, sampleContentEnabled } from "./sample-content.ts";
 import { buildProjectEntries } from "./project-list.ts";
 import { markdownToArticleHtml } from "./article-html.ts";
 import { isValidDraftKey, isValidProjectContentId } from "./project-preview.ts";
@@ -105,17 +105,24 @@ export async function getProjectPage(rawPage: string | string[] | undefined, inc
   return { items, page, totalPages };
 }
 
+const SAMPLE_PROJECT_CONTENT =
+  "<h2>プロジェクトについて</h2><p>このページは、記事のレイアウトを確認するためのサンプルです。実際のプロジェクト内容は準備中です。</p><h2>設計と実装</h2><p>制作の背景や使用した技術、工夫した点などをここにまとめていきます。</p><h2>振り返り</h2><p>つくる過程で学んだことや、今後取り組みたい改善点を記録する予定です。</p>";
+
+function findSampleProject(slug: string): ProjectArticle | null {
+  const sample = samples.find(project => project.slug === slug);
+  if (!sample) return null;
+  return {
+    ...sample,
+    isSample: true,
+    content: SAMPLE_PROJECT_CONTENT,
+  };
+}
+
 export const getProject = cache(async (slug: string): Promise<ProjectArticle | null> => {
   if (!isValidProjectContentId(slug)) return null;
   const config = getMicroCMSConfig();
   if (!config) {
-    const sample = samples.find(project => project.slug === slug);
-    if (!sample) return null;
-    return {
-      ...sample,
-      isSample: true,
-      content: "<h2>プロジェクトについて</h2><p>このページは、記事のレイアウトを確認するためのサンプルです。実際のプロジェクト内容は準備中です。</p><h2>設計と実装</h2><p>制作の背景や使用した技術、工夫した点などをここにまとめていきます。</p><h2>振り返り</h2><p>つくる過程で学んだことや、今後取り組みたい改善点を記録する予定です。</p>",
-    };
+    return findSampleProject(slug);
   }
 
   try {
@@ -126,7 +133,12 @@ export const getProject = cache(async (slug: string): Promise<ProjectArticle | n
       isSample: false,
     };
   } catch (error) {
-    if (error instanceof MicroCMSError && error.status === 404) return null;
+    if (error instanceof MicroCMSError && error.status === 404) {
+      if (sampleContentEnabled()) {
+        return findSampleProject(slug);
+      }
+      return null;
+    }
     throw error;
   }
 });

@@ -24,7 +24,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
   const [isLoading, setIsLoading] = useState(true);
   const ref = useRef<HTMLElement>(null);
   const isVisible = useInView(ref, { once: true, margin: "-50px" });
-  const isFullyInView = useInView(ref, { amount: 1 });
+  const isFullyInView = useInView(ref, { amount: 0.95 });
   const publishedAt = project.publishedAt ? new Date(project.publishedAt) : null;
   const date = publishedAt && !Number.isNaN(publishedAt.getTime()) ? dateFormatter.format(publishedAt) : null;
 

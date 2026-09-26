@@ -160,6 +160,17 @@ test("only article 404s become missing articles; authentication and outage error
   }
 });
 
+test("CMS 404 falls back to sample article when sample content is enabled", async () => {
+  process.env.SHOW_SAMPLE_CONTENT = "true";
+  mock.method(globalThis, "fetch", async () => new Response(null, { status: 404 }));
+  const sample = await getProject("project-alpha");
+  assert.notEqual(sample, null);
+  assert.equal(sample?.slug, "project-alpha");
+  assert.equal(sample?.isSample, true);
+  assert.match(sample?.content ?? "", /サンプル/);
+  assert.equal(await getProject("missing"), null);
+});
+
 test("article transport failures and invalid JSON propagate", async () => {
   const fetch = mock.method(globalThis, "fetch", async () => { throw new Error("Connection failed"); });
   await assert.rejects(getProject("real-article"), /Connection failed/);

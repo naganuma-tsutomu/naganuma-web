@@ -14,6 +14,7 @@ interface PageMetadataOptions {
 }
 
 export function createPageMetadata({ title, description, path, imageUrl, publishedAt, article = false }: PageMetadataOptions): Metadata {
+  const isIndexEnabled = process.env.NEXT_PUBLIC_ENABLE_INDEXING === "true";
   const url = new URL(path, SITE_URL).href;
   const image = imageUrl && imageUrl !== "/images/no-image.jpg"
     ? { url: new URL(imageUrl, SITE_URL).href, alt: title }
@@ -23,7 +24,7 @@ export function createPageMetadata({ title, description, path, imageUrl, publish
     title: title === SITE_NAME ? { absolute: SITE_NAME } : title,
     description,
     alternates: { canonical: url },
-    robots: { index: false, follow: false },
+    robots: isIndexEnabled ? { index: true, follow: true } : { index: false, follow: false },
     openGraph: {
       title: socialTitle,
       description,
