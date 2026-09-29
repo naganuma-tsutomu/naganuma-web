@@ -178,14 +178,18 @@ export default function HeroSection() {
       </div>
       <InteractiveTerminal />
       <div className="manifesto-panel" data-hero-window data-drag-handle role="group" tabIndex={0} aria-label="BUILD TWEAK LEARN REPEAT window. Drag or use arrow keys to move.">
-        <span className="mobile-hero-eyebrow">NAGANUMA / PERSONAL WORKSPACE</span>
+        <span className="hero-eyebrow block mb-1 font-[family-name:var(--mono)] text-[10px] font-semibold tracking-[0.12em] text-[#354641]">
+          NAGANUMA // PERSONAL DISPATCH BASE
+        </span>
         <h1 id="hero-title"><span className="manifesto-desktop-title">BUILD<br />TWEAK<br />LEARN<br />REPEAT.</span><span className="manifesto-mobile-title" aria-hidden="true">BUILD. TWEAK.<br />LEARN. REPEAT.</span></h1>
         <div className="manifesto-caption">
           <p>WEB / SERVER / HOMELAB<br />CODE / DESIGN / LIFE</p>
+          <p className="mt-1 text-[10px] text-[#354641] max-[1024px]:hidden">つくって、試して、記録する。</p>
           <span className="short-rule" aria-hidden="true" />
         </div>
-        <p className="mobile-hero-copy"><span>WEB / SERVER / HOMELAB/ CODE</span><span>つくって、試して、記録する。</span></p>
+        <p className="mobile-hero-copy"><span>WEB / SERVER / HOMELAB / CODE</span><span>つくって、試して、記録する。</span></p>
         <div className="mobile-hero-actions">
+          <a href="#about-base">BASE<span aria-hidden="true">↓</span></a>
           <a href="#projects">PROJECTS<span aria-hidden="true">→</span></a>
           <Link href="/about">ABOUT <span aria-hidden="true">↗</span></Link>
         </div>

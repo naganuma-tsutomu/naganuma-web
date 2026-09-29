@@ -143,7 +143,7 @@ export default function HamburgerMenu() {
       <div
         className={`${styles.backdrop} pointer-events-none invisible fixed inset-0 z-[60] opacity-0 transition-[opacity,visibility] duration-250 data-[open=true]:pointer-events-auto data-[open=true]:visible data-[open=true]:opacity-100 motion-reduce:transition-none`}
         data-open={isOpen}
-        onClick={closeMenu}
+        onClick={() => closeMenu()}
         aria-hidden="true"
       />
 
@@ -166,7 +166,7 @@ export default function HamburgerMenu() {
           </div>
           <button
             type="button"
-            onClick={closeMenu}
+            onClick={() => closeMenu()}
             className="inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center border border-[#789195] bg-transparent font-[family-name:var(--mono)] text-[13px] font-bold text-[var(--paper)] transition-colors duration-150 hover:border-[var(--red)] hover:bg-[var(--red)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--orange)]"
             aria-label="メニューを閉じる"
           >

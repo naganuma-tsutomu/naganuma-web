@@ -1,6 +1,7 @@
 import { createPageMetadata, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-metadata";
 import { Suspense, type ReactNode } from "react";
 import HeroSection from "../components/HeroSection";
+import AboutBaseSection from "../components/AboutBaseSection";
 import ProjectsSection, { ProjectsSkeleton } from "../components/ProjectsSection";
 import NotesSection, { NotesSkeleton } from "../components/NotesSection";
 import InteractiveTerminal from "../components/InteractiveTerminal";
@@ -44,10 +45,25 @@ export default async function Home() {
         <HeroSection />
       </div>
 
+      <section id="about-base" className="home-section site-shell pt-[58px] max-[768px]:pt-[34px]" aria-labelledby="about-base-title">
+        <HomeSectionHeading
+          title="ABOUT THIS BASE"
+          index="02"
+          id="about-base-title"
+          className="mb-[30px]"
+          trailing={
+            <span className="font-[family-name:var(--mono)] text-[10px] leading-normal tracking-[0.08em] text-[#526963] max-[640px]:hidden">
+              DISPATCH &amp; EXPERIMENTAL STATION
+            </span>
+          }
+        />
+        <AboutBaseSection />
+      </section>
+
       <section id="projects" className="home-section projects-section site-shell" aria-labelledby="projects-title">
         <HomeSectionHeading
           title="PROJECTS"
-          index="02"
+          index="03"
           id="projects-title"
           className="mb-[30px]"
           trailing={
@@ -78,7 +94,7 @@ export default async function Home() {
       <section id="notes" className="home-section notes-section site-shell" aria-labelledby="notes-title">
         <HomeSectionHeading
           title="NOTES"
-          index="03"
+          index="04"
           id="notes-title"
           className="mb-[30px]"
           trailing={<span className="font-[family-name:var(--mono)] text-[10px] leading-normal tracking-[0.08em]">LATEST FROM NOTE</span>}
