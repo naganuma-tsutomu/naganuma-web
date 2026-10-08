@@ -218,7 +218,7 @@
 }
 
 @utility hero-grid {
-  @apply relative z-[1] isolate grid grid-cols-[1.26fr_1fr] grid-rows-[290px_226px] gap-[18px] min-[1600px]:grid-rows-[316px_236px] max-[1200px]:grid-cols-[1.2fr_1fr] max-[1024px]:grid-cols-2 max-[1024px]:grid-rows-[auto_auto] max-[768px]:flex max-[768px]:flex-col max-[768px]:gap-3;
+  @apply relative z-[1] isolate grid grid-cols-12 grid-rows-[repeat(7,80px)] p-7 min-[1600px]:grid-rows-[repeat(7,86px)] max-[1024px]:grid-cols-2 max-[1024px]:grid-rows-[auto_auto] max-[1024px]:gap-[18px] max-[1024px]:p-5 max-[768px]:flex max-[768px]:flex-col max-[768px]:gap-3 max-[768px]:p-0;
 }
 
 @utility manifesto-panel {
@@ -240,6 +240,64 @@
 
 .header-clock-colon { animation: clock-colon-blink 1s step-end infinite; }
 @keyframes clock-colon-blink { 50% { opacity: 0; } }
+
+@keyframes hero-float-1 {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-13px) rotate(-0.8deg);
+  }
+}
+@keyframes hero-float-2 {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(0.6deg);
+  }
+}
+@keyframes hero-float-3 {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(-0.5deg);
+  }
+}
+@keyframes hero-float-accent {
+  0%, 100% {
+    transform: translateY(0) rotate(12deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(17deg);
+  }
+}
+@keyframes hero-float-star {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) rotate(15deg) scale(1.08);
+  }
+}
+
+.hero-floating-1 { animation: hero-float-1 6.5s ease-in-out infinite; }
+.hero-floating-2 { animation: hero-float-2 8.2s ease-in-out infinite 1.8s; }
+.hero-floating-3 { animation: hero-float-3 9.4s ease-in-out infinite 3.2s; }
+.hero-floating-accent { animation: hero-float-accent 5.8s ease-in-out infinite 0.5s; }
+.hero-floating-star { animation: hero-float-star 7.2s ease-in-out infinite 2.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-floating-1,
+  .hero-floating-2,
+  .hero-floating-3,
+  .hero-floating-accent {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
 html[data-page-transition="active"] .site-header,
 html[data-page-transition="active"] footer {
   pointer-events: none;
@@ -505,4 +563,3 @@ html[data-page-transition="active"] footer {
   .about-monogram { font-size: 78px; }
   .about-terminal-profile dd { font-size: 10px; }
 }
-

@@ -28,6 +28,14 @@ export interface BaseProfileSummary {
   linkHref: string;
 }
 
+export interface BaseWorkspacePhoto {
+  src: string;
+  alt: string;
+  label: string;
+  tag: string;
+  caption: string;
+}
+
 export const baseIdentity: BaseIdentity = {
   tag: "STATION IDENTITY",
   station: "NAGANUMA.WEB",
@@ -44,6 +52,14 @@ export const baseProfileSummary: BaseProfileSummary = {
   focus: "WEB / SERVER / HOMELAB",
   linkText: "FULL PROFILE",
   linkHref: "/about",
+};
+
+export const baseWorkspacePhoto: BaseWorkspacePhoto = {
+  src: "/images/workspace-preview.jpg",
+  alt: "NAGANUMAの作業デスクと自宅サーバー環境",
+  label: "WORKSPACE_01",
+  tag: "LIVE ENVIRONMENT",
+  caption: "TOKYO // HOMELAB & WORKSTATION",
 };
 
 export const basePillars: readonly BasePillar[] = [
