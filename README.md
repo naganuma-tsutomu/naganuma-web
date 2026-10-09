@@ -116,12 +116,13 @@ Playwright専用サーバーは `e2e/fixtures/mock-cms.mjs` をNodeの`--import`
 | `HOMELAB_PROMETHEUS_INSTANCE` | 任意 | PrometheusのProxmox exporter対象instanceラベル |
 | `HOMELAB_PROMETHEUS_BEARER_TOKEN` | 任意 | Prometheusがbearer tokenを要求する場合のトークン |
 | `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` | 任意 | Google Analytics測定ID（クライアント配信） |
+| `NEXT_PUBLIC_ENABLE_INDEXING` | 任意 | `true` で検索エンジンへの掲載を許可。未設定または `false` では検索非掲載 |
 
 ## 検索非掲載・SNS共有・セキュリティヘッダー
 
 正式URLは `lib/site-metadata.ts` の `https://naganuma-web.com` に統一しています。各ページに固有のタイトル・説明・canonical・Open Graph・Twitter Cardを設定し、共通画像は `/og` で1200×630のPNGを生成します。プロジェクト記事は、画像があればその画像と公開日時を使用します。
 
-現在は検索非掲載の方針です。全ページのrobotsメタタグと全レスポンスの `X-Robots-Tag` に `noindex, nofollow` を維持しています。サイトマップやクローラーを遮断するrobots.txtは追加していません。検索公開へ変更する際は、メタタグとヘッダーの両方を見直してください。
+既定では検索非掲載です。`NEXT_PUBLIC_ENABLE_INDEXING` が未設定または `false` の場合、通常ページのrobotsメタタグと全レスポンスの `X-Robots-Tag` に `noindex, nofollow` を設定します。検索掲載を許可する場合は、ビルド時の環境変数に `NEXT_PUBLIC_ENABLE_INDEXING=true` を設定して再ビルド・再デプロイしてください。通常ページのrobotsメタタグが `index, follow` に変わり、`X-Robots-Tag` の非掲載指定が外れます。開発環境では `.env.local` の変更後にサーバーを再起動してください。サイトマップやクローラーを遮断するrobots.txtは追加していません。
 
 `next.config.ts` から `X-Content-Type-Options: nosniff`、`Referrer-Policy: strict-origin-when-cross-origin`、`Permissions-Policy: camera=(), microphone=(), geolocation=()` を配信します。HSTSはTLS終端側の設定確認後に対応します。
 
