@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: process.cwd(),
   turbopack: { root: process.cwd() },
+  allowedDevOrigins: ['*.trycloudflare.com', '*.loca.lt'],
   async headers() {
     return [
       {

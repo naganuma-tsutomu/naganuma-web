@@ -176,7 +176,7 @@ export default function InteractiveTerminal({ draggable = true, inputId = "termi
   }
 
   return (
-    <div className="terminal-panel dark-panel row-span-2 flex flex-col max-[1024px]:col-span-full max-[1024px]:row-start-2 max-[1024px]:min-h-[490px] max-[768px]:min-h-[450px] max-[641px]:min-h-[390px]" data-hero-window={draggable ? "" : undefined}>
+    <div className="terminal-panel dark-panel row-span-2 flex flex-col min-[1024px]:min-h-[480px] xl:min-h-[510px] max-[1024px]:col-span-full max-[1024px]:row-start-2 max-[1024px]:min-h-[490px] max-[768px]:min-h-[450px] max-[641px]:min-h-[390px]" data-hero-window={draggable ? "" : undefined}>
       <div className="panel-titlebar min-h-[37px] py-[6px] max-[768px]:px-3 max-[768px]:text-[13px]" data-drag-handle={draggable ? "" : undefined} role={draggable ? "group" : undefined} tabIndex={draggable ? 0 : undefined} aria-label={draggable ? "Terminal window. Drag or use arrow keys to move." : undefined}>
         <span>naganuma@home:~</span>
         <span className="inline-flex shrink-0 gap-[10px] [&_i]:block [&_i]:h-3 [&_i]:w-3 [&_i]:rounded-full [&_i]:border [&_i]:border-current" aria-hidden="true"><i /><i /><i /></span>

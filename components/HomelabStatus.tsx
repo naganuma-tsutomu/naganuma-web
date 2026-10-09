@@ -68,7 +68,7 @@ export default function HomelabStatus() {
   }`;
 
   return (
-    <div className="status-panel dark-panel relative flex flex-col before:absolute before:inset-[5px] before:border before:border-[var(--border)] before:pointer-events-none" data-hero-window>
+    <div className="status-panel dark-panel relative flex h-full flex-col shadow-[7px_7px_0_var(--ink)] before:absolute before:inset-[5px] before:border before:border-[var(--border)] before:pointer-events-none" data-hero-window>
       <div className="hidden max-[768px]:flex min-h-[43px] items-center gap-3 px-3 py-2 font-[family-name:var(--mono)] text-[10px] leading-[1.3]">
         <strong className="mr-auto text-[11px] tracking-[0.04em]">HOMELAB STATUS</strong>
         <span className={statusDemoClasses} data-state={status?.state}>{status ? labels[status.state] : "CONNECTING"}</span>

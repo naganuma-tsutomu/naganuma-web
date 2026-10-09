@@ -40,12 +40,12 @@ export default async function Home() {
   return (
     <HomelabProvider configured={Boolean(process.env.HOMELAB_PROMETHEUS_URL)}>
       {/* Hero Section */}
-      <div className="home-section desktop-area relative flex min-h-[calc(100svh-82px)] w-full flex-col justify-center overflow-x-clip pb-8">
-        <HomeSectionHeading title="DESKTOP" index="01" className="desktop-info w-full px-4 sm:px-8 lg:px-12 xl:px-16 pt-3 max-[768px]:hidden" decorative />
+      <div className="home-section desktop-area relative flex w-full flex-col justify-start overflow-x-clip pt-8 sm:pt-10 lg:pt-12 pb-4 sm:pb-6">
+        <HomeSectionHeading title="DESKTOP" index="01" className="desktop-info w-full px-4 sm:px-8 lg:px-12 xl:px-16 mb-4 sm:mb-6 max-[768px]:hidden" decorative />
         <HeroSection />
       </div>
 
-      <section id="about-base" className="home-section site-shell flex min-h-[calc(100svh-82px)] scroll-mt-24 flex-col justify-center py-16 max-[768px]:py-10" aria-labelledby="about-base-title">
+      <section id="about-base" className="home-section site-shell flex scroll-mt-24 flex-col justify-start pt-8 pb-10 max-[768px]:pt-6 max-[768px]:pb-8" aria-labelledby="about-base-title">
         <HomeSectionHeading
           title="ABOUT THIS BASE"
           index="02"
@@ -60,7 +60,7 @@ export default async function Home() {
         <AboutBaseSection />
       </section>
 
-      <section id="projects" className="home-section projects-section site-shell flex min-h-[calc(100svh-82px)] scroll-mt-24 flex-col justify-center !py-16 max-[768px]:!py-10" aria-labelledby="projects-title">
+      <section id="projects" className="home-section projects-section site-shell flex scroll-mt-24 flex-col justify-start pt-8 pb-12 max-[768px]:pt-6 max-[768px]:pb-8" aria-labelledby="projects-title">
         <HomeSectionHeading
           title="PROJECTS"
           index="03"
@@ -91,7 +91,7 @@ export default async function Home() {
         </details>
       </section>
 
-      <section id="notes" className="home-section notes-section site-shell flex min-h-[calc(100svh-82px)] scroll-mt-24 flex-col justify-center !py-16 max-[768px]:!py-10" aria-labelledby="notes-title">
+      <section id="notes" className="home-section notes-section site-shell flex scroll-mt-24 flex-col justify-start pt-8 pb-16 max-[768px]:pt-6 max-[768px]:pb-10" aria-labelledby="notes-title">
         <HomeSectionHeading
           title="NOTES"
           index="04"
