@@ -32,14 +32,14 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
     <>
       {/* Shadow Effect */}
       <div
-        className={`absolute top-2 left-2 w-full h-full bg-[var(--ink)] transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] ${
+        className={`absolute top-2 left-2 w-full h-full bg-[var(--ink)] transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover/card:translate-x-[-2px] group-hover/card:translate-y-[-2px] ${
           isFullyInView ? "translate-x-[-2px] translate-y-[-2px]" : "translate-x-0 translate-y-0"
         }`}
       />
 
       {/* Main Card Content */}
       <div
-        className={`project-card-surface relative bg-[var(--surface)] overflow-hidden border-2 border-[var(--ink)] h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover:translate-x-[3px] group-hover:translate-y-[3px] group-hover:border-[var(--red)] group-focus-within:border-[var(--red)] ${
+        className={`project-card-surface relative bg-[var(--surface)] overflow-hidden border-2 border-[var(--ink)] h-full flex flex-col transition-transform duration-300 md:translate-x-0 md:translate-y-0 group-hover/card:translate-x-[3px] group-hover/card:translate-y-[3px] group-hover/card:border-[var(--red)] group-focus-within/card:border-[var(--red)] ${
           isFullyInView ? "translate-x-[3px] translate-y-[3px]" : "translate-x-0 translate-y-0"
         }`}
       >
@@ -50,17 +50,17 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
           </div>
           <div className="flex shrink-0 space-x-1" aria-hidden="true">
             <span
-              className={`w-3 h-3 rounded-full border border-[var(--ink)] group-hover:bg-[var(--ink)] transition-colors md:bg-transparent ${
+              className={`w-3 h-3 rounded-full border border-[var(--ink)] group-hover/card:bg-[var(--ink)] transition-colors md:bg-transparent ${
                 isFullyInView ? "bg-[var(--ink)]" : "bg-transparent"
               }`}
             />
             <span
-              className={`w-3 h-3 rounded-full border border-[var(--ink)] group-hover:bg-[var(--ink)] transition-colors md:bg-transparent ${
+              className={`w-3 h-3 rounded-full border border-[var(--ink)] group-hover/card:bg-[var(--ink)] transition-colors md:bg-transparent ${
                 isFullyInView ? "bg-[var(--ink)]" : "bg-transparent"
               }`}
             />
             <span
-              className={`w-3 h-3 rounded-full border border-[var(--ink)] group-hover:bg-[var(--ink)] transition-colors md:bg-transparent ${
+              className={`w-3 h-3 rounded-full border border-[var(--ink)] group-hover/card:bg-[var(--ink)] transition-colors md:bg-transparent ${
                 isFullyInView ? "bg-[var(--ink)]" : "bg-transparent"
               }`}
             />
@@ -97,7 +97,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
           )}
           <h3
             id={`${project.slug}-title`}
-            className={`text-2xl font-bold font-[family-name:var(--font-oswald),sans-serif] mb-2 group-hover:text-[var(--red)] group-focus-within:text-[var(--red)] transition-colors md:text-[var(--ink)] ${
+            className={`text-2xl font-bold font-[family-name:var(--font-oswald),sans-serif] mb-2 group-hover/card:text-[var(--red)] group-focus-within/card:text-[var(--red)] transition-colors md:text-[var(--ink)] ${
               isFullyInView ? "text-[var(--red)]" : "text-[var(--ink)]"
             }`}
           >
@@ -117,7 +117,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
       style={{
         transitionDelay: `${index * 100}ms`,
       }}
-      className={`project-card group relative h-full font-[family-name:var(--font-shippori-mincho)] transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none! motion-reduce:opacity-100! motion-reduce:transform-none! ${
+      className={`project-card group/card relative h-full font-[family-name:var(--font-shippori-mincho)] transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none! motion-reduce:opacity-100! motion-reduce:transform-none! ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
       }${sample ? " project-card-preview" : ""}`}
       aria-labelledby={`${project.slug}-title`}

@@ -57,7 +57,7 @@ export default function About() {
                 </dl>
               </div>
               <p className="about-terminal-comment">{terminalProfile.comment}</p>
-              <p className="about-terminal-command about-terminal-ready"><span>{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ <i aria-hidden="true" /></p>
+              <p className="about-terminal-command about-terminal-ready"><span>{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ <i className="inline-block h-[1.2em] w-[9px] bg-[var(--orange)] motion-safe:animate-blink" aria-hidden="true" /></p>
             </div>
             <div className="about-identity-footer">
               <span>1:{terminalProfile.filename}*</span>

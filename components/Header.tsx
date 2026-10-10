@@ -40,7 +40,7 @@ function HeaderClock() {
 
   return (
     <time className="flex min-h-[45px] min-w-[106px] flex-col items-center justify-center font-[family-name:var(--mono)] whitespace-nowrap tabular-nums" dateTime={now?.toISOString()} aria-label={now ? `現在の日時 ${date} ${time}` : "現在の日時を読み込み中"}>
-      <span className="text-base leading-[1.2] font-bold" aria-hidden="true">{hours}<span className="header-clock-colon">:</span>{minutes}</span>
+      <span className="text-base leading-[1.2] font-bold" aria-hidden="true">{hours}<span className="motion-safe:animate-blink">:</span>{minutes}</span>
       <span className="text-[11px] leading-normal text-[#426b65]">{date}</span>
     </time>
   );

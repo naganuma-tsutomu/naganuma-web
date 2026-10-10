@@ -251,7 +251,7 @@ export default function HeroSection() {
               transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            <div className="hero-floating-3">
+            <div className="motion-safe:animate-float-soft">
               <div
                 data-hero-window
                 data-drag-handle
@@ -289,7 +289,7 @@ export default function HeroSection() {
               transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            <div className="hero-floating-1">
+            <div className="motion-safe:animate-float-gentle">
               <div
                 className="manifesto-panel border-[3px] border-[var(--ink)] shadow-[8px_8px_0_var(--ink)]"
                 data-hero-window
@@ -342,7 +342,7 @@ export default function HeroSection() {
               transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            <div className="hero-floating-3 w-full">
+            <div className="motion-safe:animate-float-soft w-full">
               <div
                 data-hero-window
                 className="flex flex-col overflow-hidden border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[7px_7px_0_var(--ink)]"
@@ -388,7 +388,7 @@ export default function HeroSection() {
               transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            <div className="hero-floating-2 w-full">
+            <div className="motion-safe:animate-float-slow w-full">
               <HomelabStatus />
             </div>
           </div>
@@ -407,7 +407,7 @@ export default function HeroSection() {
           }}
           aria-hidden="true"
         >
-          <div className="hero-floating-accent">
+          <div className="motion-safe:animate-float-accent">
             <div className="h-16 w-16 border-[3px] border-[var(--ink)] bg-[repeating-linear-gradient(135deg,var(--orange)_0px,var(--orange)_6px,transparent_6px,transparent_12px)] shadow-[5px_5px_0_var(--ink)]" />
           </div>
         </div>
@@ -421,7 +421,7 @@ export default function HeroSection() {
           }}
           aria-hidden="true"
         >
-          <div className="hero-floating-star">✳</div>
+          <div className="motion-safe:animate-float-gentle">✳</div>
         </div>
       </div>
     </section>
