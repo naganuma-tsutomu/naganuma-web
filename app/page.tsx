@@ -60,7 +60,7 @@ function HomeSectionHeading({
 
       {/* 中央の線（エリアホバー時に左から右へスーッと1本静かに走る慎重で上品なアクセントライン） */}
       <div className="relative h-px flex-1 bg-[#bac4b9] overflow-hidden" aria-hidden="true">
-        <span className="absolute inset-0 origin-left scale-x-0 bg-[var(--teal)] transition-transform duration-700 ease-out group-hover/section:scale-x-100 group-focus-within/section:scale-x-100" />
+        <span className="absolute inset-0 origin-left scale-x-0 bg-[var(--teal)] transition-transform duration-300 ease-in group-hover/section:scale-x-100 group-hover/section:duration-700 group-hover/section:ease-out group-focus-within/section:scale-x-100 group-focus-within/section:duration-700 group-focus-within/section:ease-out" />
       </div>
 
       {trailing}
@@ -86,7 +86,7 @@ export default async function Home() {
           <HomeSectionHeading
             title="DESKTOP"
             index="01"
-            className="desktop-info mb-4 sm:mb-6 max-[768px]:hidden"
+            className="desktop-info mb-4 sm:mb-6"
             decorative
           />
         </div>
@@ -133,11 +133,11 @@ export default async function Home() {
       </section>
 
       <section className="mobile-terminal-section site-shell" aria-label="ターミナル">
-        <details className="mobile-terminal-disclosure">
-          <summary className="mobile-terminal-summary">
-            <span className="mobile-terminal-prompt" aria-hidden="true">&gt;_</span>
-            <span><strong>TERMINAL</strong></span>
-            <span className="mobile-terminal-indicator" aria-hidden="true" />
+        <details className="mobile-terminal-disclosure group">
+          <summary className="mobile-terminal-summary flex min-h-[70px] cursor-pointer list-none items-center gap-[14px] border-2 border-[var(--ink)] bg-[var(--teal)] px-[15px] py-3 text-[var(--paper)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--red)] [&::-webkit-details-marker]:hidden">
+            <span className="mobile-terminal-prompt font-[family-name:var(--mono)] text-2xl font-bold leading-none text-[var(--aqua)]" aria-hidden="true">&gt;_</span>
+            <span><strong className="font-[family-name:var(--mono)] text-sm tracking-[0.08em]">TERMINAL</strong></span>
+            <span className="mobile-terminal-indicator ml-auto h-[9px] w-[9px] rotate-45 border-r-2 border-b-2 border-[var(--aqua)] transition-transform group-open:rotate-225" aria-hidden="true" />
           </summary>
           <InteractiveTerminal draggable={false} inputId="mobile-terminal-command-input" />
         </details>

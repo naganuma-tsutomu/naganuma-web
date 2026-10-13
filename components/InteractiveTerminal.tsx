@@ -130,7 +130,7 @@ function NeofetchOutput() {
   );
 }
 
-export default function InteractiveTerminal({ draggable = true, inputId = "terminal-command-input" }: { draggable?: boolean; inputId?: string }) {
+export default function InteractiveTerminal({ draggable = true, inputId = "terminal-command-input", compact = false }: { draggable?: boolean; inputId?: string; compact?: boolean }) {
   const router = useRouter();
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<Entry[]>([]);
@@ -176,7 +176,7 @@ export default function InteractiveTerminal({ draggable = true, inputId = "termi
   }
 
   return (
-    <div className="terminal-panel dark-panel row-span-2 flex flex-col min-[1024px]:min-h-[480px] xl:min-h-[510px] max-[1024px]:col-span-full max-[1024px]:row-start-2 max-[1024px]:min-h-[490px] max-[768px]:min-h-[450px] max-[641px]:min-h-[390px]" data-hero-window={draggable ? "" : undefined}>
+    <div className={`terminal-panel dark-panel row-span-2 flex flex-col min-[1024px]:min-h-[480px] xl:min-h-[510px] max-[1024px]:col-span-full max-[1024px]:row-start-2 max-[1024px]:min-h-[490px] max-[768px]:min-h-[450px] max-[641px]:min-h-[390px] ${compact ? "lg:!min-h-0 lg:h-[400px] xl:h-[420px]" : ""}`} data-hero-window={draggable ? "" : undefined}>
       <div className="panel-titlebar min-h-[37px] py-[6px] max-[768px]:px-3 max-[768px]:text-[13px]" data-drag-handle={draggable ? "" : undefined} role={draggable ? "group" : undefined} tabIndex={draggable ? 0 : undefined} aria-label={draggable ? "Terminal window. Drag or use arrow keys to move." : undefined}>
         <span>naganuma@home:~</span>
         <span className="inline-flex shrink-0 gap-[10px] [&_i]:block [&_i]:h-3 [&_i]:w-3 [&_i]:rounded-full [&_i]:border [&_i]:border-current" aria-hidden="true"><i /><i /><i /></span>
@@ -198,29 +198,29 @@ export default function InteractiveTerminal({ draggable = true, inputId = "termi
               </div>
             ))}
           </div>
-          <form className={`terminal-input-row flex w-full min-w-0 shrink-0 items-center gap-2 ${showWelcome ? "mt-auto" : ""}`} onSubmit={handleSubmit}>
-            <label className="shrink-0 whitespace-nowrap" htmlFor={inputId}><span className="text-[var(--aqua)]">naganuma@home:~</span>$</label>
-            <span className="relative block min-w-[1ch] max-w-full flex-[0_1_auto]" style={{ width: `${input.length + 1}ch` }}>
-              <input
-                id={inputId}
-                ref={inputRef}
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                aria-label="Terminal command. Type help to see available commands."
-                title="Type help to see available commands"
-                maxLength={200}
-                autoComplete="off"
-                autoCapitalize="off"
-                autoCorrect="off"
-                spellCheck={false}
-                enterKeyHint="go"
-                className="block w-full min-w-0 border-0 bg-transparent p-0 font-[inherit] leading-[inherit] text-inherit outline-none caret-[var(--red)] [caret-shape:block] supports-not-[caret-shape:block]:caret-transparent"
-              />
-              <span className="terminal-cursor pointer-events-none absolute top-1/2 h-[1.2em] w-[1ch] -translate-y-1/2 bg-[var(--red)]" style={{ left: `min(${input.length}ch, calc(100% - 1ch))` }} aria-hidden="true" />
-              {!input && <span className="pointer-events-none absolute top-1/2 left-[calc(1ch+4px)] -translate-y-1/2 whitespace-nowrap text-[#91a7a9] max-[768px]:text-xs" aria-hidden="true">type help ↵</span>}
-            </span>
-          </form>
         </div>
+        <form className="terminal-input-row mt-3 flex w-full min-w-0 shrink-0 items-center gap-2" onSubmit={handleSubmit}>
+          <label className="shrink-0 whitespace-nowrap" htmlFor={inputId}><span className="text-[var(--aqua)]">naganuma@home:~</span>$</label>
+          <span className="relative block min-w-[1ch] max-w-full flex-[0_1_auto]" style={{ width: `${input.length + 1}ch` }}>
+            <input
+              id={inputId}
+              ref={inputRef}
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              aria-label="Terminal command. Type help to see available commands."
+              title="Type help to see available commands"
+              maxLength={200}
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+              enterKeyHint="go"
+              className="block w-full min-w-0 border-0 bg-transparent p-0 font-[inherit] leading-[inherit] text-inherit outline-none caret-[var(--red)] [caret-shape:block] supports-not-[caret-shape:block]:caret-transparent"
+            />
+            <span className="terminal-cursor pointer-events-none absolute top-1/2 h-[1.2em] w-[1ch] -translate-y-1/2 bg-[var(--red)]" style={{ left: `min(${input.length}ch, calc(100% - 1ch))` }} aria-hidden="true" />
+            {!input && <span className="pointer-events-none absolute top-1/2 left-[calc(1ch+4px)] -translate-y-1/2 whitespace-nowrap text-[#91a7a9] max-[768px]:text-xs" aria-hidden="true">type help ↵</span>}
+          </span>
+        </form>
         <div className="mx-[-20px] mt-0 mb-[-24px] flex shrink-0 items-center gap-3 bg-[var(--terminal-accent)] px-2 py-0.5 text-xs leading-[1.4] text-[#08171b] max-[768px]:mx-[-12px] max-[768px]:mb-[-17px]" aria-label="tmux session home, window 0 bash">
           <span className="font-bold">[home]</span>
           <span className="whitespace-nowrap">0:bash*</span>

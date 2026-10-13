@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type PointerEvent, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent, type KeyboardEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import InteractiveTerminal from "@/components/InteractiveTerminal";
@@ -30,6 +30,23 @@ export default function HeroSection() {
   const positions = useRef(new Map<HTMLElement, Position>());
   const activeDrag = useRef<Drag | null>(null);
   const front = useRef(0);
+  const [hasMoved, setHasMoved] = useState(false);
+
+  function resetPositions() {
+    positions.current.forEach((_, panel) => {
+      panel.style.transition = "translate 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
+      panel.style.translate = "0px 0px";
+      setTimeout(() => {
+        panel.style.transition = "";
+        panel.style.translate = "";
+        panel.style.zIndex = "";
+      }, 400);
+    });
+    sectionRef.current?.querySelectorAll<HTMLElement>("[data-hero-layer]").forEach((layer) => { layer.style.zIndex = ""; });
+    positions.current.clear();
+    front.current = 0;
+    setHasMoved(false);
+  }
 
   // Phase 2: Pointer Tracking / Multi-layer Parallax via requestAnimationFrame
   useEffect(() => {
@@ -77,7 +94,7 @@ export default function HeroSection() {
     };
   }, []);
 
-  function positionPanel(panel: HTMLElement, requestedX: number, requestedY: number) {
+  const positionPanel = useCallback((panel: HTMLElement, requestedX: number, requestedY: number) => {
     const current = positions.current.get(panel) ?? { x: 0, y: 0 };
     const rect = panel.getBoundingClientRect();
     const baseLeft = rect.left - current.x;
@@ -90,22 +107,30 @@ export default function HeroSection() {
 
     positions.current.set(panel, { x, y });
     panel.style.translate = `${x}px ${y}px`;
-  }
+    if (x !== 0 || y !== 0) {
+      setHasMoved(true);
+    }
+  }, []);
 
   function bringToFront(panel: HTMLElement) {
     panel.style.zIndex = String(++front.current);
+    let layer = panel.closest<HTMLElement>("[data-hero-layer]");
+    while (layer) {
+      layer.style.zIndex = String(front.current);
+      layer = layer.parentElement?.closest<HTMLElement>("[data-hero-layer]") ?? null;
+    }
   }
 
-  function endDrag(pointerId: number) {
+  const endDrag = useCallback((pointerId: number) => {
     const drag = activeDrag.current;
     if (!drag || drag.pointerId !== pointerId) return;
     delete drag.panel.dataset.dragging;
     activeDrag.current = null;
     if (drag.handle.hasPointerCapture(pointerId)) drag.handle.releasePointerCapture(pointerId);
-  }
+  }, []);
 
   function handlePointerDown(event: PointerEvent<HTMLElement>) {
-    if (window.matchMedia("(max-width: 767px)").matches) return;
+    if (!window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)").matches) return;
     if (!event.isPrimary || (event.pointerType === "mouse" && event.button !== 0) || activeDrag.current) return;
     const target = event.target;
     if (!(target instanceof Element)) return;
@@ -115,14 +140,14 @@ export default function HeroSection() {
 
     const handle = target.closest<HTMLElement>("[data-drag-handle]");
     if (!handle || !panel.contains(handle)) return;
-    if (event.pointerType === "touch" && panel.classList.contains("manifesto-panel") && !target.closest("h1")) return;
+    if (target.closest("a, button, input, textarea, select")) return;
 
     event.preventDefault();
     const current = positions.current.get(panel) ?? { x: 0, y: 0 };
     positionPanel(panel, current.x, current.y);
     handle.focus({ preventScroll: true });
     handle.setPointerCapture(event.pointerId);
-    panel.dataset.dragging = "";
+    panel.dataset.dragging = "true";
     activeDrag.current = {
       pointerId: event.pointerId,
       handle,
@@ -140,7 +165,7 @@ export default function HeroSection() {
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLElement>) {
-    if (window.matchMedia("(max-width: 767px)").matches) return;
+    if (!window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)").matches) return;
     const target = event.target;
     if (!(target instanceof HTMLElement) || !target.matches("[data-drag-handle]")) return;
     const panel = target.closest<HTMLElement>("[data-hero-window]");
@@ -172,21 +197,26 @@ export default function HeroSection() {
         positions.current.clear();
         sectionRef.current?.querySelectorAll<HTMLElement>("[data-hero-window]").forEach((panel) => {
           panel.style.translate = "";
+          panel.style.zIndex = "";
+          const layer = panel.closest<HTMLElement>("[data-hero-layer]");
+          if (layer) layer.style.zIndex = "";
         });
+        front.current = 0;
+        setHasMoved(false);
       } else {
         positions.current.forEach((position, panel) => positionPanel(panel, position.x, position.y));
       }
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [positionPanel, endDrag]);
 
   return (
     <section
       id="home"
       ref={sectionRef}
-      className="relative z-[1] isolate mt-4 sm:mt-6 w-full max-w-[1720px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16"
-      aria-labelledby="hero-title"
+      className="relative z-[1] isolate mt-2 sm:mt-4 lg:mt-6 w-full max-w-[1720px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16"
+      aria-label="NAGANUMAの制作・実験基地"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={(event) => endDrag(event.pointerId)}
@@ -232,6 +262,26 @@ export default function HeroSection() {
         </div>
       </div>
 
+      {/* レトロテクニカル・コントロールバー (RESET ボタン / PCのみ) */}
+      <div className="pointer-events-auto absolute top-2 right-4 sm:right-6 lg:right-12 xl:right-16 z-20 hidden items-center gap-3 font-[family-name:var(--mono)] text-[10px] min-[1024px]:flex">
+        <span className="text-[#0a171d]/40 tracking-wider">WORKSPACE // TILED</span>
+        <button
+          type="button"
+          onClick={resetPositions}
+          disabled={!hasMoved}
+          aria-label="ウィンドウの配置を初期位置に戻す"
+          className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-[10px] tracking-wider transition-all select-none ${
+            hasMoved
+              ? "border-[var(--ink)] bg-[var(--paper)] text-[var(--ink)] shadow-[2px_2px_0_var(--ink)] hover:bg-[var(--red)] hover:text-white hover:border-[var(--red)] cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
+              : "border-[#bac4b9] bg-transparent text-[#7a938e] opacity-40 cursor-not-allowed"
+          }`}
+        >
+          <span className={`inline-block h-1.5 w-1.5 rounded-full ${hasMoved ? "bg-[var(--red)] motion-safe:animate-ping" : "bg-[#7a938e]"}`} />
+          RESET TILES
+        </button>
+      </div>
+
+      <div className="hidden lg:block">
       {/* ==================================================== */}
       {/* 3D レイヤーステージ: L2 (左寄りターミナル) + L3 (左右の手前ウィンドウ群) */}
       {/* ==================================================== */}
@@ -239,7 +289,7 @@ export default function HeroSection() {
         {/* ================================================== */}
         {/* L2: メインターミナル (主役: 左寄りに配置 / マウス追従 0px / 浮遊なし) */}
         {/* ================================================== */}
-        <div className="relative z-10 w-full min-[1024px]:w-[58%] xl:w-[55%]">
+        <div data-hero-layer className="relative z-10 w-full min-[1024px]:w-[58%] xl:w-[55%]">
           <InteractiveTerminal />
 
           {/* L3-Left: ターミナルの左下に配置する付箋メモ: README.txt (強度: ±11px / 浮遊3: 9.4s) */}
@@ -283,7 +333,8 @@ export default function HeroSection() {
         <div className="mt-6 flex flex-col gap-5 min-[1024px]:pointer-events-none min-[1024px]:absolute min-[1024px]:top-20 xl:min-[1024px]:top-22 min-[1024px]:right-0 xl:min-[1024px]:right-4 min-[1024px]:mt-0 min-[1024px]:w-[50%] xl:w-[48%] min-[1024px]:z-20">
           {/* 小ウィンドウ 1: マニフェストパネル (強度: ±14px / 浮遊1: 6.5s) */}
           <div
-            className="min-[1024px]:pointer-events-auto"
+            data-hero-layer
+            className="relative min-[1024px]:pointer-events-auto"
             style={{
               transform: "translate3d(calc(var(--hero-norm-x, 0) * 14px), calc(var(--hero-norm-y, 0) * 14px), 0)",
               transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -302,12 +353,9 @@ export default function HeroSection() {
                   <span>NAGANUMA // BASE_MANIFESTO</span>
                   <span className="flex gap-1.5 text-xs" aria-hidden="true">■ ■</span>
                 </div>
-                <h1 id="hero-title">
+                <h1 id="hero-title-desktop">
                   <span className="manifesto-desktop-title">
                     BUILD<br />TWEAK<br />LEARN<br />REPEAT.
-                  </span>
-                  <span className="manifesto-mobile-title" aria-hidden="true">
-                    BUILD. TWEAK.<br />LEARN. REPEAT.
                   </span>
                 </h1>
                 <div className="manifesto-caption">
@@ -320,15 +368,6 @@ export default function HeroSection() {
                   </p>
                   <span className="short-rule" aria-hidden="true" />
                 </div>
-                <p className="mobile-hero-copy">
-                  <span>WEB / SERVER / HOMELAB / CODE</span>
-                  <span>つくって、試して、記録する。</span>
-                </p>
-                <div className="mobile-hero-actions">
-                  <a href="#about-base">BASE<span aria-hidden="true">↓</span></a>
-                  <a href="#projects">PROJECTS<span aria-hidden="true">→</span></a>
-                  <Link href="/about">ABOUT <span aria-hidden="true">↗</span></Link>
-                </div>
                 <span className="manifesto-underscore" aria-hidden="true">_</span>
               </div>
             </div>
@@ -336,6 +375,7 @@ export default function HeroSection() {
 
           {/* 小ウィンドウ 2: 写真ウィンドウ (マニフェストパネルの右側に重ねて配置！ / 強度: ±22px / 浮遊3: 9.4s) */}
           <div
+            data-hero-layer
             className="max-[1023px]:order-3 min-[1024px]:pointer-events-auto min-[1024px]:absolute min-[1024px]:top-[130px] xl:min-[1024px]:top-[140px] min-[1024px]:right-8 xl:min-[1024px]:right-12 min-[1024px]:z-30 min-[1024px]:w-[285px] xl:w-[315px]"
             style={{
               transform: "translate3d(calc(var(--hero-norm-x, 0) * 22px), calc(var(--hero-norm-y, 0) * 22px), 0)",
@@ -382,7 +422,8 @@ export default function HeroSection() {
 
           {/* 小ウィンドウ 3: ホームラボステータス (写真ウィンドウの下、右上に寄せて配置！ / 強度: ±18px / 浮遊2: 8.2s) */}
           <div
-            className="max-[1023px]:order-2 w-full min-[1024px]:pointer-events-auto min-[1024px]:mt-7 xl:min-[1024px]:mt-8 min-[1024px]:ml-8 xl:min-[1024px]:ml-12 min-[1024px]:z-20"
+            data-hero-layer
+            className="relative max-[1023px]:order-2 w-full min-[1024px]:pointer-events-auto min-[1024px]:mt-7 xl:min-[1024px]:mt-8 min-[1024px]:ml-8 xl:min-[1024px]:ml-12 min-[1024px]:z-20"
             style={{
               transform: "translate3d(calc(var(--hero-norm-x, 0) * 18px), calc(var(--hero-norm-y, 0) * 18px), 0)",
               transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -422,6 +463,51 @@ export default function HeroSection() {
           aria-hidden="true"
         >
           <div className="motion-safe:animate-float-gentle">✳</div>
+        </div>
+      </div>
+      </div>
+
+      <div className="relative z-10 grid gap-5 pt-5 pb-5 lg:hidden md:grid-cols-2 md:gap-6 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1fr)] lg:gap-x-8 lg:gap-y-7 lg:pt-12 lg:pb-6 xl:gap-x-10">
+        <div className="relative min-w-0 border-[3px] border-[var(--ink)] bg-[radial-gradient(ellipse_at_30%_40%,#ffca8b,var(--orange))] p-5 shadow-[8px_8px_0_var(--ink)] md:col-span-2 md:p-8 lg:col-span-1 lg:self-start">
+          <div className="flex items-center justify-between gap-2 border-b border-[var(--ink)]/20 pb-3 font-[family-name:var(--mono)] text-[9px] font-semibold tracking-[0.1em] text-[#354641] sm:text-[10px]">
+            <span>NAGANUMA // BASE_MANIFESTO</span>
+            <span className="shrink-0" aria-hidden="true">■ ■</span>
+          </div>
+          <h1 id="hero-title" className="mt-6 font-[family-name:var(--font-pixel)] text-[clamp(24px,6.2vw,38px)] font-bold leading-[1.2] tracking-[-0.07em] text-[var(--red)] lg:text-[clamp(30px,2.7vw,46px)]">
+            BUILD. TWEAK.<br />LEARN. REPEAT.
+          </h1>
+          <p className="mt-5 text-[15px] font-semibold leading-[1.8] text-[var(--ink)] sm:text-base">
+            Web開発と自作サーバー。<br />つくって、試して、記録する。
+          </p>
+          <p className="mt-3 font-[family-name:var(--mono)] text-[9px] tracking-[0.08em] text-[#354641] sm:text-[10px]">WEB / SERVER / HOMELAB / CODE</p>
+          <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto] gap-3 sm:flex">
+            <a href="#projects" className="inline-flex min-h-12 items-center justify-between gap-4 border-2 border-[var(--ink)] bg-[var(--ink)] px-4 font-[family-name:var(--mono)] text-xs font-bold text-[var(--paper)] shadow-[3px_3px_0_rgba(10,23,29,0.2)] transition-colors hover:bg-[var(--red)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ink)] sm:min-w-[180px]">PROJECTS <span aria-hidden="true">→</span></a>
+            <Link href="/about" className="inline-flex min-h-12 items-center justify-between gap-4 border-2 border-[var(--ink)] px-4 font-[family-name:var(--mono)] text-xs font-bold text-[var(--ink)] transition-colors hover:bg-[var(--paper)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ink)]">ABOUT <span aria-hidden="true">↗</span></Link>
+          </div>
+        </div>
+
+        <div data-hero-layer className="relative min-w-0 lg:col-start-2">
+          <div
+            style={{ transform: "translate3d(calc(var(--hero-norm-x, 0) * 10px), calc(var(--hero-norm-y, 0) * 10px), 0)", transition: "transform 0.35s ease-out" }}
+          >
+            <div className="motion-safe:animate-float-soft">
+              <div data-hero-window className="overflow-hidden border-[3px] border-[var(--ink)] bg-[var(--paper)] shadow-[7px_7px_0_var(--ink)]">
+                <div data-drag-handle role="group" tabIndex={0} aria-label="作業環境の写真。PCではドラッグ、または矢印キーで移動できます。" className="flex items-center justify-between border-b-2 border-[var(--ink)] bg-[var(--surface-alt)] px-3 py-2 font-[family-name:var(--mono)] text-[10px] font-bold">
+                  <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[var(--red)]" aria-hidden="true" />BASE_SETUP.JPG</span>
+                  <span className="text-[var(--text-sub)]">16:10</span>
+                </div>
+                <Link href="/about" className="group relative block aspect-[16/10] lg:aspect-[2.5/1] focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-[var(--red)]">
+                  <Image src="/images/workspace-preview.jpg" alt="モニターや機材を並べた作業デスク。作業環境について見る" fill sizes="(min-width: 1720px) 740px, (min-width: 1024px) 48vw, (min-width: 768px) 45vw, 100vw" className="object-cover motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--ink)]/70 via-transparent to-transparent" />
+                  <span className="absolute right-3 bottom-3 border border-white/50 bg-[var(--ink)] px-3 py-2 font-[family-name:var(--mono)] text-[10px] font-bold tracking-[0.08em] text-white transition-colors group-hover:bg-[var(--red)]">VISIT MY BASE ↗</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div data-hero-layer className="relative min-w-0 lg:hidden">
+          <HomelabStatus compact />
         </div>
       </div>
     </section>

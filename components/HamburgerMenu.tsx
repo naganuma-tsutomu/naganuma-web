@@ -141,7 +141,7 @@ export default function HamburgerMenu() {
 
       {/* バックドロップ */}
       <div
-        className={`${styles.backdrop} pointer-events-none invisible fixed inset-0 z-[60] opacity-0 transition-[opacity,visibility] duration-250 data-[open=true]:pointer-events-auto data-[open=true]:visible data-[open=true]:opacity-100 motion-reduce:transition-none`}
+        className={`${styles.backdrop} pointer-events-none invisible fixed inset-0 z-[60] opacity-0 transition-[opacity,visibility] duration-250 data-[open=true]:pointer-events-auto data-[open=true]:visible data-[open=true]:opacity-100 motion-reduce:transition-none [[data-page-transition=active]_&]:invisible [[data-page-transition=active]_&]:pointer-events-none [[data-page-transition=active]_&]:transition-none`}
         data-open={isOpen}
         onClick={() => closeMenu()}
         aria-hidden="true"
@@ -155,7 +155,7 @@ export default function HamburgerMenu() {
         role="dialog"
         aria-modal="true"
         aria-label="サイト内ナビゲーション"
-        className={`${styles.drawer} invisible fixed inset-y-0 right-0 z-[70] flex h-dvh w-[min(calc(100vw-32px),340px)] translate-x-full flex-col overflow-hidden border-l-[3px] border-[var(--ink)] font-[family-name:var(--mono)] text-[var(--ink)] shadow-[-8px_0_0_rgba(10,23,29,.35)] transition-[transform,visibility] duration-300 ease-[cubic-bezier(.16,1,.3,1)] data-[open=true]:visible data-[open=true]:translate-x-0 motion-reduce:transition-none`}
+        className={`${styles.drawer} invisible fixed inset-y-0 right-0 z-[70] flex h-dvh w-[min(calc(100vw-32px),340px)] translate-x-full flex-col overflow-hidden border-l-[3px] border-[var(--ink)] font-[family-name:var(--mono)] text-[var(--ink)] shadow-[-8px_0_0_rgba(10,23,29,.35)] transition-[transform,visibility] duration-300 ease-[cubic-bezier(.16,1,.3,1)] data-[open=true]:visible data-[open=true]:translate-x-0 motion-reduce:transition-none [[data-page-transition=active]_&]:invisible [[data-page-transition=active]_&]:pointer-events-none [[data-page-transition=active]_&]:transition-none`}
         data-open={isOpen}
       >
         {/* ウィンドウタイトルバー */}

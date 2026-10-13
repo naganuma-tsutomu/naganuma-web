@@ -68,4 +68,39 @@ test.describe("Mobile Navigation Menu", () => {
 
     await expect(page).toHaveURL(/\/about/);
   });
+
+  test("hands off from the mobile drawer to the page transition without overlapping motion", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.addInitScript(() => localStorage.setItem("naganuma-login-intro-seen", "1"));
+    let releaseNavigation!: () => void;
+    const navigationGate = new Promise<void>((resolve) => { releaseNavigation = resolve; });
+    await page.route(/\/about(?:\?.*)?$/, async (route) => {
+      await navigationGate;
+      await route.continue();
+    });
+    try {
+      await page.goto("/");
+      await page.locator('button[aria-controls="mobile-navigation-drawer"]').click();
+      const drawer = page.locator("#mobile-navigation-drawer");
+      await expect(drawer).toBeVisible();
+      await drawer.getByRole("link", { name: /ABOUT/ }).click();
+      const overlay = page.locator('[role="status"][data-phase]');
+      await expect(overlay).toHaveAttribute("data-phase", "closing");
+      await expect(drawer).toBeHidden();
+      await expect.poll(() => page.locator("#main-content").evaluate((main) => {
+        const matrix = new DOMMatrix(getComputedStyle(main).transform);
+        return matrix.a === 1 && matrix.d === 1 && matrix.e === 0
+          && matrix.f < 0 && matrix.f >= -12;
+      })).toBe(true);
+      await expect(page.locator("#main-content")).toHaveCSS("filter", "none");
+      releaseNavigation();
+      await expect(page).toHaveURL(/\/about/);
+      await expect(overlay).toHaveAttribute("data-phase", "idle");
+      await expect(page.locator("#main-content")).not.toHaveAttribute("inert");
+      await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+    } finally {
+      releaseNavigation();
+    }
+  });
+
 });

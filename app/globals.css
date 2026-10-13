@@ -263,7 +263,7 @@
 }
 
 @utility mobile-terminal-section {
-  @apply hidden max-[768px]:block max-[768px]:pt-[42px];
+  @apply hidden max-[1023px]:block max-[1023px]:pt-[42px];
 }
 
 html[data-page-transition="active"] .site-header,
@@ -274,12 +274,22 @@ html[data-page-transition="active"] footer {
 
 
 
-.hero-grid [data-hero-window] { position: relative; }
-.hero-grid [data-drag-handle] { cursor: grab; user-select: none; touch-action: none; }
-.hero-grid [data-hero-window][data-dragging] [data-drag-handle] { cursor: grabbing; }
-.hero-grid .manifesto-panel[data-drag-handle] { touch-action: pan-y; }
-.hero-grid .manifesto-panel h1 { touch-action: none; }
-.hero-grid [data-drag-handle]:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+[data-hero-window] { position: relative; transition: box-shadow 0.2s ease, transform 0.2s ease; }
+[data-drag-handle] { cursor: auto; }
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  [data-drag-handle] { cursor: grab; user-select: none; touch-action: none; }
+}
+[data-drag-handle]:active { cursor: grabbing; }
+[data-hero-window][data-dragging="true"] {
+  cursor: grabbing !important;
+  box-shadow: 12px 14px 0 var(--ink) !important;
+  transform: scale(1.015);
+  z-index: 100 !important;
+}
+[data-hero-window][data-dragging="true"] [data-drag-handle] { cursor: grabbing !important; }
+.manifesto-panel[data-drag-handle] { touch-action: pan-y; }
+.manifesto-panel h1 { touch-action: none; }
+[data-drag-handle]:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
 @supports (caret-shape: block) { .terminal-input-row:focus-within .terminal-cursor { display: none; } }
 
 .manifesto-panel h1 { margin: 0; font: 700 clamp(34px, 3.2vw, 49px)/.99 var(--font-pixel), var(--mono); letter-spacing: -.09em; color: var(--red); }
