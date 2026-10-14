@@ -2,6 +2,17 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { extractTocAndInjectIds } from "../lib/toc.ts";
 
+test("keeps suffixed and explicit heading IDs unique", () => {
+  for (const html of [
+    '<h2>foo</h2><h2>foo</h2><h2>foo-2</h2>',
+    '<h2 id="foo-2">First</h2><h2 id="foo">Second</h2><h2 id="foo">Third</h2>',
+  ]) {
+    const { toc, html: rendered } = extractTocAndInjectIds(html);
+    assert.equal(new Set(toc.map(item => item.id)).size, 3);
+    for (const item of toc) assert.ok(rendered.includes(`id="${item.id}"`));
+  }
+});
+
 test("extracts h2, h3, and h4 headings and injects IDs", () => {
   const html = `
     <h2>はじめに</h2>

@@ -44,7 +44,7 @@ export function extractTocAndInjectIds(html: string): TocResult {
   });
 
   const toc: TocItem[] = [];
-  const usedIds = new Map<string, number>();
+  const usedIds = new Set<string>();
 
   // h2, h3, h4 タグを検索
   const headingRegex = /<h([2-4])(\s+[^>]*)?>([\s\S]*?)<\/h\1>/gi;
@@ -59,20 +59,13 @@ export function extractTocAndInjectIds(html: string): TocResult {
 
     // 既存の id 属性があるか確認
     const idMatch = attrsStr.match(/\bid\s*=\s*["']([^"']+)["']/i);
-    let id = idMatch ? idMatch[1] : "";
-
-    if (!id) {
-      const baseSlug = generateSlug(plainText, toc.length + 1);
-      const count = usedIds.get(baseSlug) ?? 0;
-      usedIds.set(baseSlug, count + 1);
-      id = count === 0 ? baseSlug : `${baseSlug}-${count + 1}`;
-    } else {
-      const count = usedIds.get(id) ?? 0;
-      usedIds.set(id, count + 1);
-      if (count > 0) {
-        id = `${id}-${count + 1}`;
-      }
+    const baseId = idMatch?.[1] || generateSlug(plainText, toc.length + 1);
+    let id = baseId;
+    let suffix = 2;
+    while (usedIds.has(id)) {
+      id = `${baseId}-${suffix++}`;
     }
+    usedIds.add(id);
 
     toc.push({
       id,

@@ -2,6 +2,19 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { markdownToArticleHtml, sanitizeArticle } from "../lib/article-html.ts";
 
+test("preserves blank lines in fenced and indented code while compacting surrounding lists", () => {
+  for (const code of [
+    '```text\n- first\n\n- second\n```',
+    '~~~text\n- first\n\n- second\n~~~',
+    '    - first\n\n    - second',
+  ]) {
+    const html = markdownToArticleHtml(`${code}\n\n- outside one\n\n- outside two`);
+    assert.match(html, /- first\n\n- second/);
+    assert.match(html, /<li>outside one<\/li>/);
+    assert.match(html, /<li>outside two<\/li>/);
+  }
+});
+
 test("keeps article formatting, code, tables and safe images", () => {
   const html = sanitizeArticle('<h2 id="overview">概要</h2><p><strong>太字</strong></p><ul><li>項目</li></ul><pre><code class="language-ts">const n = 1;</code></pre><table><tbody><tr><td colspan="2">値</td></tr></tbody></table><img src="https://images.microcms-assets.io/assets/example/image.jpg" alt="構成図">');
   assert.match(html, /<h2 id="overview">概要<\/h2>/);

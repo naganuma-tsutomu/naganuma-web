@@ -38,7 +38,7 @@ function stripFrontMatter(markdown: string): string {
   return markdown.slice(match[0].length).replace(/^\n+/, "");
 }
 
-function compactMarkdownBlocks(markdown: string): string {
+function compactTextBlocks(markdown: string): string {
   let current = markdown;
   let previous: string;
   do {
@@ -49,6 +49,22 @@ function compactMarkdownBlocks(markdown: string): string {
       .replace(/^(>[^\n]*)[ \t]*\n[ \t]*\n(?=>)/gm, "$1\n");
   } while (current !== previous);
   return current;
+}
+
+function compactMarkdownBlocks(markdown: string): string {
+  // Let the Markdown parser identify fenced and indented code before normalizing text.
+  const tokens = marked.lexer(markdown, { gfm: true });
+  let result = "";
+  let text = "";
+  for (const token of tokens) {
+    if (token.type === "code") {
+      result += compactTextBlocks(text) + token.raw;
+      text = "";
+    } else {
+      text += token.raw;
+    }
+  }
+  return result + compactTextBlocks(text);
 }
 
 export function markdownToArticleHtml(markdown: string): string {
