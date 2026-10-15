@@ -216,7 +216,7 @@ export default function HeroSection() {
       id="home"
       ref={sectionRef}
       className="relative z-[1] isolate mt-2 sm:mt-4 lg:mt-6 w-full max-w-[1720px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16"
-      aria-label="NAGANUMAの制作・実験基地"
+      aria-label="naganumaの制作・実験基地"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={(event) => endDrag(event.pointerId)}
@@ -228,7 +228,7 @@ export default function HeroSection() {
       {/* L0: 大きな背景文字 (最背面 / マウス追従 ±4px) */}
       {/* ---------------------------------------------------- */}
       <div
-        className="pointer-events-none absolute inset-x-0 -top-6 sm:-top-8 lg:-top-10 xl:-top-12 z-0 flex justify-center select-none max-[768px]:hidden"
+        className="pointer-events-none absolute inset-x-0 -top-6 sm:-top-14 lg:-top-16 xl:-top-18 z-0 flex justify-center select-none max-[768px]:hidden"
         style={{
           transform: "translate3d(calc(var(--hero-norm-x, 0) * 4px), calc(var(--hero-norm-y, 0) * 4px), 0)",
           transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -350,7 +350,7 @@ export default function HeroSection() {
                 aria-label="BUILD TWEAK LEARN REPEAT window. Drag or use arrow keys to move."
               >
                 <div className="mb-2 flex items-center justify-between border-b border-[var(--ink)]/20 pb-1.5 font-[family-name:var(--mono)] text-[10px] font-semibold tracking-[0.12em] text-[#354641]">
-                  <span>NAGANUMA // BASE_MANIFESTO</span>
+                  <span>naganuma // BASE_MANIFESTO</span>
                   <span className="flex gap-1.5 text-xs" aria-hidden="true">■ ■</span>
                 </div>
                 <h1 id="hero-title-desktop">
@@ -470,7 +470,7 @@ export default function HeroSection() {
       <div className="relative z-10 grid gap-5 pt-5 pb-5 lg:hidden md:grid-cols-2 md:gap-6 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1fr)] lg:gap-x-8 lg:gap-y-7 lg:pt-12 lg:pb-6 xl:gap-x-10">
         <div className="relative min-w-0 border-[3px] border-[var(--ink)] bg-[radial-gradient(ellipse_at_30%_40%,#ffca8b,var(--orange))] p-5 shadow-[8px_8px_0_var(--ink)] md:col-span-2 md:p-8 lg:col-span-1 lg:self-start">
           <div className="flex items-center justify-between gap-2 border-b border-[var(--ink)]/20 pb-3 font-[family-name:var(--mono)] text-[9px] font-semibold tracking-[0.1em] text-[#354641] sm:text-[10px]">
-            <span>NAGANUMA // BASE_MANIFESTO</span>
+            <span>naganuma // BASE_MANIFESTO</span>
             <span className="shrink-0" aria-hidden="true">■ ■</span>
           </div>
           <h1 id="hero-title" className="mt-6 font-[family-name:var(--font-pixel)] text-[clamp(24px,6.2vw,38px)] font-bold leading-[1.2] tracking-[-0.07em] text-[var(--red)] lg:text-[clamp(30px,2.7vw,46px)]">

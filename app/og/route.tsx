@@ -11,7 +11,7 @@ export function GET() {
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", fontSize: 116, fontWeight: 700, letterSpacing: -5 }}>
-            NAGANUMA<span style={{ color: "#d93626" }}>.</span>
+            naganuma<span style={{ color: "#d93626" }}>.</span>
           </div>
           <div style={{ display: "flex", fontSize: 30, letterSpacing: 4 }}>BUILD. TWEAK. LEARN. REPEAT.</div>
         </div>

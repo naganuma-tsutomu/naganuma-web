@@ -38,16 +38,16 @@ export interface BaseWorkspacePhoto {
 
 export const baseIdentity: BaseIdentity = {
   tag: "STATION IDENTITY",
-  station: "NAGANUMA.WEB",
+  station: "naganuma.WEB",
   headline: {
     line1: "つくって、試して、記録する。",
     line2: "個人の技術発信基地。",
   },
-  lead: "ソフトウェアエンジニア NAGANUMA の個人発信基地です。Web開発からサーバー構築、自宅ラックサーバーの運用まで、日々の実験や制作物、学んだ知識をオープンにストックしています。",
+  lead: "ソフトウェアエンジニア naganuma の個人発信基地です。Web開発からサーバー構築、自宅ラックサーバーの運用まで、日々の実験や制作物、学んだ知識をオープンにストックしています。",
 };
 
 export const baseProfileSummary: BaseProfileSummary = {
-  name: "NAGANUMA",
+  name: "naganuma",
   role: "SOFTWARE ENGINEER",
   focus: "WEB / SERVER / HOMELAB",
   linkText: "FULL PROFILE",
@@ -56,7 +56,7 @@ export const baseProfileSummary: BaseProfileSummary = {
 
 export const baseWorkspacePhoto: BaseWorkspacePhoto = {
   src: "/images/workspace-preview.jpg",
-  alt: "NAGANUMAの作業デスクと自宅サーバー環境",
+  alt: "naganumaの作業デスクと自宅サーバー環境",
   label: "WORKSPACE_01",
   tag: "LIVE ENVIRONMENT",
   caption: "TOKYO // HOMELAB & WORKSTATION",

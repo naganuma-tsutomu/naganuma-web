@@ -148,11 +148,11 @@ export default function PageTransition({ children }: { children: React.ReactNode
             <div className="mt-[26px] mb-[18px] h-px bg-[#789195]" />
             <div className="mb-[9px] flex justify-between gap-3 text-[10px] tracking-[0.07em] text-[#b7c5c3]"><span>INITIALIZING WORKSPACE</span><span className="whitespace-nowrap text-[var(--orange)]">{phase === "opening" ? "OPENING" : "PLEASE WAIT"}</span></div>
             <div className={`${styles.progress} h-3 overflow-hidden border border-[#789195] bg-[#243d43]`} aria-hidden="true"><span /></div>
-            <div className="mt-[13px] flex justify-between gap-3 text-[9px] tracking-[0.07em] text-[#aebfbd]"><span>SESSION 01</span><span className="max-[899px]:hidden">NAGANUMA / WEB SERVER HOMELAB</span></div>
+            <div className="mt-[13px] flex justify-between gap-3 text-[9px] tracking-[0.07em] text-[#aebfbd]"><span>SESSION 01</span><span className="max-[899px]:hidden">naganuma / WEB SERVER HOMELAB</span></div>
           </div>
         </div>
         <p className="sr-only">ページを切り替えています</p>
-        <div className={`${desktopChromeClass} bottom-7 border-t pt-[14px] max-[899px]:bottom-[22px]`} aria-hidden="true"><span>LOCAL ACCOUNT / NAGANUMA</span><span className="max-[899px]:hidden">CONNECTING TO {destination}</span></div>
+        <div className={`${desktopChromeClass} bottom-7 border-t pt-[14px] max-[899px]:bottom-[22px]`} aria-hidden="true"><span>LOCAL ACCOUNT / naganuma</span><span className="max-[899px]:hidden">CONNECTING TO {destination}</span></div>
       </div>
     </>
   );

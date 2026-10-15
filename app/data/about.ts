@@ -19,7 +19,7 @@ export const terminalProfile: TerminalProfile = {
   username: "naganuma",
   hostname: "home",
   filename: "profile.txt",
-  name: "NAGANUMA",
+  name: "naganuma",
   role: "SOFTWARE ENGINEER",
   focus: "WEB / SERVER / HOMELAB",
   comment: "# BUILD / TWEAK / LEARN / REPEAT",

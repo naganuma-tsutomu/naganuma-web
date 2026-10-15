@@ -100,7 +100,7 @@ export default function LoginIntro() {
           <div className="flex min-w-0 items-center gap-5">
             <span className={wordmarkClass}>
               <span className={launcherIconClass} aria-hidden="true"><i /><i /><i /><i /></span>
-              <span>NAGANUMA</span>
+              <span>naganuma</span>
             </span>
             <span className="font-[family-name:var(--mono)] text-[11px] leading-normal tracking-[0.13em] whitespace-nowrap text-[#52605e] max-[768px]:hidden">PERSONAL WORKSPACE</span>
           </div>
@@ -144,7 +144,7 @@ export default function LoginIntro() {
         </div>
 
         <div className={`${styles.bottomBar} flex items-center justify-between gap-5 border-t border-[#a8aaa0] pt-[14px] text-[10px] leading-normal tracking-[0.06em] text-[#52605e] max-[641px]:justify-end max-[641px]:[&>span:first-child]:hidden`} aria-hidden="true">
-          <span>© NAGANUMA</span>
+          <span>© naganuma</span>
           <span className="flex items-center gap-[9px] whitespace-nowrap"><i className="h-2 w-2 bg-[var(--red)]" /> LOCAL SESSION</span>
         </div>
       </div>

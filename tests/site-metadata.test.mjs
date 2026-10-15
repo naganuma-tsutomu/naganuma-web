@@ -9,7 +9,7 @@ test("page metadata keeps noindex and gives each page its own URL and social des
   assert.equal(metadata.title, "About");
   assert.equal(metadata.alternates.canonical, "https://naganuma-web.com/about");
   assert.equal(metadata.openGraph.url, metadata.alternates.canonical);
-  assert.equal(metadata.openGraph.title, "About | NAGANUMA");
+  assert.equal(metadata.openGraph.title, "About | naganuma");
   assert.equal(metadata.openGraph.description, "プロフィール");
   assert.equal(metadata.openGraph.images[0].url, "https://naganuma-web.com/og");
   assert.equal(metadata.twitter.card, "summary_large_image");
@@ -70,7 +70,7 @@ test("enforced CSP allows only nonce-bearing inline scripts and required analyti
 });
 
 test("home title does not repeat the site name through the layout template", () => {
-  const metadata = createPageMetadata({ title: "NAGANUMA", description: "ホーム", path: "/" });
-  assert.deepEqual(metadata.title, { absolute: "NAGANUMA" });
-  assert.equal(metadata.openGraph.title, "NAGANUMA");
+  const metadata = createPageMetadata({ title: "naganuma", description: "ホーム", path: "/" });
+  assert.deepEqual(metadata.title, { absolute: "naganuma" });
+  assert.equal(metadata.openGraph.title, "naganuma");
 });

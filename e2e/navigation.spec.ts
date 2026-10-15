@@ -2,11 +2,11 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Page Navigation and Security Headers", () => {
   const pages = [
-    { path: "/", title: "NAGANUMA" },
-    { path: "/about", title: "About | NAGANUMA" },
-    { path: "/projects", title: "PROJECTS | NAGANUMA" },
-    { path: "/notes", title: "NOTES | NAGANUMA" },
-    { path: "/contact", title: "Contact | NAGANUMA" },
+    { path: "/", title: "naganuma" },
+    { path: "/about", title: "About | naganuma" },
+    { path: "/projects", title: "PROJECTS | naganuma" },
+    { path: "/notes", title: "NOTES | naganuma" },
+    { path: "/contact", title: "Contact | naganuma" },
   ];
 
   for (const { path, title } of pages) {

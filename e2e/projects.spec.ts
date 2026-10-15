@@ -29,7 +29,7 @@ test("project cards show content and open an article with its metadata", async (
   await expect(page.getByRole("heading", { level: 1, name: project.title })).toBeVisible();
   await expect(page.getByRole("heading", { name: "プロジェクト 01 の概要" })).toBeVisible();
   await expect(page.locator(".article-body")).toContainText("これはE2Eテスト用の記事本文です。");
-  await expect(page).toHaveTitle(`${project.title} | NAGANUMA`);
+  await expect(page).toHaveTitle(`${project.title} | naganuma`);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
   await expect(page.locator('meta[property="article:published_time"]')).toHaveAttribute("content", project.publishedAt);
