@@ -49,8 +49,6 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
   }, [items]);
 
   useEffect(() => {
-    updateActiveHeading();
-
     let rafId: number | null = null;
     const handleScroll = () => {
       if (rafId !== null) return;
@@ -60,6 +58,7 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
       });
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleScroll, { passive: true });
 

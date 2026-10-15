@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { extractTocAndInjectIds } from "../lib/toc.ts";
 import { sanitizeArticle } from "../lib/article-html.ts";
-import { projects as samples } from "../app/data/projects.ts";
 
 test("extracts TOC and injects IDs for sample project content", () => {
   const sampleContent =
