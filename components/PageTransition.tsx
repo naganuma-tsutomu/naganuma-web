@@ -104,9 +104,15 @@ export default function PageTransition({ children }: { children: React.ReactNode
       setDestination(routeLabel(pathname, window.location.hash));
       setPhase("opening");
       timers.current.push(window.setTimeout(() => {
-        resetToIdle();
+        // Commit removal of the page transform before measuring the anchor.
+        flushSync(resetToIdle);
         if (window.location.hash) {
-          const target = document.querySelector(window.location.hash);
+          let target: HTMLElement | null = null;
+          try {
+            target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+          } catch {
+            // A malformed fragment must not interrupt the completed page transition.
+          }
           if (target) {
             target.scrollIntoView({ behavior: "smooth" });
           }

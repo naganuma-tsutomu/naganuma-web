@@ -124,6 +124,8 @@ Playwright専用サーバーは `e2e/fixtures/mock-cms.mjs` をNodeの`--import`
 
 既定では検索非掲載です。`NEXT_PUBLIC_ENABLE_INDEXING` が未設定または `false` の場合、通常ページのrobotsメタタグと全レスポンスの `X-Robots-Tag` に `noindex, nofollow` を設定します。検索掲載を許可する場合は、ビルド時の環境変数に `NEXT_PUBLIC_ENABLE_INDEXING=true` を設定して再ビルド・再デプロイしてください。通常ページのrobotsメタタグが `index, follow` に変わり、`X-Robots-Tag` の非掲載指定が外れます。開発環境では `.env.local` の変更後にサーバーを再起動してください。サイトマップやクローラーを遮断するrobots.txtは追加していません。
 
+GitHub Actions経由の本番デプロイでは、リポジトリのSettings → Secrets and variables → Actions → Variablesに `NEXT_PUBLIC_ENABLE_INDEXING=true` を設定してください。未設定時は `false` としてビルドします。Dockerを直接ビルドする場合は `docker build --build-arg NEXT_PUBLIC_ENABLE_INDEXING=true -t naganuma-web .` を使用します。コンテナ起動時の環境変数では切り替わらないため、変更後は再ビルドが必要です。
+
 `next.config.ts` から `X-Content-Type-Options: nosniff`、`Referrer-Policy: strict-origin-when-cross-origin`、`Permissions-Policy: camera=(), microphone=(), geolocation=()` を配信します。HSTSはTLS終端側の設定確認後に対応します。
 
 本番ビルドには強制適用の `Content-Security-Policy` を追加しています。`proxy.ts` がリクエストごとにnonceを生成し、Next.jsの初期化、ログイン演出、Google Analyticsのスクリプトだけに同じnonceを付与します。Cloudflare Web Analyticsは公式要件に従ってスクリプト配信元と送信先を許可しています。開発サーバーではHMRのノイズを避けるためCSPを配信しません。

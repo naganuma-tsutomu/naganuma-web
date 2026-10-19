@@ -71,6 +71,7 @@ jobs:
           push: false
           build-args: |
             NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-TESTVERIFY
+            NEXT_PUBLIC_ENABLE_INDEXING=true
 
 
   build:
@@ -101,6 +102,7 @@ jobs:
           tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
           build-args: |
             NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID }}
+            NEXT_PUBLIC_ENABLE_INDEXING=${{ vars.NEXT_PUBLIC_ENABLE_INDEXING || 'false' }}
 
       - name: Sync runtime secrets to infra repository
         env:

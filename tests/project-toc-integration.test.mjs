@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { JSDOM } from "jsdom";
 import { extractTocAndInjectIds } from "../lib/toc.ts";
 import { sanitizeArticle } from "../lib/article-html.ts";
 
@@ -56,4 +57,45 @@ test("returns empty toc for articles without headings", () => {
 
   assert.equal(toc.length, 0);
   assert.equal(html, content);
+});
+
+
+test("TOC generation preserves sanitized IDs without creating HTML attributes", () => {
+  for (const id of [
+    "$& onmouseover=window.pwned=1//",
+    "$` $' $$",
+    'a&quot; onmouseover=&quot;window.pwned=1',
+    "a&amp;quot;b",
+  ]) {
+    const sanitized = sanitizeArticle(`<h2 id="${id}">Safe heading</h2>`);
+    const originalHeading = new JSDOM(sanitized).window.document.querySelector("h2");
+    const { html, toc } = extractTocAndInjectIds(sanitized);
+    const document = new JSDOM(html).window.document;
+    const heading = document.querySelector("h2");
+
+    assert.equal(heading.id, originalHeading.id);
+    assert.deepEqual(heading.getAttributeNames(), ["id"]);
+    assert.equal(document.getElementById(toc[0].id), heading);
+    assert.equal(heading.textContent, "Safe heading");
+  }
+});
+
+test("TOC IDs match decoded DOM IDs and remain unique across equivalent entities", () => {
+  const sanitized = sanitizeArticle('<h2 id="a&amp;b">First</h2><h3 id="a&#38;b">Second</h3><h4 id="a&amp;b-2">Third</h4>');
+  const { html, toc } = extractTocAndInjectIds(sanitized);
+  const document = new JSDOM(html).window.document;
+
+  assert.deepEqual(toc.map(item => item.id), ["a&b", "a&b-2", "a&b-2-2"]);
+  const headings = [...document.querySelectorAll("h2, h3, h4")];
+  toc.forEach((item, index) => assert.equal(document.getElementById(item.id), headings[index]));
+});
+
+test("TOC labels decode entities once without treating escaped examples as HTML", () => {
+  const sanitized = sanitizeArticle('<h2>Map&lt;K, V&gt; &amp; R&amp;D <code>&amp;lt;tag&amp;gt;</code> &#x1F680;</h2>');
+  const { html, toc } = extractTocAndInjectIds(sanitized);
+  const heading = new JSDOM(html).window.document.querySelector("h2");
+
+  assert.equal(toc[0].text, "Map<K, V> & R&D &lt;tag&gt; 🚀");
+  assert.equal(toc[0].text, heading.textContent);
+  assert.equal(heading.id, toc[0].id);
 });

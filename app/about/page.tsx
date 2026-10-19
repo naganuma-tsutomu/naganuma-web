@@ -14,6 +14,9 @@ export const metadata = createPageMetadata({
   path: "/about",
 });
 
+const terminalTextClass = "font-[family-name:var(--mono)] text-xs leading-[1.6] [overflow-wrap:anywhere]";
+const aboutSectionClass = "border-t border-[var(--ink)] pt-[30px] pb-[46px] max-[768px]:pt-[25px] max-[768px]:pb-[37px]";
+
 export default function About() {
   const showSampleExperience = sampleExperienceEnabled();
 
@@ -37,29 +40,29 @@ export default function About() {
         </div>
       </header>
 
-      <section className="about-intro" aria-labelledby="about-intro-title">
-        <div className="about-identity dark-panel">
+      <section className="grid grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)] items-stretch gap-[clamp(32px,5vw,80px)] pt-[72px] pb-20 max-[1024px]:gap-8 max-[768px]:grid-cols-1 max-[768px]:gap-[34px] max-[768px]:pt-[42px] max-[768px]:pb-[47px]" aria-labelledby="about-intro-title">
+        <div className="dark-panel flex min-h-[475px] min-w-0 flex-col max-[768px]:min-h-[300px]">
           <div className="panel-titlebar">
             <span>{terminalProfile.filename}</span>
             <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
           </div>
-          <div className="about-identity-body">
-            <div className="about-terminal-content">
-              <p className="about-terminal-command"><span>{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ whoami</p>
-              <p className="about-terminal-response">{terminalProfile.username}</p>
-              <p className="about-terminal-command"><span>{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ cat {terminalProfile.filename}</p>
-              <div className="about-terminal-profile">
-                <div className="about-monogram" aria-hidden="true">N<span>_</span></div>
-                <dl>
-                  <div><dt>NAME</dt><dd>{terminalProfile.name}</dd></div>
-                  <div><dt>ROLE</dt><dd>{terminalProfile.role}</dd></div>
-                  <div><dt>FOCUS</dt><dd>{terminalProfile.focus}</dd></div>
+          <div className="flex min-h-0 flex-1 flex-col border border-[var(--border)] border-t-0">
+            <div className="flex min-w-0 flex-1 flex-col px-6 pt-[22px] pb-[18px] [@media(max-width:479px)]:px-4 [@media(max-width:479px)]:pt-[18px] [@media(max-width:479px)]:pb-[14px]">
+              <p className={`m-0 ${terminalTextClass}`}><span className="text-[var(--aqua)]">{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ whoami</p>
+              <p className={`mt-1 mr-0 mb-5 ml-0 text-[#eaf4ef] ${terminalTextClass}`}>{terminalProfile.username}</p>
+              <p className={`m-0 ${terminalTextClass}`}><span className="text-[var(--aqua)]">{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ cat {terminalProfile.filename}</p>
+              <div className="mt-3 grid grid-cols-[110px_minmax(0,1fr)] items-center gap-5 border-l-2 border-[var(--aqua)] bg-[#173036] py-[19px] pr-[14px] pl-[18px] [@media(max-width:479px)]:grid-cols-[76px_minmax(0,1fr)] [@media(max-width:479px)]:gap-3 [@media(max-width:479px)]:px-[10px] [@media(max-width:479px)]:py-[14px]">
+                <div className="flex items-center justify-center font-[family-name:var(--font-oswald),sans-serif] text-[112px] leading-[.9] font-bold tracking-[-.16em] whitespace-nowrap text-[var(--aqua)] [@media(max-width:479px)]:text-[78px]" aria-hidden="true">N<span className="text-[var(--orange)]">_</span></div>
+                <dl className="m-0 grid min-w-0 gap-[11px]">
+                  <div className="min-w-0"><dt className="font-[family-name:var(--mono)] text-[10px] leading-[1.4] tracking-[.1em] text-[var(--aqua)]">NAME</dt><dd className="mx-0 mt-[2px] mb-0 font-[family-name:var(--mono)] text-xs leading-[1.45] text-[#f1f0e9] [overflow-wrap:anywhere] [@media(max-width:479px)]:text-[10px]">{terminalProfile.name}</dd></div>
+                  <div className="min-w-0"><dt className="font-[family-name:var(--mono)] text-[10px] leading-[1.4] tracking-[.1em] text-[var(--aqua)]">ROLE</dt><dd className="mx-0 mt-[2px] mb-0 font-[family-name:var(--mono)] text-xs leading-[1.45] text-[#f1f0e9] [overflow-wrap:anywhere] [@media(max-width:479px)]:text-[10px]">{terminalProfile.role}</dd></div>
+                  <div className="min-w-0"><dt className="font-[family-name:var(--mono)] text-[10px] leading-[1.4] tracking-[.1em] text-[var(--aqua)]">FOCUS</dt><dd className="mx-0 mt-[2px] mb-0 font-[family-name:var(--mono)] text-xs leading-[1.45] text-[#f1f0e9] [overflow-wrap:anywhere] [@media(max-width:479px)]:text-[10px]">{terminalProfile.focus}</dd></div>
                 </dl>
               </div>
-              <p className="about-terminal-comment">{terminalProfile.comment}</p>
-              <p className="about-terminal-command about-terminal-ready"><span>{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ <i className="inline-block h-[1.2em] w-[9px] bg-[var(--orange)] motion-safe:animate-blink" aria-hidden="true" /></p>
+              <p className="mt-[17px] mr-0 mb-0 ml-0 font-[family-name:var(--mono)] text-[11px] leading-[1.6] text-[#9fb4b3] [overflow-wrap:anywhere]">{terminalProfile.comment}</p>
+              <p className={`mx-0 mt-auto mb-0 flex items-center gap-[.5ch] pt-5 ${terminalTextClass}`}><span className="text-[var(--aqua)]">{terminalProfile.username}@{terminalProfile.hostname}:~</span>$ <i className="inline-block h-[1.2em] w-[9px] bg-[var(--orange)] motion-safe:animate-blink" aria-hidden="true" /></p>
             </div>
-            <div className="about-identity-footer">
+            <div className="flex flex-wrap justify-between gap-x-3 gap-y-1 bg-[var(--terminal-accent)] px-[10px] py-[5px] font-[family-name:var(--mono)] text-[10px] leading-[1.5] tracking-[.02em] text-[#08171b] [@media(max-width:479px)]:text-[8px]">
               <span>1:{terminalProfile.filename}*</span>
               <span>READ ONLY / UTF-8</span>
             </div>
@@ -84,7 +87,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="about-section" aria-labelledby="skills-title">
+      <section className={aboutSectionClass} aria-labelledby="skills-title">
         <div className="interior-section-heading">
           <span>02 / TOOLKIT</span>
           <span className="section-rule" aria-hidden="true" />
@@ -110,7 +113,7 @@ export default function About() {
       </section>
 
       {showSampleExperience && (
-        <section className="about-section" aria-labelledby="experience-title">
+        <section className={aboutSectionClass} aria-labelledby="experience-title">
           <div className="interior-section-heading">
             <span>03 / JOURNEY</span>
             <span className="section-rule" aria-hidden="true" />

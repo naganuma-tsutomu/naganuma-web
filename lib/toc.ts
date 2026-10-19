@@ -1,3 +1,5 @@
+import { decodeHTML, decodeHTMLAttribute, escapeAttribute } from "entities";
+
 export interface TocItem {
   id: string;
   text: string;
@@ -13,7 +15,8 @@ export interface TocResult {
  * HTMLタグを除去してプレーンテキストを抽出します。
  */
 function stripHtmlTags(html: string): string {
-  return html.replace(/<[^>]+>/g, "").trim();
+  // Decode after stripping tags so escaped code examples remain plain text.
+  return decodeHTML(html.replace(/<[^>]+>/g, "")).trim();
 }
 
 /**
@@ -58,8 +61,8 @@ export function extractTocAndInjectIds(html: string): TocResult {
     }
 
     // 既存の id 属性があるか確認
-    const idMatch = attrsStr.match(/\bid\s*=\s*["']([^"']+)["']/i);
-    const baseId = idMatch?.[1] || generateSlug(plainText, toc.length + 1);
+    const idMatch = attrsStr.match(/(\s)id\s*=\s*(["'])(.*?)\2/i);
+    const baseId = (idMatch && decodeHTMLAttribute(idMatch[3])) || generateSlug(plainText, toc.length + 1);
     let id = baseId;
     let suffix = 2;
     while (usedIds.has(id)) {
@@ -75,11 +78,12 @@ export function extractTocAndInjectIds(html: string): TocResult {
 
     if (idMatch) {
       // 既存の id を重複回避した id に置換
-      const newAttrs = attrsStr.replace(/\bid\s*=\s*["'][^"']+["']/i, `id="${id}"`);
+      // A callback keeps replacement tokens such as $& literal. Re-escape decoded IDs.
+      const newAttrs = attrsStr.replace(idMatch[0], () => `${idMatch[1]}id="${escapeAttribute(id)}"`);
       return `<h${level}${newAttrs}>${innerHtml}</h${level}>`;
     }
 
-    return `<h${level} id="${id}"${attrsStr}>${innerHtml}</h${level}>`;
+    return `<h${level} id="${escapeAttribute(id)}"${attrsStr}>${innerHtml}</h${level}>`;
   });
 
   // コードブロックを復元

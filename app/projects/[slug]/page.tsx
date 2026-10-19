@@ -53,12 +53,12 @@ export default async function ProjectPage({ params }: Props) {
   const hasToc = toc.length > 0;
 
   return (
-    <div className={`project-article-shell site-shell ${hasToc ? "has-toc max-w-[1240px]" : ""}`}>
+    <div className={`site-shell pt-6 pb-12 max-[768px]:pt-[14px] ${hasToc ? "max-w-[1240px]" : "max-w-[920px]"}`}>
       <nav className="article-breadcrumb" aria-label="パンくずリスト">
         <Link href="/projects">PROJECTS</Link><span aria-hidden="true">/</span><span>{project.title}</span>
       </nav>
-      <div className={hasToc ? "project-article-layout block lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start lg:gap-9 xl:grid-cols-[minmax(0,1fr)_280px] xl:gap-12" : undefined}>
-        <article className={hasToc ? "project-article-main lg:min-w-0" : undefined}>
+      <div className={hasToc ? "block lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start lg:gap-9 xl:grid-cols-[minmax(0,1fr)_280px] xl:gap-12" : undefined}>
+        <article className={hasToc ? "lg:min-w-0" : undefined}>
           <header className="article-header">
             <div className="article-meta">
               <span>PROJECT JOURNAL</span>
@@ -76,7 +76,7 @@ export default async function ProjectPage({ params }: Props) {
           <div className="article-body" dangerouslySetInnerHTML={{ __html: contentHtml }} />
         </article>
         {hasToc && (
-          <aside className="project-article-sidebar hidden lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-116px)]" aria-label="サイドバー">
+          <aside className="hidden lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-116px)]" aria-label="サイドバー">
             <TableOfContents items={toc} mode="sidebar" />
           </aside>
         )}

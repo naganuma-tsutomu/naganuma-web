@@ -32,8 +32,9 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
       return;
     }
 
-    // 固定ヘッダー（約80〜100px）を考慮した判定ライン
-    const offset = 140;
+    // Use the same CSS offsets as native anchor navigation.
+    const offset = (parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0)
+      + (parseFloat(getComputedStyle(headingElements[0]).scrollMarginTop) || 0) + 1;
     let currentId = items[0].id;
 
     for (const el of headingElements) {
@@ -49,7 +50,9 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
   }, [items]);
 
   useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
     let rafId: number | null = null;
+
     const handleScroll = () => {
       if (rafId !== null) return;
       rafId = window.requestAnimationFrame(() => {
@@ -57,34 +60,73 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
         updateActiveHeading();
       });
     };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
-
-    return () => {
+    const stopListening = () => {
       if (rafId !== null) window.cancelAnimationFrame(rafId);
+      rafId = null;
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
-  }, [updateActiveHeading]);
+    const syncViewport = () => {
+      stopListening();
+      if (desktop.matches !== (mode === "sidebar")) return;
+      handleScroll();
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      window.addEventListener("resize", handleScroll, { passive: true });
+    };
+
+    syncViewport();
+    desktop.addEventListener("change", syncViewport);
+    return () => {
+      stopListening();
+      desktop.removeEventListener("change", syncViewport);
+    };
+  }, [mode, updateActiveHeading]);
+
+  useEffect(() => {
+    // On a fresh URL, streamed article markup may arrive after native hash scrolling.
+    if (window.matchMedia("(min-width: 1024px)").matches !== (mode === "sidebar")) return;
+    const initialHash = window.location.hash;
+    if (!initialHash) return;
+    let id: string;
+    try {
+      id = decodeURIComponent(initialHash.slice(1));
+    } catch {
+      return;
+    }
+    if (!items.some(item => item.id === id)) return;
+
+    let cancelled = false;
+    let rafId: number | null = null;
+    void document.fonts.ready.then(() => {
+      if (cancelled) return;
+      rafId = window.requestAnimationFrame(() => {
+        if (window.location.hash !== initialHash || document.documentElement.dataset.pageTransition === "active") return;
+        document.getElementById(id)?.scrollIntoView({ block: "start", behavior: "instant" });
+      });
+    });
+    return () => {
+      cancelled = true;
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
+    };
+  }, [items, mode]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     const el = document.getElementById(id);
     if (!el) return;
 
-    // ヘッダー固定分の余白を考慮してスクロール
-    const headerOffset = 100;
-    const elementPosition = el.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.scrollY - headerOffset;
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth",
+    // Closing the inline TOC changes the heading position, so do it before scrolling.
+    const details = e.currentTarget.closest("details");
+    if (details) details.open = false;
+    el.tabIndex = -1;
+    el.focus({ preventScroll: true });
+    el.scrollIntoView({
+      block: "start",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
     });
 
-    history.pushState(null, "", `#${id}`);
+    history.pushState(null, "", `#${encodeURIComponent(id)}`);
     setActiveId(id);
   };
 
@@ -112,8 +154,9 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
               return (
                 <li key={item.id} className={indentClass}>
                   <a
-                    href={`#${item.id}`}
+                    href={`#${encodeURIComponent(item.id)}`}
                     onClick={(e) => handleClick(e, item.id)}
+                    aria-current={isActive ? "location" : undefined}
                     className={`block py-1 pr-2 leading-relaxed transition-colors border-l-2 ${
                       isActive
                         ? "border-[var(--red)] pl-2 font-bold text-[var(--red)]"
@@ -156,8 +199,9 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
             return (
               <li key={item.id} className={indentClass}>
                 <a
-                  href={`#${item.id}`}
+                  href={`#${encodeURIComponent(item.id)}`}
                   onClick={(e) => handleClick(e, item.id)}
+                  aria-current={isActive ? "location" : undefined}
                   title={item.text}
                   className={`block py-1 border-l-2 transition-all duration-150 ${
                     isActive

@@ -1,3 +1,18 @@
+.backdrop {
+  background:
+    radial-gradient(circle, rgba(10, 23, 29, .2) 1px, transparent 1px),
+    rgba(10, 23, 29, .6);
+  background-size: 8px 8px, auto;
+}
+
+.drawer {
+  background:
+    linear-gradient(90deg, rgba(10, 23, 29, .04) 1px, transparent 1px),
+    linear-gradient(rgba(10, 23, 29, .04) 1px, transparent 1px),
+    #f4f1e5;
+  background-size: 24px 24px, 24px 24px, auto;
+}
+
 .footerClockColon { animation: footerClockBlink 1s steps(1, start) infinite; }
 
 @keyframes footerClockBlink {
