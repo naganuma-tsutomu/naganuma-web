@@ -228,7 +228,7 @@ export default function HeroSection() {
       {/* L0: 大きな背景文字 (最背面 / マウス追従 ±4px) */}
       {/* ---------------------------------------------------- */}
       <div
-        className="pointer-events-none absolute inset-x-0 -top-6 sm:-top-14 lg:-top-16 xl:-top-18 z-0 flex justify-center select-none max-[768px]:hidden"
+        className="pointer-events-none absolute inset-x-0 -top-10 sm:-top-14 lg:-top-16 xl:-top-18 z-0 flex justify-center select-none max-[768px]:hidden"
         style={{
           transform: "translate3d(calc(var(--hero-norm-x, 0) * 4px), calc(var(--hero-norm-y, 0) * 4px), 0)",
           transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -262,30 +262,11 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* レトロテクニカル・コントロールバー (RESET ボタン / PCのみ) */}
-      <div className="pointer-events-auto absolute top-2 right-4 sm:right-6 lg:right-12 xl:right-16 z-20 hidden items-center gap-3 font-[family-name:var(--mono)] text-[10px] min-[1024px]:flex">
-        <span className="text-[#0a171d]/40 tracking-wider">WORKSPACE // TILED</span>
-        <button
-          type="button"
-          onClick={resetPositions}
-          disabled={!hasMoved}
-          aria-label="ウィンドウの配置を初期位置に戻す"
-          className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-[10px] tracking-wider transition-all select-none ${
-            hasMoved
-              ? "border-[var(--ink)] bg-[var(--paper)] text-[var(--ink)] shadow-[2px_2px_0_var(--ink)] hover:bg-[var(--red)] hover:text-white hover:border-[var(--red)] cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
-              : "border-[#bac4b9] bg-transparent text-[#7a938e] opacity-40 cursor-not-allowed"
-          }`}
-        >
-          <span className={`inline-block h-1.5 w-1.5 rounded-full ${hasMoved ? "bg-[var(--red)] motion-safe:animate-ping" : "bg-[#7a938e]"}`} />
-          RESET TILES
-        </button>
-      </div>
-
       <div className="hidden lg:block">
       {/* ==================================================== */}
       {/* 3D レイヤーステージ: L2 (左寄りターミナル) + L3 (左右の手前ウィンドウ群) */}
       {/* ==================================================== */}
-      <div className="relative z-10 min-[1024px]:min-h-[660px] xl:min-h-[700px] min-[1024px]:pt-22 xl:min-[1024px]:pt-24 min-[1024px]:flex min-[1024px]:items-start min-[1024px]:justify-start min-[1024px]:pl-16 xl:min-[1024px]:pl-24">
+      <div className="relative z-10 min-[1024px]:min-h-[636px] xl:min-h-[676px] min-[1024px]:pt-22 xl:min-[1024px]:pt-24 min-[1024px]:flex min-[1024px]:items-start min-[1024px]:justify-start min-[1024px]:pl-16 xl:min-[1024px]:pl-24">
         {/* ================================================== */}
         {/* L2: メインターミナル (主役: 左寄りに配置 / マウス追従 0px / 浮遊なし) */}
         {/* ================================================== */}
@@ -330,7 +311,7 @@ export default function HeroSection() {
         {/* ================================================== */}
         {/* L3-Right: ターミナルの「右側」の手前レイヤー (マニフェスト + 写真 + 横長ステータス) */}
         {/* ================================================== */}
-        <div className="mt-6 flex flex-col gap-5 min-[1024px]:pointer-events-none min-[1024px]:absolute min-[1024px]:top-20 xl:min-[1024px]:top-22 min-[1024px]:right-0 xl:min-[1024px]:right-4 min-[1024px]:mt-0 min-[1024px]:w-[50%] xl:w-[48%] min-[1024px]:z-20">
+        <div className="mt-6 flex flex-col gap-5 min-[1024px]:pointer-events-none min-[1024px]:absolute min-[1024px]:top-14 xl:min-[1024px]:top-16 min-[1024px]:right-0 xl:min-[1024px]:right-4 min-[1024px]:mt-0 min-[1024px]:w-[50%] xl:w-[48%] min-[1024px]:z-20">
           {/* 小ウィンドウ 1: マニフェストパネル (強度: ±14px / 浮遊1: 6.5s) */}
           <div
             data-hero-layer
@@ -441,7 +422,7 @@ export default function HeroSection() {
         {/* ================================================== */}
         {/* 右上のオレンジ斜線ブロック */}
         <div
-          className="pointer-events-none absolute top-17 xl:top-19 right-6 xl:right-8 z-30 hidden min-[1024px]:block select-none"
+          className="pointer-events-none absolute top-11 xl:top-13 right-6 xl:right-8 z-30 hidden min-[1024px]:block select-none"
           style={{
             transform: "translate3d(calc(var(--hero-norm-x, 0) * 24px), calc(var(--hero-norm-y, 0) * 24px), 0)",
             transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -464,6 +445,25 @@ export default function HeroSection() {
         >
           <div className="motion-safe:animate-float-gentle">✳</div>
         </div>
+      </div>
+
+      {/* ワークスペース全体の操作をウィンドウ群の下に配置 */}
+      <div className="relative z-20 mt-8 flex items-center justify-end gap-3 pb-4 font-[family-name:var(--mono)] text-[10px]">
+        <span className="text-[#0a171d]/40 tracking-wider">WORKSPACE // TILED</span>
+        <button
+          type="button"
+          onClick={resetPositions}
+          disabled={!hasMoved}
+          aria-label="ウィンドウの配置を初期位置に戻す"
+          className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-[10px] tracking-wider transition-all select-none ${
+            hasMoved
+              ? "border-[var(--ink)] bg-[var(--paper)] text-[var(--ink)] shadow-[2px_2px_0_var(--ink)] hover:bg-[var(--red)] hover:text-white hover:border-[var(--red)] cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
+              : "border-[#bac4b9] bg-transparent text-[#7a938e] opacity-40 cursor-not-allowed"
+          }`}
+        >
+          <span className={`inline-block h-1.5 w-1.5 rounded-full ${hasMoved ? "bg-[var(--red)] motion-safe:animate-ping" : "bg-[#7a938e]"}`} />
+          RESET TILES
+        </button>
       </div>
       </div>
 

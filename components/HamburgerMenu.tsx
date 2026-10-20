@@ -136,7 +136,7 @@ export default function HamburgerMenu() {
         <span className="grid grid-cols-[repeat(2,6px)] gap-[3px] rotate-[-7deg] [&_i]:block [&_i]:h-[6px] [&_i]:w-[6px] [&_i]:border [&_i]:border-[var(--ink)] [&_i]:bg-[var(--ink)] [&_i]:transition-colors [&_i]:duration-200 [&_i:nth-child(2)]:bg-transparent [&_i:nth-child(3)]:bg-transparent group-data-[open=true]:[&_i]:border-[var(--red)] group-data-[open=true]:[&_i]:bg-[var(--red)]" aria-hidden="true">
           <i /><i /><i /><i />
         </span>
-        <span>{isOpen ? "CLOSE" : "MENU"}</span>
+        <span>MENU</span>
       </button>
 
       {/* バックドロップ */}

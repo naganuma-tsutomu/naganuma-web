@@ -1,5 +1,5 @@
 import { createPageMetadata, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site-metadata";
-import { Suspense, type ReactNode } from "react";
+import { Suspense } from "react";
 import HeroSection from "../components/HeroSection";
 import AboutBaseSection from "../components/AboutBaseSection";
 import ProjectsSection, { ProjectsSkeleton } from "../components/ProjectsSection";
@@ -15,7 +15,7 @@ interface HomeSectionHeadingProps {
   index: string;
   id?: string;
   className?: string;
-  trailing?: ReactNode;
+  description: string;
   decorative?: boolean;
 }
 
@@ -24,7 +24,7 @@ function HomeSectionHeading({
   index,
   id,
   className = "",
-  trailing,
+  description,
   decorative = false,
 }: HomeSectionHeadingProps) {
   return (
@@ -63,7 +63,9 @@ function HomeSectionHeading({
         <span className="absolute inset-0 origin-left scale-x-0 bg-[var(--teal)] transition-transform duration-300 ease-in group-hover/section:scale-x-100 group-hover/section:duration-700 group-hover/section:ease-out group-focus-within/section:scale-x-100 group-focus-within/section:duration-700 group-focus-within/section:ease-out" />
       </div>
 
-      {trailing}
+      <span className="shrink-0 font-[family-name:var(--mono)] text-[10px] leading-normal tracking-[0.08em] whitespace-nowrap text-[var(--ink)] max-[640px]:hidden">
+        {description}
+      </span>
 
       {/* 右端の延長ライン（エリアホバーで静かに深みのある色へ） */}
       <span
@@ -87,6 +89,7 @@ export default async function Home() {
             title="DESKTOP"
             index="01"
             className="desktop-info mb-4 sm:mb-6"
+            description="PERSONAL WORKSPACE"
             decorative
           />
         </div>
@@ -100,11 +103,7 @@ export default async function Home() {
             index="02"
             id="about-base-title"
             className="mb-[30px]"
-            trailing={
-              <span className="font-[family-name:var(--mono)] text-[10px] leading-normal tracking-[0.08em] text-[#526963] max-[640px]:hidden">
-                DISPATCH &amp; EXPERIMENTAL STATION
-              </span>
-            }
+            description="DISPATCH & EXPERIMENTAL STATION"
           />
           <AboutBaseSection />
         </div>
@@ -117,14 +116,7 @@ export default async function Home() {
             index="03"
             id="projects-title"
             className="mb-[30px]"
-            trailing={
-              <div className="section-palette" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-                <i />
-              </div>
-            }
+            description="SELECTED WORKS"
           />
           <Suspense fallback={<ProjectsSkeleton />}>
             <ProjectsSection />
@@ -150,7 +142,7 @@ export default async function Home() {
             index="04"
             id="notes-title"
             className="mb-[30px]"
-            trailing={<span className="font-[family-name:var(--mono)] text-[10px] leading-normal tracking-[0.08em]">LATEST FROM NOTE</span>}
+            description="LATEST FROM NOTE"
           />
           <Suspense fallback={<NotesSkeleton />}>
             <NotesSection />
