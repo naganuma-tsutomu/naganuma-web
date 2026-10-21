@@ -1,11 +1,9 @@
 import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
-import { sampleExperienceEnabled } from "@/lib/sample-content";
 import {
   terminalProfile,
   bio,
   skills,
-  experiences,
 } from "@/app/data/about";
 
 export const metadata = createPageMetadata({
@@ -18,8 +16,6 @@ const terminalTextClass = "font-[family-name:var(--mono)] text-xs leading-[1.6] 
 const aboutSectionClass = "border-t border-[var(--ink)] pt-[30px] pb-[46px] max-[768px]:pt-[25px] max-[768px]:pb-[37px]";
 
 export default function About() {
-  const showSampleExperience = sampleExperienceEnabled();
-
   return (
     <div className="interior-page site-shell">
       <nav className="interior-breadcrumb" aria-label="パンくずリスト">
@@ -112,42 +108,6 @@ export default function About() {
         </ul>
       </section>
 
-      {showSampleExperience && (
-        <section className={aboutSectionClass} aria-labelledby="experience-title">
-          <div className="interior-section-heading">
-            <span>03 / JOURNEY</span>
-            <span className="section-rule" aria-hidden="true" />
-            <span>SAMPLE CONTENT</span>
-          </div>
-          <h2 id="experience-title" className="interior-section-title">EXPERIENCE<span>.</span></h2>
-          <ol className="m-0 list-none border-t-2 border-[var(--ink)] p-0">
-            {experiences.map((experience) => (
-              <li
-                key={experience.year}
-                className="grid grid-cols-[minmax(150px,.35fr)_minmax(0,1fr)_auto] gap-8 border-b border-[#aeb7ad] px-2 py-[27px] max-[768px]:grid-cols-[1fr_auto] max-[768px]:gap-x-[14px] max-[768px]:gap-y-2"
-              >
-                <span className="font-[family-name:var(--mono)] text-xs leading-[1.5] text-[var(--teal)] max-[768px]:col-span-full">
-                  {experience.year}
-                </span>
-                <div>
-                  <h3 className="m-0 mb-1 font-[family-name:var(--font-oswald),sans-serif] text-[clamp(20px,2vw,27px)] leading-[1.3] font-bold">
-                    {experience.title}
-                  </h3>
-                  <span className="font-[family-name:var(--mono)] text-xs leading-[1.5] text-[var(--red)]">
-                    {experience.company}
-                  </span>
-                  <p className="mt-[13px] mb-0 max-w-[740px] text-sm leading-[1.8] text-[var(--text-sub)]">
-                    {experience.description}
-                  </p>
-                </div>
-                <span className="font-[family-name:var(--mono)] text-xs leading-none text-[var(--terminal-accent)]" aria-hidden="true">
-                  ◆
-                </span>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
     </div>
   );
 }
