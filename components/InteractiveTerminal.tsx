@@ -199,9 +199,9 @@ export default function InteractiveTerminal({ draggable = true, inputId = "termi
             ))}
           </div>
         </div>
-        <form className="terminal-input-row mt-3 flex w-full min-w-0 shrink-0 items-center gap-2" onSubmit={handleSubmit}>
+        <form className="terminal-input-row mt-3 flex w-full min-w-0 shrink-0 items-center gap-2" onSubmit={handleSubmit} onClick={() => inputRef.current?.focus()}>
           <label className="shrink-0 whitespace-nowrap" htmlFor={inputId}><span className="text-[var(--aqua)]">naganuma@home:~</span>$</label>
-          <span className="relative block min-w-[1ch] max-w-full flex-[0_1_auto]" style={{ width: `${input.length + 1}ch` }}>
+          <span className="relative block min-w-[1ch] flex-1">
             <input
               id={inputId}
               ref={inputRef}
