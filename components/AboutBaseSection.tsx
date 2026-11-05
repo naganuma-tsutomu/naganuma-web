@@ -59,45 +59,55 @@ export default function AboutBaseSection() {
       {/* ── 3つの柱 ── */}
       <div className="about-base-pillars grid grid-cols-3 border-b-2 border-[var(--ink)] max-[768px]:grid-cols-1" role="list">
         {basePillars.map((pillar, i) => (
-          <div
-            key={pillar.title}
-            className={`flex flex-col py-6 max-[768px]:py-5 ${
-              i > 0
-                ? "border-l border-[#a8b5a9] pl-7 max-[768px]:border-l-0 max-[768px]:border-t max-[768px]:border-t-[#a8b5a9] max-[768px]:pl-0"
-                : ""
-            } ${i < 2 ? "pr-7 max-[768px]:pr-0" : ""}`}
-            role="listitem"
-          >
-            <div className="mb-2.5 flex items-center justify-between font-[family-name:var(--mono)] text-[11px] leading-[1.4] tracking-[0.06em] text-[var(--text-sub)]">
-              <span className="font-bold text-[var(--red)]">{pillar.index}</span>
-              <span className="tracking-[0.08em]">{pillar.tag}</span>
-            </div>
-
-            <div className="flex items-baseline gap-2.5">
-              <h4 className="m-0 font-[family-name:var(--font-oswald),sans-serif] text-[clamp(22px,1.8vw,28px)] font-bold leading-[1.2] tracking-[0.04em] text-[var(--ink)]">
-                {pillar.title}
-              </h4>
-              {pillar.badge && (
-                <span className="shrink-0 bg-[var(--teal)] px-1.5 py-px font-[family-name:var(--mono)] text-[9px] font-bold leading-[1.5] tracking-[0.06em] text-[var(--aqua)]">
-                  {pillar.badge}
-                </span>
-              )}
-            </div>
-
-            <p className="mt-1 mb-0 font-[family-name:var(--mono)] text-xs leading-[1.6] text-[#426b65]">
-              {pillar.jpTitle}
-            </p>
-
-            <p className="mt-3 mb-0 flex-1 text-[13px] leading-[1.85] text-[var(--text-sub)]">
-              {pillar.description}
-            </p>
-
+          <div key={pillar.title} className="flex" role="listitem">
             <a
               href={pillar.href}
-              className="mt-[18px] inline-flex items-center gap-1.5 font-[family-name:var(--mono)] text-[11px] font-bold leading-[1.5] tracking-[0.06em] text-[var(--ink)] no-underline transition-colors duration-150 hover:text-[var(--red)]"
+              aria-label={pillar.actionText}
+              className={`group/pillar relative flex flex-1 flex-col py-6 text-inherit no-underline after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:origin-left after:scale-x-0 after:bg-[var(--red)] after:transition-transform after:duration-200 after:ease-out hover:after:scale-x-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--red)] focus-visible:after:scale-x-100 motion-reduce:after:transition-none max-[768px]:py-5 ${
+                i > 0
+                  ? "border-l border-[#a8b5a9] pl-7 max-[768px]:border-l-0 max-[768px]:border-t max-[768px]:border-t-[#a8b5a9] max-[768px]:pl-0"
+                  : ""
+              } ${i < 2 ? "pr-7 max-[768px]:pr-0" : ""}`}
             >
-              <span>{pillar.actionText}</span>
-              <span aria-hidden="true">{pillar.isUp ? "↑" : "↓"}</span>
+              <div className="mb-2.5 flex items-center justify-between font-[family-name:var(--mono)] text-[11px] leading-[1.4] tracking-[0.06em] text-[var(--text-sub)]">
+                <span className="font-bold text-[var(--red)]">{pillar.index}</span>
+                <span className="tracking-[0.08em]">{pillar.tag}</span>
+              </div>
+
+              <div className="flex items-baseline gap-2.5">
+                <h4 className="m-0 font-[family-name:var(--font-oswald),sans-serif] text-[clamp(22px,1.8vw,28px)] font-bold leading-[1.2] tracking-[0.04em] text-[var(--ink)]">
+                  {pillar.title}
+                </h4>
+                {pillar.badge && (
+                  <span className="shrink-0 bg-[var(--teal)] px-1.5 py-px font-[family-name:var(--mono)] text-[9px] font-bold leading-[1.5] tracking-[0.06em] text-[var(--aqua)]">
+                    {pillar.badge}
+                  </span>
+                )}
+              </div>
+
+              <p className="mt-1 mb-0 font-[family-name:var(--mono)] text-xs leading-[1.6] text-[#426b65]">
+                {pillar.jpTitle}
+              </p>
+
+              <p className="mt-3 mb-0 flex-1 text-[13px] leading-[1.85] text-[var(--text-sub)]">
+                {pillar.description}
+              </p>
+
+              <span
+                className="mt-[18px] inline-flex items-center gap-1.5 font-[family-name:var(--mono)] text-[11px] font-bold leading-[1.5] tracking-[0.06em] text-[var(--ink)] transition-colors duration-150 group-hover/pillar:text-[var(--red)] group-focus-visible/pillar:text-[var(--red)] motion-reduce:transition-none"
+              >
+                <span>{pillar.actionText}</span>
+                <span
+                  aria-hidden="true"
+                  className={`inline-block transition-transform duration-200 ease-out motion-reduce:transition-none ${
+                    pillar.isUp
+                      ? "group-hover/pillar:-translate-y-1 group-focus-visible/pillar:-translate-y-1"
+                      : "group-hover/pillar:translate-y-1 group-focus-visible/pillar:translate-y-1"
+                  }`}
+                >
+                  {pillar.isUp ? "↑" : "↓"}
+                </span>
+              </span>
             </a>
           </div>
         ))}
