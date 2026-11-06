@@ -6,6 +6,7 @@ import { useInView } from "@/lib/useInView";
 import type { NoteArticle } from "@/lib/note-types";
 
 interface NoteCardProps {
+  id?: string;
   article: NoteArticle;
   index: number;
   sample?: boolean;
@@ -25,7 +26,7 @@ const sampleBgStyles = [
   "bg-[#bcd7d1] text-[#0a171d]",
 ] as const;
 
-export default function NoteCard({ article, index, sample = false, scrollHighlight = false }: NoteCardProps) {
+export default function NoteCard({ id, article, index, sample = false, scrollHighlight = false }: NoteCardProps) {
   const thumbnailRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(thumbnailRef, { amount: 0.7 });
   const date = article.publishedAt ? dateFormatter.format(new Date(article.publishedAt)) : null;
@@ -86,7 +87,7 @@ export default function NoteCard({ article, index, sample = false, scrollHighlig
   );
 
   return (
-    <article className={`note-card min-w-0${scrollHighlight && isInView ? " is-in-view" : ""}`}>
+    <article id={id} className={`note-card min-w-0${scrollHighlight && isInView ? " is-in-view" : ""}`}>
       {sample ? (
         <div className={`${linkClasses} note-card-preview`}>{content}</div>
       ) : (

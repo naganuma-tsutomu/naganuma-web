@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cache } from "react";
 import ProjectCard from "./ProjectCard";
 import {
   projects as projectSamples,
@@ -9,9 +10,9 @@ import { getProjectList } from "@/lib/projects";
 import type { ProjectListSource, ProjectSummary } from "@/lib/project-types";
 import { sampleContentEnabled } from "@/lib/sample-content";
 
-export function ProjectsSkeleton() {
+export function ProjectsSkeleton({ narrow = false }: { narrow?: boolean }) {
   return (
-    <div className="grid grid-cols-3 gap-8 max-[1024px]:grid-cols-2 max-[768px]:grid-cols-1" aria-busy="true" aria-label="プロジェクト一覧を読み込み中">
+    <div className={narrow ? "grid gap-8 @min-[600px]/reader:grid-cols-2 @min-[800px]/reader:grid-cols-3" : "grid grid-cols-3 gap-8 max-[1024px]:grid-cols-2 max-[768px]:grid-cols-1"} aria-busy="true" aria-label="プロジェクト一覧を読み込み中">
       {Array.from({ length: 3 }).map((_, index) => (
         <div
           key={index}
@@ -53,7 +54,7 @@ export function ProjectsSkeleton() {
   );
 }
 
-export default async function ProjectsSection() {
+export const loadHomeProjects = cache(async () => {
   let projects: ProjectSummary[] = [];
   let projectSource: ProjectListSource | "unavailable" = "unavailable";
   let projectsUnavailable = false;
@@ -74,19 +75,25 @@ export default async function ProjectsSection() {
     maxItems: 3,
   });
 
+  return { entries, projectsUnavailable, hasProjects: projects.length > 0, showSamples };
+});
+
+export default async function ProjectsSection({ narrow = false }: { narrow?: boolean }) {
+  const { entries, projectsUnavailable, hasProjects, showSamples } = await loadHomeProjects();
+
   return (
     <>
       {projectsUnavailable ? (
         <p className="border-2 border-[var(--ink)] bg-[#fffdf7] p-7 leading-[1.8]" role="status">{showSamples ? projectsPageMessages.unavailableWithSamples : projectsPageMessages.unavailable}</p>
-      ) : projects.length === 0 ? (
+      ) : !hasProjects ? (
         <p className="border-2 border-[var(--ink)] bg-[#fffdf7] p-7 leading-[1.8]">{showSamples ? projectsPageMessages.emptyWithSamples : projectsPageMessages.empty}</p>
       ) : null}
-      <div className="grid grid-cols-3 gap-8 max-[1024px]:grid-cols-2 max-[768px]:grid-cols-1">
+      <div className={narrow ? "grid gap-8 @min-[600px]/reader:grid-cols-2 @min-[800px]/reader:grid-cols-3" : "grid grid-cols-3 gap-8 max-[1024px]:grid-cols-2 max-[768px]:grid-cols-1"}>
         {entries.map(({ project, sample }, index) => (
           <ProjectCard key={`${sample ? "sample" : "project"}-${project.slug}`} project={project} index={index} sample={sample} />
         ))}
       </div>
-      {!projectsUnavailable && projects.length > 0 && (
+      {!projectsUnavailable && hasProjects && (
         <Link className="mt-7 ml-auto block w-fit border-b border-current pb-1 font-[family-name:var(--mono)] text-xs leading-[1.6] no-underline hover:text-[var(--red)]" href="/projects">ALL PROJECTS →</Link>
       )}
     </>

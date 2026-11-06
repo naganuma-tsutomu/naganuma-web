@@ -70,7 +70,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
         {/* Image */}
         <div className="relative h-48 bg-gray-100 border-b-2 border-[var(--ink)] shrink-0">
           {isLoading && !imageError && (
-            <div className="absolute inset-0 bg-gray-300 z-10 animate-[pulse_1.5s_ease-in-out_infinite] motion-reduce:animate-none" />
+            <div data-project-image-loading className="absolute inset-0 bg-gray-300 z-10 animate-[pulse_1.5s_ease-in-out_infinite] motion-reduce:animate-none" />
           )}
           <Image
             src={imageError ? "/images/no-image.jpg" : project.imageUrl}
@@ -113,11 +113,12 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
 
   return (
     <article
+      id={`project-${project.slug}`}
       ref={ref}
       style={{
         transitionDelay: `${index * 100}ms`,
       }}
-      className={`project-card group/card relative h-full font-[family-name:var(--font-shippori-mincho)] transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none! motion-reduce:opacity-100! motion-reduce:transform-none! ${
+      className={`project-card group/card relative h-full font-[family-name:var(--font-shippori-mincho)] transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none! motion-reduce:opacity-100! motion-reduce:transform-none! motion-reduce:translate-none! print:opacity-100! print:transform-none! ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
       }${sample ? " project-card-preview" : ""}`}
       aria-labelledby={`${project.slug}-title`}

@@ -1,16 +1,16 @@
 import Link from "next/link";
 import NoteCard from "./NoteCard";
 import {
-  noteSamples,
   notesPageMessages,
 } from "@/app/data/notes";
-import { getNoteFeed } from "@/lib/note";
-import type { NoteFeed } from "@/lib/note-types";
-import { sampleContentEnabled } from "@/lib/sample-content";
+import { loadHomeNotes } from "@/lib/home-notes";
 
-export function NotesSkeleton() {
+// The original cards keep their appearance; only their grid follows the reading window's width.
+import { notesReaderGrid as homeNotesGrid } from "./readerGridStyles";
+
+export function NotesSkeleton({ narrow = false }: { narrow?: boolean }) {
   return (
-    <div className="grid grid-cols-3 border-y-2 border-[var(--ink)] max-[1024px]:grid-cols-1" aria-busy="true" aria-label="note記事一覧を読み込み中">
+    <div className={narrow ? homeNotesGrid : "grid grid-cols-3 border-y-2 border-[var(--ink)] max-[1024px]:grid-cols-1"} aria-busy="true" aria-label="note記事一覧を読み込み中">
       {Array.from({ length: 3 }).map((_, index) => (
         <article key={index} className="note-card min-w-0">
           <div className="flex h-full min-h-[280px] max-[1024px]:min-h-[220px] max-[768px]:min-h-0 flex-col px-[26px] pt-[22px] pb-6 max-[768px]:px-0.5 max-[768px]:pt-5 max-[768px]:pb-[22px] pointer-events-none">
@@ -34,20 +34,8 @@ export function NotesSkeleton() {
   );
 }
 
-export default async function NotesSection() {
-  let noteFeed: NoteFeed | null = null;
-  let noteUnavailable = false;
-
-  try {
-    noteFeed = await getNoteFeed();
-  } catch (error) {
-    console.error("Unable to load note articles:", error instanceof Error ? error.message : "Unknown error");
-    noteUnavailable = true;
-  }
-
-  const articles = noteFeed?.articles ?? [];
-  const showSamples = sampleContentEnabled();
-  const samples = showSamples ? noteSamples.slice(0, Math.max(0, 3 - articles.length)) : [];
+export default async function NotesSection({ narrow = false }: { narrow?: boolean }) {
+  const { noteFeed, noteUnavailable, articles, samples, showSamples } = await loadHomeNotes();
   const hasCards = articles.length + samples.length > 0;
 
   return (
@@ -58,12 +46,12 @@ export default async function NotesSection() {
         <p className="m-0 border-y border-[#b1b5ab] py-[27px] text-[13px] leading-[1.8]">{notesPageMessages.emptyWithSamples}</p>
       ) : null}
       {hasCards ? (
-        <div className="grid grid-cols-3 border-y-2 border-[var(--ink)] max-[1024px]:grid-cols-1">
+        <div className={narrow ? homeNotesGrid : "grid grid-cols-3 border-y-2 border-[var(--ink)] max-[1024px]:grid-cols-1"}>
           {articles.map((article, index) => (
             <NoteCard key={article.url} article={article} index={index} scrollHighlight />
           ))}
           {samples.map((article, index) => (
-            <NoteCard key={`sample-${article.title}`} article={article} index={articles.length + index} sample scrollHighlight />
+            <NoteCard key={`sample-${article.title}`} id={narrow ? `note-sample-${index}` : undefined} article={article} index={articles.length + index} sample scrollHighlight />
           ))}
         </div>
       ) : !noteUnavailable ? (
