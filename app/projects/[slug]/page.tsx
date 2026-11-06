@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 import { getProject, getProjectPreview } from "@/lib/projects";
 import { sanitizeArticle } from "@/lib/article-html";
 import { extractTocAndInjectIds } from "@/lib/toc";
+import { WorkspaceGuidePublisher } from "@/components/WorkspaceContext";
 import TableOfContents from "@/components/TableOfContents";
 import { decodeProjectPreviewToken, PROJECT_PREVIEW_COOKIE } from "@/lib/project-preview";
 
@@ -53,12 +54,13 @@ export default async function ProjectPage({ params }: Props) {
   const hasToc = toc.length > 0;
 
   return (
-    <div className={`site-shell pt-6 pb-12 max-[768px]:pt-[14px] ${hasToc ? "max-w-[1240px]" : "max-w-[920px]"}`}>
+    <div data-article-layout className={`@container/article site-shell pt-6 pb-12 max-[768px]:pt-[14px] ${hasToc ? "max-w-[1240px]" : "max-w-[920px]"}`}>
+      <WorkspaceGuidePublisher path={`/projects/${encodeURIComponent(slug)}`} guide={{ id: `article-${slug}`, command: "pwd", output: <div className="space-y-3 text-xs leading-[1.8]"><p data-command-row className="[overflow-wrap:anywhere]">/projects/{slug}</p><p data-command-row className="text-[var(--aqua)]">{project.title}</p><Link href="/projects" className="text-[var(--aqua)] underline underline-offset-4">制作実績の一覧へ ↗</Link></div> }} />
       <nav className="article-breadcrumb" aria-label="パンくずリスト">
         <Link href="/projects">PROJECTS</Link><span aria-hidden="true">/</span><span>{project.title}</span>
       </nav>
-      <div className={hasToc ? "block lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start lg:gap-9 xl:grid-cols-[minmax(0,1fr)_280px] xl:gap-12" : undefined}>
-        <article className={hasToc ? "lg:min-w-0" : undefined}>
+      <div className={hasToc ? "block @min-[960px]/article:grid @min-[960px]/article:grid-cols-[minmax(0,1fr)_260px] @min-[960px]/article:items-start @min-[960px]/article:gap-9 @min-[1100px]/article:grid-cols-[minmax(0,1fr)_280px] @min-[1100px]/article:gap-12" : undefined}>
+        <article className={hasToc ? "@min-[960px]/article:min-w-0" : undefined}>
           <header className="article-header">
             <div className="article-meta">
               <span>PROJECT JOURNAL</span>
@@ -76,7 +78,7 @@ export default async function ProjectPage({ params }: Props) {
           <div className="article-body" dangerouslySetInnerHTML={{ __html: contentHtml }} />
         </article>
         {hasToc && (
-          <aside className="hidden lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-116px)]" aria-label="サイドバー">
+          <aside className="hidden @min-[960px]/article:sticky @min-[960px]/article:top-24 @min-[960px]/article:block @min-[960px]/article:max-h-[calc(100vh-116px)] @min-[960px]/article:[[data-layout=window]_&]:top-5" aria-label="サイドバー">
             <TableOfContents items={toc} mode="sidebar" />
           </aside>
         )}

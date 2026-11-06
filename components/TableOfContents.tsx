@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import type { TocItem } from "@/lib/toc";
+import { getReadingViewport, READER_ANCHOR_EVENT, READER_LAYOUT_EVENT } from "@/lib/reading-viewport";
 
 interface TableOfContentsProps {
   items: TocItem[];
@@ -9,6 +10,7 @@ interface TableOfContentsProps {
 }
 
 export default function TableOfContents({ items, mode = "sidebar" }: TableOfContentsProps) {
+  const root = useRef<HTMLElement | null>(null);
   const [activeId, setActiveId] = useState<string>("");
 
   // スクロール位置に応じてアクティブな見出しを判定
@@ -21,19 +23,17 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
 
     if (headingElements.length === 0) return;
 
-    const scrollY = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
+    const viewport = getReadingViewport();
 
     // ページ末尾に到達している場合は最後の見出しをアクティブにする
-    if (scrollY + windowHeight >= documentHeight - 60) {
+    if (viewport.scrollTop + viewport.height >= viewport.scrollHeight - 60) {
       const lastId = items[items.length - 1].id;
       setActiveId(lastId);
       return;
     }
 
     // Use the same CSS offsets as native anchor navigation.
-    const offset = (parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0)
+    const offset = viewport.top + viewport.paddingTop
       + (parseFloat(getComputedStyle(headingElements[0]).scrollMarginTop) || 0) + 1;
     let currentId = items[0].id;
 
@@ -50,8 +50,10 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
   }, [items]);
 
   useEffect(() => {
-    const desktop = window.matchMedia("(min-width: 1024px)");
+    const article = root.current?.closest("[data-article-layout]");
+    const observer = new ResizeObserver(() => syncViewport());
     let rafId: number | null = null;
+    let scrollTarget: HTMLElement | Window | null = null;
 
     const handleScroll = () => {
       if (rafId !== null) return;
@@ -63,28 +65,32 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
     const stopListening = () => {
       if (rafId !== null) window.cancelAnimationFrame(rafId);
       rafId = null;
-      window.removeEventListener("scroll", handleScroll);
+      scrollTarget?.removeEventListener("scroll", handleScroll);
+      scrollTarget = null;
       window.removeEventListener("resize", handleScroll);
     };
     const syncViewport = () => {
       stopListening();
-      if (desktop.matches !== (mode === "sidebar")) return;
+      if (!root.current?.getClientRects().length) return;
       handleScroll();
-      window.addEventListener("scroll", handleScroll, { passive: true });
+      scrollTarget = getReadingViewport().target;
+      scrollTarget.addEventListener("scroll", handleScroll, { passive: true });
       window.addEventListener("resize", handleScroll, { passive: true });
     };
 
     syncViewport();
-    desktop.addEventListener("change", syncViewport);
+    if (article) observer.observe(article);
+    document.addEventListener(READER_LAYOUT_EVENT, syncViewport);
     return () => {
       stopListening();
-      desktop.removeEventListener("change", syncViewport);
+      observer.disconnect();
+      document.removeEventListener(READER_LAYOUT_EVENT, syncViewport);
     };
   }, [mode, updateActiveHeading]);
 
   useEffect(() => {
     // On a fresh URL, streamed article markup may arrive after native hash scrolling.
-    if (window.matchMedia("(min-width: 1024px)").matches !== (mode === "sidebar")) return;
+    if (!root.current?.getClientRects().length) return;
     const initialHash = window.location.hash;
     if (!initialHash) return;
     let id: string;
@@ -121,12 +127,13 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
     if (details) details.open = false;
     el.tabIndex = -1;
     el.focus({ preventScroll: true });
-    el.scrollIntoView({
+    const hash = `#${encodeURIComponent(id)}`;
+    history.pushState({ ...history.state }, "", hash);
+    const navigation = new CustomEvent(READER_ANCHOR_EVENT, { detail: hash, cancelable: true });
+    if (document.dispatchEvent(navigation)) el.scrollIntoView({
       block: "start",
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
     });
-
-    history.pushState(null, "", `#${encodeURIComponent(id)}`);
     setActiveId(id);
   };
 
@@ -134,7 +141,7 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
 
   if (mode === "inline") {
     return (
-      <details className="toc-mobile-accordion mb-8 border-2 border-[var(--ink)] bg-[var(--surface)] p-3 text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] lg:hidden group">
+      <details ref={element => { root.current = element; }} className="toc-mobile-accordion mb-8 border-2 border-[var(--ink)] bg-[var(--surface)] p-3 text-[var(--ink)] shadow-[3px_3px_0_var(--ink)] @min-[960px]/article:hidden group">
         <summary className="flex cursor-pointer items-center justify-between font-[family-name:var(--font-oswald),sans-serif] text-sm tracking-wider font-bold select-none list-none [&::-webkit-details-marker]:none">
           <span className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 bg-[var(--red)]" aria-hidden="true" />
@@ -176,6 +183,7 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
 
   return (
     <nav
+      ref={element => { root.current = element; }}
       className="toc-sidebar rounded-none border-2 border-[var(--ink)] bg-[var(--surface)] p-4 shadow-[5px_5px_0_var(--ink)] text-[var(--ink)]"
       aria-label="記事の目次"
     >
@@ -189,7 +197,7 @@ export default function TableOfContents({ items, mode = "sidebar" }: TableOfCont
         </span>
       </div>
 
-      <div className="max-h-[calc(100vh-220px)] overflow-y-auto pr-1 [scrollbar-width:thin]">
+      <div className="max-h-[calc(100vh-220px)] overflow-y-auto pr-1 [scrollbar-width:thin] [[data-layout=window]_&]:max-h-[calc(var(--page-window-height)-180px)]">
         <ul className="space-y-1 font-[family-name:var(--mono)] text-[12px] leading-snug">
           {items.map((item) => {
             const isActive = activeId === item.id;

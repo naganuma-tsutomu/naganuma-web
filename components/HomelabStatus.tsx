@@ -68,12 +68,12 @@ export default function HomelabStatus({ compact = false }: { compact?: boolean }
   }`;
 
   return (
-    <div className="status-panel dark-panel relative flex h-full flex-col shadow-[7px_7px_0_var(--ink)] before:absolute before:inset-[5px] before:border before:border-[var(--border)] before:pointer-events-none" data-hero-window>
-      <div className={`${compact ? "flex" : "hidden max-[768px]:flex"} min-h-[43px] items-center gap-3 px-3 py-2 font-[family-name:var(--mono)] text-[10px] leading-[1.3]`} data-drag-handle={compact ? "" : undefined} role={compact ? "group" : undefined} tabIndex={compact ? 0 : undefined} aria-label={compact ? "ホームラボの状態。PCではドラッグ、または矢印キーで移動できます。" : undefined}>
+    <div className="status-panel dark-panel relative flex h-full flex-col before:absolute before:inset-[5px] before:border before:border-[var(--border)] before:pointer-events-none">
+      <div className={`${compact ? "flex" : "hidden max-[768px]:flex"} min-h-[43px] items-center gap-3 px-3 py-2 font-[family-name:var(--mono)] text-[10px] leading-[1.3]`}>
         <strong className="mr-auto text-[11px] tracking-[0.04em]">HOMELAB STATUS</strong>
         <span className={statusDemoClasses} data-state={status?.state}>{status ? labels[status.state] : "CONNECTING"}</span>
       </div>
-      <div className={`${compact ? "hidden" : ""} panel-titlebar status-titlebar min-h-[37px] py-[6px] border-0 max-[768px]:hidden`} data-drag-handle role="group" tabIndex={0} aria-label="Homelab status window. Drag or use arrow keys to move.">
+      <div className={`${compact ? "hidden" : ""} panel-titlebar status-titlebar min-h-[37px] py-[6px] border-0 max-[768px]:hidden`}>
         <h2 className="m-0 font-inherit text-[14px]">HOMELAB STATUS</h2>
         <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
       </div>
@@ -108,7 +108,7 @@ export default function HomelabStatus({ compact = false }: { compact?: boolean }
         </dl>
         {!compact && <div className="status-motto-wrap relative grid min-w-0 max-[1023px]:pt-[14px] max-[768px]:hidden">
           <span className={`${statusDemoClasses} absolute top-0 right-0`} data-state={status?.state} aria-live="polite">{status ? labels[status.state] : "CONNECTING"}</span>
-          <p className="m-0 border-l border-[var(--border)] pl-7 max-[1199px]:pl-[15px] max-[1023px]:border-l-0 max-[1023px]:border-t max-[1023px]:border-[var(--border)] max-[1023px]:pt-3 max-[1023px]:pl-0 content-center text-[15px] max-[1199px]:text-[12px] max-[1023px]:text-[11px] leading-[1.55] tracking-[0.06em]">
+          <p className="m-0 border-l border-[var(--border)] pt-6 pl-7 max-[1199px]:pl-[15px] max-[1023px]:border-l-0 max-[1023px]:border-t max-[1023px]:border-[var(--border)] max-[1023px]:pt-3 max-[1023px]:pl-0 content-center text-[15px] max-[1199px]:text-[12px] max-[1023px]:text-[11px] leading-[1.55] tracking-[0.06em]">
             MAKE <br className="max-[1023px]:hidden" />A BETTER <br className="max-[1023px]:hidden" />DIGITAL LIFE.
             <span className="block w-[23px] h-px bg-current mt-[14px] max-[1023px]:hidden" aria-hidden="true" />
           </p>

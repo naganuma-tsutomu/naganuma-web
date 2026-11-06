@@ -58,7 +58,7 @@ const Header = () => {
 
   return (
     <header className="site-header sticky top-0 z-50 border-b-2 border-[var(--ink)] bg-[#e8e9df] text-[var(--ink)] [&_a:focus-visible]:outline-[var(--red)] [&_button:focus-visible]:outline-[var(--red)]">
-      <div className="site-shell flex min-h-20 items-center gap-[18px] max-[768px]:min-h-[78px] max-[768px]:gap-3">
+      <div className="flex min-h-20 w-full items-center gap-[18px] px-4 max-[768px]:min-h-[78px] max-[768px]:gap-3 min-[960px]:px-6 xl:px-8">
         <Link href="/" className={wordmarkClass} aria-label="naganuma ホーム">
           <span className={launcherIconClass} aria-hidden="true"><i /><i /><i /><i /></span>
           <span>naganuma</span>

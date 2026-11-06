@@ -89,10 +89,8 @@ export const basePillars: readonly BasePillar[] = [
     title: "HOMELAB",
     jpTitle: "自宅サーバー・検証環境",
     description:
-      "常時稼働の仮想化基盤。上部のターミナルやステータスパネルでリアルタイム監視中。",
-    href: "#home",
+      "自宅の仮想化基盤やサーバー構成、稼働状態を公開しています。",
+    href: "#homelab",
     actionText: "CHECK SYSTEM",
-    badge: "LIVE",
-    isUp: true,
   },
 ];

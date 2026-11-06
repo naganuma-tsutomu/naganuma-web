@@ -1,9 +1,9 @@
 import { githubProfileUrl, xProfileUrl } from "@/app/data/links";
 
-const Footer = () => {
+const Footer = ({ compact = false }: { compact?: boolean }) => {
   return (
-    <footer className="w-full mt-12">
-      <div className="site-shell flex flex-wrap gap-4 items-center justify-between py-6 border-t border-[#b1b5ab] text-xs font-[family-name:var(--mono)]">
+    <footer data-site-footer className="w-full mt-12">
+      <div className={`${compact ? "w-full" : "site-shell"} flex flex-wrap gap-4 items-center justify-between py-6 border-t border-[#b1b5ab] text-xs font-[family-name:var(--mono)]`}>
         <p className="text-[var(--ink)]">© {new Date().getFullYear()} naganuma</p>
         <div className="flex space-x-4">
           <a

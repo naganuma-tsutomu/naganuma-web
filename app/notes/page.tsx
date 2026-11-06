@@ -1,6 +1,11 @@
+import InteriorPageHeader from "@/components/InteriorPageHeader";
 import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
 import { connection } from "next/server";
+import { WorkspaceGuidePublisher } from "@/components/WorkspaceContext";
+import TerminalListing from "@/components/TerminalListing";
+import { noteListing } from "@/lib/workspace-listing-data";
+import { notesReaderGrid } from "@/components/readerGridStyles";
 import NoteCard from "@/components/NoteCard";
 import ListPagination from "@/components/ListPagination";
 import {
@@ -36,48 +41,28 @@ export default async function NotesPage({ searchParams }: { searchParams: Promis
     ...articles.map(article => ({ article, sample: false })),
     ...(showSamples ? noteSamples.map(article => ({ article, sample: true })) : []),
   ];
-  const { items, page, totalPages, startIndex } = paginate(entries, (await searchParams).page);
+  const rawPage = (await searchParams).page;
+  const { items, page, totalPages, startIndex } = paginate(entries, rawPage);
+  const listing = noteListing({ articles: items.filter(item => !item.sample).map(item => item.article), samples: items.filter(item => item.sample).map(item => item.article), noteUnavailable, noteFeed });
+  listing.items = listing.items.map((item, index) => ({ ...item, href: item.sample ? `/notes#note-sample-${startIndex + index}` : item.href }));
 
   return (
-    <section className="projects-index site-shell" aria-labelledby="notes-index-title">
+    <section className="projects-index site-shell @container/reader" aria-labelledby="notes-index-title">
+      <WorkspaceGuidePublisher path="/notes" page={Array.isArray(rawPage) ? rawPage[0] ?? "" : rawPage ?? ""} guide={{ id: `notes-page-${page}`, command: "ls notes/", output: <TerminalListing listing={listing} /> }} noteOutput={<TerminalListing listing={listing} />} />
       <nav className="interior-breadcrumb" aria-label="パンくずリスト">
         <Link href="/">HOME</Link><span aria-hidden="true">/</span><span>NOTES</span>
       </nav>
 
-      <header className="interior-hero projects-index-header">
-        <div className="interior-hero-main">
-          <span className="interior-kicker">{notesPageHeader.kicker}</span>
-          <h1 id="notes-index-title">{notesPageHeader.title}<span className="interior-title-period">.</span></h1>
-          <p>{notesPageHeader.description}</p>
-          <span className="interior-hero-underscore" aria-hidden="true">_</span>
-        </div>
-        <div className="interior-hero-side">
-          <span>{notesPageHeader.sideTagline}</span>
-          <p>{notesPageHeader.sideMotto.map((word, index) => (
-            <span key={word}>{word}{index < notesPageHeader.sideMotto.length - 1 && <br />}</span>
-          ))}</p>
-          {noteFeed?.profileUrl ? (
-            <a
-              href={noteFeed.profileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {notesPageHeader.sideLinkText}
-            </a>
-          ) : (
-            <span>{notesPageHeader.sideFallbackLabel}</span>
-          )}
-        </div>
-      </header>
+      <InteriorPageHeader title={notesPageHeader.title} titleId="notes-index-title" kicker={notesPageHeader.kicker} description={notesPageHeader.description} meta={notesPageHeader.sideTagline} action={noteFeed?.profileUrl ? { href: noteFeed.profileUrl, label: notesPageHeader.sideLinkText } : undefined} />
 
       {noteUnavailable ? (
         <p className="m-0 border-y border-[#b1b5ab] py-[27px] text-[13px] leading-[1.8]" role="status">{showSamples ? notesPageMessages.unavailableWithSamples : notesPageMessages.unavailable}</p>
       ) : null}
       {entries.length > 0 ? (
         <>
-        <div className="grid grid-cols-3 border-y-2 border-[var(--ink)] max-[1024px]:grid-cols-1">
+        <div className={notesReaderGrid}>
           {items.map(({ article, sample }, index) => (
-            <NoteCard key={sample ? `sample-${article.title}` : article.url} article={article} index={startIndex + index} sample={sample} />
+            <NoteCard id={sample ? `note-sample-${startIndex + index}` : undefined} key={sample ? `sample-${article.title}` : article.url} article={article} index={startIndex + index} sample={sample} />
           ))}
         </div>
         <ListPagination path="/notes" page={page} totalPages={totalPages} />

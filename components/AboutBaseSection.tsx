@@ -9,9 +9,9 @@ export default function AboutBaseSection() {
   return (
     <div className="flex flex-col">
       {/* ── メインステートメント ── */}
-      <div className="grid grid-cols-[2fr_1fr] border-t-2 border-b border-[var(--ink)] border-b-[#a8b5a9] max-[1023px]:grid-cols-1">
+      <div className="grid grid-cols-1 @min-[600px]/reader:grid-cols-[2fr_1fr] border-t-2 border-b border-[var(--ink)] border-b-[#a8b5a9]">
         {/* 左: ステートメント本文 */}
-        <div className="border-r border-[#a8b5a9] py-7 pr-9 max-[1023px]:border-r-0 max-[1023px]:border-b max-[1023px]:border-b-[#a8b5a9] max-[1023px]:py-6 max-[1023px]:pr-0">
+        <div className="border-b border-[#a8b5a9] py-6 @min-[600px]/reader:border-r @min-[600px]/reader:border-b-0 @min-[600px]/reader:pr-6">
           <div className="mb-4 flex items-center gap-2 font-[family-name:var(--mono)] text-[10px] font-bold leading-[1.4] tracking-[0.12em] text-[var(--red)]">
             <span className="h-1.5 w-1.5 shrink-0 bg-[var(--red)]" aria-hidden="true" />
             <span>{baseIdentity.tag}</span>
@@ -19,19 +19,19 @@ export default function AboutBaseSection() {
             <span>{baseIdentity.station}</span>
           </div>
 
-          <h3 className="m-0 font-[family-name:var(--font-oswald),sans-serif] text-[clamp(22px,2.2vw,30px)] font-bold leading-[1.4] tracking-[0.02em] text-[var(--ink)]">
+          <h3 className="m-0 font-[family-name:var(--font-oswald),var(--font-shippori-mincho),sans-serif] text-[clamp(22px,2.2vw,30px)] font-bold leading-[1.4] tracking-[0.02em] text-[var(--ink)]">
             {baseIdentity.headline.line1}
             <br className="hidden sm:inline" />
             {baseIdentity.headline.line2}
           </h3>
 
-          <p className="mt-3.5 mb-0 max-w-[620px] text-sm leading-[2] text-[var(--text-sub)] max-[768px]:text-[13px]">
+          <p className="mt-3.5 mb-0 max-w-[620px] text-base leading-[1.95] text-[var(--text-sub)] ">
             {baseIdentity.lead}
           </p>
         </div>
 
         {/* 右: プロフィール */}
-        <div className="flex flex-col justify-between py-7 pl-8 max-[1023px]:py-[22px] max-[1023px]:pl-0">
+        <div className="flex flex-col justify-between py-6 @min-[600px]/reader:pl-6">
           <dl className="m-0 grid gap-3 font-[family-name:var(--mono)] text-xs leading-[1.45]">
             <div>
               <dt className="text-[10px] tracking-[0.1em] text-[var(--teal)]">NAME</dt>
@@ -57,17 +57,17 @@ export default function AboutBaseSection() {
       </div>
 
       {/* ── 3つの柱 ── */}
-      <div className="about-base-pillars grid grid-cols-3 border-b-2 border-[var(--ink)] max-[768px]:grid-cols-1" role="list">
+      <div className="about-base-pillars grid grid-cols-1 @min-[600px]/reader:grid-cols-3 border-b-2 border-[var(--ink)]" role="list">
         {basePillars.map((pillar, i) => (
           <div key={pillar.title} className="flex" role="listitem">
             <a
               href={pillar.href}
               aria-label={pillar.actionText}
-              className={`group/pillar relative flex flex-1 flex-col py-6 text-inherit no-underline after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:origin-left after:scale-x-0 after:bg-[var(--red)] after:transition-transform after:duration-200 after:ease-out hover:after:scale-x-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--red)] focus-visible:after:scale-x-100 motion-reduce:after:transition-none max-[768px]:py-5 ${
+              className={`group/pillar relative flex flex-1 flex-col py-6 text-inherit no-underline after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:origin-left after:scale-x-0 after:bg-[var(--red)] after:transition-transform after:duration-200 after:ease-out hover:after:scale-x-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--red)] focus-visible:after:scale-x-100 motion-reduce:after:transition-none @max-[599px]/reader:py-5 ${
                 i > 0
-                  ? "border-l border-[#a8b5a9] pl-7 max-[768px]:border-l-0 max-[768px]:border-t max-[768px]:border-t-[#a8b5a9] max-[768px]:pl-0"
+                  ? "border-l border-[#a8b5a9] pl-7 @max-[599px]/reader:border-l-0 @max-[599px]/reader:border-t @max-[599px]/reader:border-t-[#a8b5a9] @max-[599px]/reader:pl-0"
                   : ""
-              } ${i < 2 ? "pr-7 max-[768px]:pr-0" : ""}`}
+              } ${i < 2 ? "pr-7 @max-[599px]/reader:pr-0" : ""}`}
             >
               <div className="mb-2.5 flex items-center justify-between font-[family-name:var(--mono)] text-[11px] leading-[1.4] tracking-[0.06em] text-[var(--text-sub)]">
                 <span className="font-bold text-[var(--red)]">{pillar.index}</span>
@@ -75,7 +75,7 @@ export default function AboutBaseSection() {
               </div>
 
               <div className="flex items-baseline gap-2.5">
-                <h4 className="m-0 font-[family-name:var(--font-oswald),sans-serif] text-[clamp(22px,1.8vw,28px)] font-bold leading-[1.2] tracking-[0.04em] text-[var(--ink)]">
+                <h4 className="m-0 font-[family-name:var(--font-oswald),var(--font-shippori-mincho),sans-serif] text-[clamp(22px,1.8vw,28px)] font-bold leading-[1.2] tracking-[0.04em] text-[var(--ink)]">
                   {pillar.title}
                 </h4>
                 {pillar.badge && (
@@ -85,11 +85,11 @@ export default function AboutBaseSection() {
                 )}
               </div>
 
-              <p className="mt-1 mb-0 font-[family-name:var(--mono)] text-xs leading-[1.6] text-[#426b65]">
+              <p className="mt-1 mb-0 font-[family-name:var(--mono),var(--font-shippori-mincho)] text-xs leading-[1.6] text-[#426b65]">
                 {pillar.jpTitle}
               </p>
 
-              <p className="mt-3 mb-0 flex-1 text-[13px] leading-[1.85] text-[var(--text-sub)]">
+              <p className="mt-3 mb-0 flex-1 text-[15px] leading-[1.9] text-[var(--text-sub)]">
                 {pillar.description}
               </p>
 

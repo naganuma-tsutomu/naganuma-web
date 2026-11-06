@@ -11,7 +11,7 @@ type Phase = "idle" | "closing" | "opening";
 const CLOSE_DURATION = 280;
 const OPEN_DURATION = 360;
 const NAVIGATION_TIMEOUT = 4000;
-const desktopChromeClass = "absolute right-[max(38px,calc((100vw-1400px)/2))] left-[max(38px,calc((100vw-1400px)/2))] flex justify-between gap-[18px] border-[#a8aaa0] font-[family-name:var(--mono)] text-[10px] tracking-[0.08em] whitespace-nowrap text-[#52605e] max-[899px]:right-[22px] max-[899px]:left-[22px]";
+const desktopChromeClass = "absolute right-[22px] left-[22px] flex justify-between gap-3 border-[#a8aaa0] font-[family-name:var(--mono)] text-[10px] tracking-[0.08em] text-[#52605e]";
 
 function routeLabel(pathname: string, hash = "") {
   const base = pathname === "/" ? "/home" : pathname;
@@ -26,6 +26,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
   const previousPath = useRef(pathname);
   const startedAt = useRef(0);
   const timers = useRef<number[]>([]);
+  const cancelled = useRef(false);
+  const focus = useRef<{ element: Element | null; source: string; moved: boolean } | null>(null);
 
   const clearTimers = useCallback(() => {
     timers.current.forEach(window.clearTimeout);
@@ -39,7 +41,9 @@ export default function PageTransition({ children }: { children: React.ReactNode
     delete document.documentElement.dataset.pageTransition;
   }, [clearTimers]);
 
-  const startNavigation = useCallback((nextPath: string, nextHash = "") => {
+  const startNavigation = useCallback((nextPath: string, nextHash = "", source = "link") => {
+    cancelled.current = false;
+    focus.current = { element: document.activeElement, source, moved: false };
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     clearTimers();
     startedAt.current = performance.now();
@@ -50,6 +54,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
       setPhase("closing");
     });
     timers.current.push(window.setTimeout(() => {
+      cancelled.current = true;
       resetToIdle();
     }, NAVIGATION_TIMEOUT));
   }, [clearTimers, resetToIdle]);
@@ -65,23 +70,36 @@ export default function PageTransition({ children }: { children: React.ReactNode
       startNavigation(destinationUrl.pathname, destinationUrl.hash);
     };
 
-    // Skip full-screen blocking overlay on browser back/forward (e.g. mobile swipe back)
+    // History restores the reading position without the window opening animation.
     const onPopState = () => {
       previousPath.current = window.location.pathname;
+      focus.current = null;
       resetToIdle();
     };
 
     // Allow user to cancel overlay with Escape key if it feels stuck
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && phase !== "idle") {
+        cancelled.current = true;
         resetToIdle();
       }
     };
 
+    const onNavigate = (event: Event) => {
+      const { pathname, hash, source } = (event as CustomEvent<{ pathname: string; hash: string; source: string }>).detail;
+      startNavigation(pathname, hash, source);
+    };
+    const onFocus = (event: FocusEvent) => {
+      if (focus.current && event.target !== focus.current.element && event.target !== document.body) focus.current.moved = true;
+    };
+    document.addEventListener("naganuma:navigate", onNavigate);
+    document.addEventListener("focusin", onFocus);
     document.addEventListener("click", onClick, true);
     window.addEventListener("popstate", onPopState);
     window.addEventListener("keydown", onKeyDown);
     return () => {
+      document.removeEventListener("naganuma:navigate", onNavigate);
+      document.removeEventListener("focusin", onFocus);
       document.removeEventListener("click", onClick, true);
       window.removeEventListener("popstate", onPopState);
       window.removeEventListener("keydown", onKeyDown);
@@ -94,30 +112,27 @@ export default function PageTransition({ children }: { children: React.ReactNode
     previousPath.current = pathname;
     clearTimers();
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      timers.current.push(window.setTimeout(() => resetToIdle(), 0));
+    const complete = () => {
+      flushSync(resetToIdle);
+      if (window.location.hash) {
+        const anchor = new CustomEvent("naganuma:home-anchor", { detail: window.location.hash, cancelable: true });
+        document.dispatchEvent(anchor);
+      }
+      const navigation = focus.current;
+      focus.current = null;
+      if (navigation && !navigation.moved && navigation.source !== "terminal") {
+        document.querySelector<HTMLElement>("[data-home-reader], [data-page-reader]")?.focus({ preventScroll: true });
+      }
+    };
+    if (cancelled.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      timers.current.push(window.setTimeout(complete, 0));
       return;
     }
-
     const remaining = Math.max(0, CLOSE_DURATION - (performance.now() - startedAt.current));
     timers.current.push(window.setTimeout(() => {
       setDestination(routeLabel(pathname, window.location.hash));
       setPhase("opening");
-      timers.current.push(window.setTimeout(() => {
-        // Commit removal of the page transform before measuring the anchor.
-        flushSync(resetToIdle);
-        if (window.location.hash) {
-          let target: HTMLElement | null = null;
-          try {
-            target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
-          } catch {
-            // A malformed fragment must not interrupt the completed page transition.
-          }
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth" });
-          }
-        }
-      }, OPEN_DURATION));
+      timers.current.push(window.setTimeout(complete, OPEN_DURATION));
     }, startedAt.current ? remaining : 0));
   }, [pathname, clearTimers, resetToIdle]);
 
@@ -129,19 +144,21 @@ export default function PageTransition({ children }: { children: React.ReactNode
   }, [clearTimers]);
 
   return (
-    <>
+    <div data-transition-scope className="@container/transition relative isolate min-w-0 self-start [[data-layout=split]_&]:h-[var(--workspace-height)] print:h-auto!">
       <main
         id="main-content"
+        data-main-phase={phase}
         tabIndex={-1}
-        className={`flex-grow focus:outline-none ${phase === "closing" ? styles.mainClosing : ""} ${phase === "opening" ? styles.mainOpening : ""}`}
+        className={`min-w-0 focus:outline-none ${phase !== "idle" ? "invisible" : ""}`}
         inert={phase !== "idle"}
+        aria-busy={phase !== "idle"}
       >
         {children}
       </main>
-      <div className={`${styles.overlay} fixed inset-0 z-40 grid place-items-center overflow-hidden bg-[#e9e4d8] px-7 pt-24 pb-[30px] font-[family-name:var(--mono)] text-[var(--ink)] opacity-0 invisible pointer-events-none max-[899px]:px-[18px] max-[899px]:pt-[100px] max-[899px]:pb-5 motion-reduce:hidden`} data-phase={phase} aria-hidden={phase === "idle"} role="status" aria-live="polite">
-        <div className={`${desktopChromeClass} top-[108px] border-b pb-[14px] max-[899px]:top-[102px]`} aria-hidden="true">
+      <div className={`${styles.overlay} absolute inset-0 z-40 grid place-items-center overflow-hidden px-7 py-20 font-[family-name:var(--mono)] text-[var(--ink)] opacity-0 invisible pointer-events-none max-[899px]:px-[18px] max-[899px]:pt-20 max-[899px]:pb-5 motion-reduce:hidden`} data-phase={phase} aria-hidden={phase === "idle"} role="status" aria-live="polite">
+        <div className={`${desktopChromeClass} top-6 border-b pb-[14px] max-[899px]:top-6`} aria-hidden="true">
           <span className="flex items-center gap-[9px]"><i className="h-[7px] w-[7px] bg-[var(--red)]" /> DESKTOP {phase === "opening" ? pageNumbers.to : pageNumbers.from} / WORKSPACE</span>
-          <span className="max-[899px]:hidden">WINDOW MANAGER <b className="text-base text-[var(--red)]">↗</b></span>
+          <span className="@max-[600px]/transition:hidden">WINDOW MANAGER <b className="text-base text-[var(--red)]">↗</b></span>
         </div>
         <div className={`${styles.window} [--navigation-shadow:10px] max-[899px]:[--navigation-shadow:5px] w-[min(100%,570px)] border-[3px] border-[var(--ink)] bg-[var(--ink)] p-[5px] text-[var(--paper)] shadow-[10px_10px_0_var(--ink)] max-[899px]:shadow-[5px_5px_0_var(--ink)]`} aria-hidden="true">
           <div className="flex min-h-[38px] items-center justify-between gap-3 border border-[#afbdba] px-3 py-[7px] text-xs">
@@ -154,12 +171,12 @@ export default function PageTransition({ children }: { children: React.ReactNode
             <div className="mt-[26px] mb-[18px] h-px bg-[#789195]" />
             <div className="mb-[9px] flex justify-between gap-3 text-[10px] tracking-[0.07em] text-[#b7c5c3]"><span>INITIALIZING WORKSPACE</span><span className="whitespace-nowrap text-[var(--orange)]">{phase === "opening" ? "OPENING" : "PLEASE WAIT"}</span></div>
             <div className={`${styles.progress} h-3 overflow-hidden border border-[#789195] bg-[#243d43]`} aria-hidden="true"><span /></div>
-            <div className="mt-[13px] flex justify-between gap-3 text-[9px] tracking-[0.07em] text-[#aebfbd]"><span>SESSION 01</span><span className="max-[899px]:hidden">naganuma / WEB SERVER HOMELAB</span></div>
+            <div className="mt-[13px] flex justify-between gap-3 text-[9px] tracking-[0.07em] text-[#aebfbd]"><span>SESSION 01</span><span className="@max-[600px]/transition:hidden">naganuma / WEB SERVER HOMELAB</span></div>
           </div>
         </div>
         <p className="sr-only">ページを切り替えています</p>
-        <div className={`${desktopChromeClass} bottom-7 border-t pt-[14px] max-[899px]:bottom-[22px]`} aria-hidden="true"><span>LOCAL ACCOUNT / naganuma</span><span className="max-[899px]:hidden">CONNECTING TO {destination}</span></div>
+        <div className={`${desktopChromeClass} bottom-6 border-t pt-[14px] max-[899px]:bottom-6`} aria-hidden="true"><span>LOCAL ACCOUNT / naganuma</span><span className="@max-[600px]/transition:hidden">CONNECTING TO {destination}</span></div>
       </div>
-    </>
+    </div>
   );
 }
