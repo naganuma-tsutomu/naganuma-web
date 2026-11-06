@@ -1,9 +1,11 @@
 // Loaded via --import only by Playwright's server, never by the app or Docker image.
 import { cmsProjects } from "./projects.mjs";
+import { noteRSS } from "./notes.mjs";
 
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (input, init) => {
   const url = new URL(input instanceof Request ? input.url : input);
+  if (url.href === "https://note.com/e2e_notes/rss") return new Response(noteRSS, { headers: { "Content-Type": "application/rss+xml" } });
   if (url.origin !== "https://e2e-fixtures.microcms.io") return realFetch(input, init);
 
   const headers = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined));

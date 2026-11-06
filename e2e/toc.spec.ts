@@ -1,18 +1,20 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page } from "./fixtures/test";
 
 const articlePath = "/projects/e2e-project-13";
 const targetId = "2026-検証";
 const targetTitle = "2026年の検証";
 const targetHash = `#${encodeURIComponent(targetId)}`;
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, testInfo) => {
+  if (testInfo.project.name === "Desktop Chrome") await page.setViewportSize({ width: 1920, height: 1000 });
   await page.addInitScript(() => localStorage.setItem("naganuma-login-intro-seen", "1"));
 });
 
 async function expectAnchorPosition(page: Page) {
   await expect.poll(() => page.evaluate((id) => {
     const target = document.getElementById(id)!;
-    const offset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)
+    const reader = document.querySelector<HTMLElement>('[data-page-reader][data-scroll="internal"]');
+    const offset = (reader?.getBoundingClientRect().top ?? 0) + parseFloat(getComputedStyle(reader ?? document.documentElement).scrollPaddingTop)
       + parseFloat(getComputedStyle(target).scrollMarginTop);
     return Math.abs(target.getBoundingClientRect().top - offset);
   }, targetId)).toBeLessThanOrEqual(2);
@@ -40,26 +42,27 @@ for (const reducedMotion of ["reduce", "no-preference"] as const) {
   });
 }
 
-test("only the visible TOC listens to scrolling across the 1024px breakpoint", async ({ page }) => {
+test("only the visible TOC listens to scrolling as the article container changes width", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(`${articlePath}${targetHash}`);
   await page.evaluate(() => document.fonts.ready);
   const cdp = await page.context().newCDPSession(page);
-  for (const width of [1023, 1024, 375, 1440]) {
+  for (const width of [1023, 1024, 375, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 });
-    const desktop = width >= 1024;
+    await expect.poll(() => page.locator("[data-page-reader]").getAttribute("data-scroll")).toBe(width >= 960 ? "internal" : "document");
+    const desktop = await page.locator("[data-article-layout]").evaluate(element => element.clientWidth >= 960);
     if (!desktop) await page.locator(".toc-mobile-accordion summary").click();
     const toc = page.getByRole("navigation", { name: desktop ? "記事の目次" : "モバイル用目次" });
     await toc.getByRole("link", { name: targetTitle, exact: true }).click();
     await expectAnchorPosition(page);
     await expect.poll(async () => {
       const { result } = await cdp.send("Runtime.evaluate", {
-        expression: "(getEventListeners(window).scroll || []).length",
+        expression: "(getEventListeners(document.querySelector('[data-page-reader][data-scroll=internal]') || window).scroll || []).length",
         includeCommandLineAPI: true,
         returnByValue: true,
       });
       return result.value;
-    }).toBe(1);
+    }).toBe(2); // One reader listener and one visible TOC listener.
   }
   await cdp.detach();
 });

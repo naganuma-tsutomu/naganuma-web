@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures/test";
 import { cmsProjects } from "./fixtures/projects.mjs";
 
 // These tests exercise content, while menu.spec.ts still covers the first-visit intro.

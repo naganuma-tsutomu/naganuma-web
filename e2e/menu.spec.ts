@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures/test";
 
 test.describe("Mobile Navigation Menu", () => {
   test.use({ viewport: { width: 375, height: 667 } });
@@ -69,7 +69,7 @@ test.describe("Mobile Navigation Menu", () => {
     await expect(page).toHaveURL(/\/about/);
   });
 
-  test("hands off from the mobile drawer to the page transition without overlapping motion", async ({ page }) => {
+  test("hands off from the mobile drawer to the animated loading window without animating the main window", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.addInitScript(() => localStorage.setItem("naganuma-login-intro-seen", "1"));
     let releaseNavigation!: () => void;
@@ -86,13 +86,17 @@ test.describe("Mobile Navigation Menu", () => {
       await drawer.getByRole("link", { name: /ABOUT/ }).click();
       const overlay = page.locator('[role="status"][data-phase]');
       await expect(overlay).toHaveAttribute("data-phase", "closing");
+      await expect(page.locator("body")).toHaveCSS("background-attachment", "fixed, fixed");
+      await expect(overlay).toHaveCSS("background-image", "none");
+      await expect(overlay).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+      const loadingWindow = overlay.locator(":scope > div").filter({ hasText: "naganuma@home: navigation" });
+      await expect(loadingWindow).toBeVisible();
+      await expect(loadingWindow).not.toHaveCSS("animation-name", "none");
       await expect(drawer).toBeHidden();
-      await expect.poll(() => page.locator("#main-content").evaluate((main) => {
-        const matrix = new DOMMatrix(getComputedStyle(main).transform);
-        return matrix.a === 1 && matrix.d === 1 && matrix.e === 0
-          && matrix.f < 0 && matrix.f >= -12;
-      })).toBe(true);
+      await expect(page.locator("#main-content")).toHaveCSS("visibility", "hidden");
+      await expect(page.locator("#main-content")).toHaveCSS("transform", "none");
       await expect(page.locator("#main-content")).toHaveCSS("filter", "none");
+      await expect(page.locator("#main-content")).toHaveCSS("animation-name", "none");
       releaseNavigation();
       await expect(page).toHaveURL(/\/about/);
       await expect(overlay).toHaveAttribute("data-phase", "idle");
