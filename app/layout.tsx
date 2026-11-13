@@ -50,7 +50,7 @@ export default async function RootLayout({
   const isProjectPreview = Boolean((await cookies()).get(PROJECT_PREVIEW_COOKIE));
 
   return (
-    <html lang="ja" className={`${oswald.variable} ${shipporiMincho.variable} ${silkscreen.variable} scroll-smooth scroll-pt-28 [scrollbar-gutter:stable] max-[768px]:scroll-pt-[88px] motion-reduce:scroll-auto`} data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="ja" className={`${oswald.variable} ${shipporiMincho.variable} ${silkscreen.variable} scroll-smooth scroll-pt-28 [scrollbar-gutter:stable] motion-safe:not-data-[login-intro-seen=true]:has-[[data-login-intro]]:[scrollbar-gutter:auto] max-[768px]:scroll-pt-[88px] motion-reduce:scroll-auto`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {process.env.NODE_ENV === "production" && (
           <script nonce={nonce} dangerouslySetInnerHTML={{

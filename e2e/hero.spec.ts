@@ -66,7 +66,7 @@ test("desktop reading window scrolls independently and follows four sections", a
 
 test("split screens never scroll the document and restore page scrolling outside that layout", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === "Mobile Chrome", "Desktop scroll containment");
-  for (const [width, height] of [[1440, 1000], [1920, 1080], [1366, 768], [1280, 720], [960, 900]]) {
+  for (const [width, height] of [[1440, 1000], [1920, 1080], [1366, 768], [1280, 720]]) {
     await page.setViewportSize({ width, height });
     await expect(page.locator("[data-workspace]")).toHaveAttribute("data-layout", "split");
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollHeight - innerHeight)).toBeLessThanOrEqual(1);
@@ -84,7 +84,7 @@ test("split screens never scroll the document and restore page scrolling outside
     await page.evaluate(() => window.scrollTo({ top: 1000, behavior: "instant" }));
     expect(await page.evaluate(() => scrollY)).toBe(0);
   }
-  for (const [width, height] of [[390, 900], [1440, 600]]) {
+  for (const [width, height] of [[390, 900], [960, 900], [1024, 900], [1279, 900], [1440, 600]]) {
     await page.setViewportSize({ width, height });
     await expect(page.locator("[data-workspace]")).toHaveAttribute("data-layout", "flow");
     await page.evaluate(() => window.scrollTo({ top: 500, behavior: "instant" }));
@@ -168,7 +168,11 @@ test("a short final notes section remains selectable at the end and across resiz
   for (const width of [1024, 1920]) {
     await page.setViewportSize({ width, height: 1000 });
     await expect(page.locator("[data-reader-title]")).toHaveText("NOTES");
-    await expect.poll(() => reader(page).evaluate(element => element.scrollHeight - element.clientHeight - element.scrollTop)).toBeLessThanOrEqual(2);
+    await expect.poll(() => page.evaluate(() => {
+      const reader = document.querySelector<HTMLElement>('[data-home-reader][data-scroll="internal"]');
+      const scroller = reader ?? document.documentElement;
+      return scroller.scrollHeight - scroller.clientHeight - scroller.scrollTop;
+    })).toBeLessThanOrEqual(2);
   }
 });
 
@@ -196,10 +200,10 @@ test("manual input and results survive tabs, width changes, and returning to fol
   await navigation(page).getByRole("link", { name: "NOTES", exact: true }).click();
   await expect(panel(page)).toHaveAttribute("data-guide", "top");
   await expect(input(page)).toHaveValue("unfinished draft");
-  for (const width of [1024, 960, 390, 1440]) {
+  for (const width of [1280, 1279, 1024, 960, 390, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
-    await expect(page.locator("[data-workspace]")).toHaveAttribute("data-layout", width >= 960 ? "split" : "flow");
-    if (width >= 960) await expect(input(page)).toHaveValue("unfinished draft");
+    await expect(page.locator("[data-workspace]")).toHaveAttribute("data-layout", width >= 1280 ? "split" : "flow");
+    if (width >= 1280) await expect(input(page)).toHaveValue("unfinished draft");
     else await expect(input(page)).toBeHidden();
     await expect(page.locator("[data-reader-title]")).toHaveText("NOTES");
   }
@@ -219,7 +223,7 @@ test("resizing restores the section and its offset rather than the old pixel pos
   const before = await bookmark(page);
   for (const width of [960, 390, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    await expect(page.locator("[data-workspace]")).toHaveAttribute("data-layout", width >= 960 ? "split" : "flow");
+    await expect(page.locator("[data-workspace]")).toHaveAttribute("data-layout", width >= 1280 ? "split" : "flow");
     await expect.poll(async () => (await bookmark(page)).section).toBe(before.section);
     await expect.poll(async () => Math.abs((await bookmark(page)).offset - before.offset)).toBeLessThan(4);
   }
@@ -249,7 +253,7 @@ test("direct anchors, browser history, and article navigation retain the right p
 test("mobile and short screens keep the window appearance and use document scrolling", async ({ page }) => {
   for (const [width, height] of [[320, 900], [390, 900], [768, 900], [820, 900], [960, 900], [1024, 900], [1280, 900], [1440, 600]]) {
     await page.setViewportSize({ width, height });
-    const split = width >= 960 && height >= 680;
+    const split = width >= 1280 && height >= 680;
     await expect(page.locator("[data-workspace]")).toHaveAttribute("data-layout", split ? "split" : "flow");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await expect(page.getByRole("region", { name: "本文ウィンドウ" })).toBeVisible();

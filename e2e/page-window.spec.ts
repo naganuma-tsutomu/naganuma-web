@@ -98,7 +98,7 @@ test("switching to a narrow or short screen retains the reading position and nor
   await expect.poll(() => page.evaluate(() => window.history.state.naganumaPagePosition?.id)).toBe(id);
   for (const width of [390, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
-    await expect(reader(page)).toHaveAttribute("data-scroll", width >= 960 ? "internal" : "document");
+    await expect(reader(page)).toHaveAttribute("data-scroll", width >= 1280 ? "internal" : "document");
     await expect.poll(() => page.evaluate(() => window.history.state.naganumaPagePosition?.id)).toBe(id);
   }
 });

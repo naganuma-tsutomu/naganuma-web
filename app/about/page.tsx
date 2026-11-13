@@ -1,3 +1,4 @@
+import WindowDots from "@/components/WindowDots";
 import InteriorPageHeader from "@/components/InteriorPageHeader";
 import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
@@ -29,7 +30,7 @@ export default function About() {
         <div className="dark-panel flex min-h-[475px] min-w-0 flex-col @max-[800px]/reader:min-h-[300px]">
           <div className="panel-titlebar">
             <span>{terminalProfile.filename}</span>
-            <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
+            <WindowDots />
           </div>
           <div className="flex min-h-0 flex-1 flex-col border border-[var(--border)] border-t-0">
             <div className="flex min-w-0 flex-1 flex-col px-6 pt-[22px] pb-[18px] @max-[480px]/reader:px-4 @max-[480px]/reader:pt-[18px] @max-[480px]/reader:pb-[14px]">

@@ -43,7 +43,7 @@ export const baseIdentity: BaseIdentity = {
     line1: "つくって、試して、記録する。",
     line2: "個人の技術発信基地。",
   },
-  lead: "ソフトウェアエンジニア naganuma の個人発信基地です。Web開発からサーバー構築、自宅ラックサーバーの運用まで、日々の実験や制作物、学んだ知識をオープンにストックしています。",
+  lead: "WEBエンジニア naganuma の個人発信基地です。Web開発からサーバー構築、自宅ラックサーバーの運用まで、日々の実験や制作物、学んだ知識をオープンにストックしています。",
 };
 
 export const baseProfileSummary: BaseProfileSummary = {

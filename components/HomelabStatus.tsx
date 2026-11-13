@@ -1,5 +1,6 @@
 "use client";
 
+import WindowDots from "@/components/WindowDots";
 import { useHomelabStatus } from "@/components/HomelabProvider";
 import type { HomelabNetwork } from "@/lib/homelab-types";
 
@@ -68,14 +69,14 @@ export default function HomelabStatus({ compact = false }: { compact?: boolean }
   }`;
 
   return (
-    <div className="status-panel dark-panel relative flex h-full flex-col before:absolute before:inset-[5px] before:border before:border-[var(--border)] before:pointer-events-none">
+    <div className="status-panel dark-panel relative flex h-full flex-col before:absolute before:inset-[5px] before:border before:border-[var(--border)] before:pointer-events-none before:content-['']">
       <div className={`${compact ? "flex" : "hidden max-[768px]:flex"} min-h-[43px] items-center gap-3 px-3 py-2 font-[family-name:var(--mono)] text-[10px] leading-[1.3]`}>
         <strong className="mr-auto text-[11px] tracking-[0.04em]">HOMELAB STATUS</strong>
         <span className={statusDemoClasses} data-state={status?.state}>{status ? labels[status.state] : "CONNECTING"}</span>
       </div>
       <div className={`${compact ? "hidden" : ""} panel-titlebar status-titlebar min-h-[37px] py-[6px] border-0 max-[768px]:hidden`}>
-        <h2 className="m-0 font-inherit text-[14px]">HOMELAB STATUS</h2>
-        <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
+        <h2 className="m-0 [font:inherit] text-[14px]">HOMELAB STATUS</h2>
+        <WindowDots />
       </div>
       <div className={`${compact ? "" : "status-body"} grid flex-1 grid-cols-[1.65fr_1fr] max-[1199px]:grid-cols-[1.8fr_1fr] max-[1023px]:grid-cols-1 max-[768px]:block max-[768px]:flex-none max-[768px]:min-h-0 items-stretch border-0 border-t border-[var(--border)] p-[19px_24px] max-[1199px]:px-3 max-[1023px]:p-5 max-[768px]:p-[11px_12px_13px] gap-[30px] max-[1199px]:gap-[15px] max-[1023px]:gap-5 min-h-[156px] max-[1023px]:min-h-[232px] ${compact ? "!grid-cols-1 !min-h-0 !gap-3 !p-4" : ""}`}>
         <dl className="grid gap-[9px] max-[768px]:gap-[7px] content-center m-0">

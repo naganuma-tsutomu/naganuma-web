@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import ContentImage from "./ContentImage";
 import { useRef } from "react";
 import { useInView } from "@/lib/useInView";
 import type { NoteArticle } from "@/lib/note-types";
@@ -20,17 +20,10 @@ const dateFormatter = new Intl.DateTimeFormat("ja-JP", {
   day: "2-digit",
 });
 
-const sampleBgStyles = [
-  "bg-[#0a171d] text-[var(--surface)]",
-  "bg-[#ffc18b] text-[#0a171d]",
-  "bg-[#bcd7d1] text-[#0a171d]",
-] as const;
-
 export default function NoteCard({ id, article, index, sample = false, scrollHighlight = false }: NoteCardProps) {
   const thumbnailRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(thumbnailRef, { amount: 0.7 });
   const date = article.publishedAt ? dateFormatter.format(new Date(article.publishedAt)) : null;
-  const hasThumbnail = Boolean(article.thumbnailUrl || sample);
 
   const thumbnailViewClasses = `note-card-thumbnail-view relative isolate mt-[18px] aspect-[1.91/1] w-full transition-transform duration-300 ease-in-out will-change-transform group-hover/notecard:-translate-y-[3px] ${
     scrollHighlight && isInView
@@ -50,28 +43,18 @@ export default function NoteCard({ id, article, index, sample = false, scrollHig
         <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
         {sample ? <span>SAMPLE</span> : date ? <time dateTime={article.publishedAt ?? undefined}>{date}</time> : null}
       </div>
-      {hasThumbnail ? (
-        <div ref={thumbnailRef} className={thumbnailViewClasses}>
-          <span className={thumbnailShadowClasses} aria-hidden="true" />
-          {article.thumbnailUrl ? (
-            <div className={thumbnailClasses}>
-              <Image
-                src={article.thumbnailUrl}
-                alt=""
-                fill
-                className="object-cover"
-                sizes="(max-width: 767px) calc(100vw - 36px), (max-width: 1023px) calc(100vw - 100px), 30vw"
-              />
-            </div>
-          ) : (
-            <div className={`${thumbnailClasses} flex flex-col justify-between px-[18px] py-[15px] font-[family-name:var(--mono)] text-[10px] leading-[1.4] tracking-[0.1em] ${sampleBgStyles[index % 3]}`} aria-hidden="true">
-              <span>NOTES / SAMPLE</span>
-              <strong className="self-end font-[family-name:var(--mono)] text-[clamp(34px,5vw,60px)] font-bold leading-none">{String(index + 1).padStart(2, "0")}</strong>
-            </div>
-          )}
+      <div ref={thumbnailRef} className={thumbnailViewClasses}>
+        <span className={thumbnailShadowClasses} aria-hidden="true" />
+        <div className={thumbnailClasses}>
+          <ContentImage
+            src={article.thumbnailUrl ?? undefined}
+            alt=""
+            sizes="(max-width: 767px) calc(100vw - 68px), (max-width: 1279px) 46vw, 30vw"
+            fallbackLabel={`NOTES / ${sample ? "SAMPLE / " : ""}${String(index + 1).padStart(2, "0")}`}
+          />
         </div>
-      ) : null}
-      <h3 className={`font-[family-name:var(--font-shippori-mincho),serif] font-bold text-[23px] max-[768px]:text-[20px] leading-[1.45] [overflow-wrap:anywhere] ${hasThumbnail ? "mt-[19px] mb-[13px]" : "mt-[34px] max-[768px]:mt-[25px] mb-[13px]"}`}>
+      </div>
+      <h3 className="mt-[19px] mb-[13px] font-[family-name:var(--font-shippori-mincho),serif] font-bold text-[23px] max-[768px]:text-[20px] leading-[1.45] [overflow-wrap:anywhere]">
         {article.title}
       </h3>
       {article.description ? (

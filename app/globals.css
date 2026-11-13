@@ -219,9 +219,6 @@
   .notes-grid > .note-card:nth-child(n + 4) { @apply border-t-[1px] border-solid border-t-[var(--ink)]; }
   .notes-grid > .note-card:nth-child(3n + 1) { @apply [border-left:0]; }
 }
-.note-card-thumbnail img { @apply object-cover; }
-.note-card h3 { @apply mt-[34px] mx-[0] mb-[13px]; @apply [font:700_23px/1.45_var(--font-shippori-mincho),_serif]; @apply [overflow-wrap:anywhere]; }
-.note-card-thumbnail-view + h3 { @apply mt-[19px]; }
 
 @media (max-width: 1023px) {
   .note-card + .note-card { @apply [border-left:0] border-t-[1px] border-solid border-t-[var(--ink)]; }
@@ -231,7 +228,6 @@
   .article-body h1, .article-body h2 { @apply text-[22px]; }
   .article-body h3 { @apply text-[18px]; }
   .article-body blockquote { @apply px-[16px]; }
-  .note-card h3 { @apply mt-[25px] text-[20px]; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -247,74 +243,8 @@
 /* Interior typography follows the actual content window, including wide-screen split views. */
 .interior-section-title { @apply text-[clamp(28px,4cqw,52px)]; }
 
-/* Original terminal and homelab status presentation. */
-.short-rule { @apply block w-[30px] h-[1px] bg-[currentColor] mt-[14px]; }
-.status-panel::before { @apply absolute inset-[5px] border-[1px] border-solid border-[var(--border)] content-[""] pointer-events-none; }
-.status-titlebar { @apply [border:0]; @apply min-h-[37px] py-[6px]; }
-.status-titlebar h2 { @apply m-0; @apply [font:inherit]; @apply text-[14px]; }
-.status-demo { @apply text-[10px] text-[#b9c7c9] tracking-[.05em] whitespace-nowrap; }
+/* Shared by the terminal's system-state label. */
+.status-demo { @apply text-[10px] tracking-[.05em] whitespace-nowrap text-[#b9c7c9]; }
+.status-demo[data-state="demo"] { @apply text-[#ff7364]; }
 .status-demo[data-state="live"] { @apply inline-flex items-center gap-[9px]; }
 .status-demo[data-state="live"]::before { @apply content-[""] w-[7px] h-[7px] flex-none rounded-[50%] bg-[#57d7c3] shadow-[0_0_10px_#57d7c3]; }
-.status-demo[data-state="demo"] { @apply text-[#ff7364]; }
-.status-body { @apply [border:0]; @apply grid flex-[1] grid-cols-[1.65fr_1fr] items-stretch border-t-[1px] border-solid border-t-[var(--border)] py-[19px] px-[24px] gap-[30px] min-h-[156px]; }
-.status-meters { @apply grid gap-[9px] content-center m-0; }
-.status-row { @apply grid grid-cols-[44px_minmax(0,_1fr)] gap-[12px] items-center text-[14px] leading-[1]; }
-.status-row dd { @apply m-0 grid grid-cols-[minmax(0,_1fr)_auto] items-center gap-[15px]; }
-.meter-segments { @apply grid grid-cols-[repeat(16,_minmax(0,_1fr))] gap-[2px] h-[17px]; }
-.meter-segments i { @apply bg-[#29424b] shadow-[inset_0_0_3px_#12262c]; }
-.meter-segments i.is-filled { @apply bg-[var(--terminal-accent)] shadow-[inset_0_0_3px_#4faea1]; }
-.meter-value { @apply tabular-nums whitespace-nowrap; }
-.status-network { @apply items-center; }
-.network-unit { @apply block mt-[3px] text-[#a5b6b9] text-[9px] leading-[1]; }
-.status-network dd { @apply grid grid-cols-[minmax(0,_1fr)] gap-[3px] min-w-0; }
-.network-line { @apply grid grid-cols-[43px_5ch_minmax(24px,_1fr)] gap-[7px] items-center min-w-0 text-[11px] leading-[1]; }
-.network-direction { @apply whitespace-nowrap; }
-.network-value { @apply text-right tabular-nums whitespace-nowrap; }
-.network-receive { @apply text-[var(--terminal-accent)]; }
-.network-transmit { @apply text-[#ffbd76]; }
-.network-sparkline { @apply block w-full h-[20px] overflow-visible border-b-[1px] border-solid border-b-[#29424b]; }
-.network-sparkline path { @apply [fill:none] [stroke:currentColor] [stroke-width:1.5] [vector-effect:non-scaling-stroke]; }
-.network-sparkline-empty { @apply block h-[20px] border-b-[1px] border-dashed border-b-[#29424b]; }
-.status-motto-wrap { @apply relative grid min-w-0; }
-.status-motto-wrap .status-demo { @apply absolute top-0 right-0; }
-.status-motto { @apply m-0 border-l-[1px] border-solid border-l-[var(--border)] pl-[28px] content-center text-[15px] leading-[1.55] tracking-[.06em]; }
-.status-motto .short-rule { @apply w-[23px]; }
-@media (max-width: 1199px) {
-  .status-body { @apply gap-[15px] px-[12px] grid-cols-[1.8fr_1fr]; }
-  .status-row { @apply gap-[6px] grid-cols-[35px_minmax(0,_1fr)] text-[12px]; }
-  .status-row dd { @apply gap-[8px]; }
-  .status-motto { @apply pl-[15px] text-[12px]; }
-}
-@media (max-width: 1023px) {
-  .status-body { @apply grid-cols-[1fr] min-h-[232px] gap-[20px] p-[20px]; }
-  .status-motto-wrap { @apply pt-[14px]; }
-  .status-motto { @apply [border-left:0] border-t-[1px] border-solid border-t-[var(--border)] pt-[12px] px-[0] pb-[0] text-[11px]; }
-  .status-motto br { @apply hidden; }
-  .status-motto .short-rule { @apply hidden; }
-  .status-row { @apply text-[14px] gap-[15px]; }
-}
-@media (max-width: 767px) {
-  .status-body { @apply grid-cols-[1.6fr_1fr] min-h-[147px] gap-[18px] py-[15px] px-[12px]; }
-  .status-titlebar h2 { @apply text-[12px]; }
-  .status-titlebar { @apply gap-[6px]; }
-  .status-titlebar .window-dots { @apply gap-[6px]; }
-  .status-demo { @apply text-[9px]; }
-  .status-motto-wrap { @apply pt-0; }
-  .status-motto { @apply [border-top:0] border-l-[1px] border-solid border-l-[var(--border)] p-[0_0_0_15px] text-[11px]; }
-  .status-motto br { @apply [display:initial]; }
-  .status-motto .short-rule { @apply block; }
-  .status-row { @apply text-[11px] gap-[5px] grid-cols-[31px_minmax(0,_1fr)]; }
-  .network-line { @apply grid-cols-[37px_5ch_minmax(24px,_1fr)] gap-[4px] text-[10px]; }
-  .network-unit { @apply text-[8px]; }
-  .meter-segments { @apply h-[15px] gap-[1px]; }
-}
-@media (max-width: 639px) {
-  .status-body { @apply grid-cols-[1fr] min-h-0 gap-[14px]; }
-  .status-motto-wrap { @apply pt-[14px]; }
-  .status-motto { @apply [border-left:0] border-t-[1px] border-solid border-t-[var(--border)] pt-[10px] px-[0] pb-[0] text-[10px]; }
-  .status-motto br, .status-motto .short-rule { @apply hidden; }
-}
-@media (max-width: 374px) {
-  .status-body { @apply gap-[10px]; }
-  .status-motto { @apply pl-[10px] text-[10px]; }
-}

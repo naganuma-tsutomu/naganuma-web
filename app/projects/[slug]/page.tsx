@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { createPageMetadata } from "@/lib/site-metadata";
-import Image from "next/image";
+import ContentImage from "@/components/ContentImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
@@ -72,7 +72,7 @@ export default async function ProjectPage({ params }: Props) {
             <p className="article-description">{project.description}</p>
           </header>
           <div className="article-cover">
-            <Image src={project.imageUrl} alt={project.title} fill sizes="(max-width: 767px) calc(100vw - 32px), 920px" priority />
+            <ContentImage src={project.imageUrl} alt={project.title} sizes="(max-width: 767px) calc(100vw - 32px), 920px" priority />
           </div>
           {hasToc && <TableOfContents items={toc} mode="inline" />}
           <div className="article-body" dangerouslySetInnerHTML={{ __html: contentHtml }} />

@@ -65,18 +65,18 @@ const Header = () => {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="flex items-center gap-2 border-l border-[#a3afa5] pl-[18px] font-[family-name:var(--mono)] text-[13px] uppercase max-[900px]:hidden" aria-label="メインナビゲーション">
+        <nav className="grid shrink-0 grid-cols-5 items-center gap-2 border-l border-[#a3afa5] pl-[18px] font-[family-name:var(--mono)] text-[13px] uppercase max-[900px]:hidden" aria-label="メインナビゲーション">
           {links.map((link, index) => (
-            <Link key={link.name} href={link.href} aria-current={currentPage(link.href)} className="group relative inline-flex min-h-[42px] min-w-[84px] items-center justify-start gap-2 border border-[#a9b5a9] bg-[#f7f5ea] px-[11px] text-[var(--ink)] whitespace-nowrap transition-colors duration-200 hover:border-[var(--ink)] hover:bg-[#fffaf0] aria-[current]:border-[var(--ink)] aria-[current]:bg-[#ffdfb8] aria-[current]:hover:bg-[#ffdfb8] aria-[current]:after:absolute aria-[current]:after:inset-x-0 aria-[current]:after:bottom-0 aria-[current]:after:h-[3px] aria-[current]:after:bg-[var(--red)] aria-[current]:after:content-['']">
-              <span className="shrink-0 border-r border-[#b0bdb1] pr-2 font-[family-name:var(--mono)] text-[11px] leading-none text-[#426b65] group-aria-[current]:border-[#d5aa86] group-aria-[current]:text-[var(--red)]" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-              <span>{link.name}</span>
+            <Link key={link.name} href={link.href} aria-current={currentPage(link.href)} className="group relative inline-flex min-h-[42px] w-[118px] min-w-0 items-center justify-start min-[1024px]:w-[140px] border border-[#a9b5a9] bg-[#f7f5ea] px-[11px] text-[var(--ink)] whitespace-nowrap transition-colors duration-200 hover:border-[var(--ink)] hover:bg-[#fffaf0] aria-[current]:border-[var(--ink)] aria-[current]:bg-[#ffdfb8] aria-[current]:hover:bg-[#ffdfb8] aria-[current]:after:absolute aria-[current]:after:inset-x-0 aria-[current]:after:bottom-0 aria-[current]:after:h-[3px] aria-[current]:after:bg-[var(--red)] aria-[current]:after:content-['']">
+              <span className="w-6 shrink-0 border-r border-[#b0bdb1] pr-2 font-[family-name:var(--mono)] text-[11px] leading-none text-[#426b65] group-aria-[current]:border-[#d5aa86] group-aria-[current]:text-[var(--red)]" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <span className="min-w-0 flex-1 text-center">{link.name}</span>
             </Link>
           ))}
         </nav>
 
-        <div className="ml-auto flex shrink-0 items-center gap-5 max-[1024px]:hidden">
+        <div className="ml-auto flex shrink-0 items-center gap-5 max-[1600px]:hidden">
           <HeaderClock />
-          <p className="m-0 border-l border-[#a3afa5] py-1 pl-4 font-[family-name:var(--mono)] text-xs leading-[1.55] whitespace-nowrap text-[#354641] max-[1200px]:hidden">PERSONAL WORKSPACE<br />WEB / SERVER / HOMELAB</p>
+          <p className="m-0 border-l border-[#a3afa5] py-1 pl-4 font-[family-name:var(--mono)] text-xs leading-[1.55] whitespace-nowrap text-[#354641] max-[1800px]:hidden">PERSONAL WORKSPACE<br />WEB / SERVER / HOMELAB</p>
         </div>
         <HamburgerMenu />
       </div>

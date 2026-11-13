@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 
 // Card interaction tests use a local image, including when Next optimizes its URL.
 export async function mockNoteThumbnail(context: BrowserContext) {
-  await context.route(url => url.pathname === "/_next/image" && url.searchParams.get("url") === "https://assets.st-note.com/e2e-thumbnail.jpg", route => route.fulfill({
+  await context.route(url => url.pathname === "/_next/image" && ["https://assets.st-note.com/e2e-thumbnail.jpg", "https://images.microcms-assets.io/assets/e2e/project-01.jpg"].includes(url.searchParams.get("url") ?? ""), route => route.fulfill({
     path: fileURLToPath(new URL("../../public/images/no-image.jpg", import.meta.url)),
     contentType: "image/jpeg",
   }));

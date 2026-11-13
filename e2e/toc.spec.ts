@@ -49,7 +49,7 @@ test("only the visible TOC listens to scrolling as the article container changes
   const cdp = await page.context().newCDPSession(page);
   for (const width of [1023, 1024, 375, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 });
-    await expect.poll(() => page.locator("[data-page-reader]").getAttribute("data-scroll")).toBe(width >= 960 ? "internal" : "document");
+    await expect.poll(() => page.locator("[data-page-reader]").getAttribute("data-scroll")).toBe(width >= 1280 ? "internal" : "document");
     const desktop = await page.locator("[data-article-layout]").evaluate(element => element.clientWidth >= 960);
     if (!desktop) await page.locator(".toc-mobile-accordion summary").click();
     const toc = page.getByRole("navigation", { name: desktop ? "記事の目次" : "モバイル用目次" });

@@ -23,7 +23,7 @@ export default function WorkspaceShell({ children, footer }: { children: ReactNo
       frame = 0;
       const height = window.innerHeight - (document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 80) - 48;
       measuredStatusHeight = statusRef.current?.offsetHeight || measuredStatusHeight;
-      const split = window.innerWidth >= 960 && window.innerHeight >= 680 && height - 54 >= 450 && height >= measuredStatusHeight + 360;
+      const split = window.innerWidth >= 1280 && window.innerHeight >= 680 && height - 54 >= 450 && height >= measuredStatusHeight + 360;
       flushSync(() => setLayout(previous => previous.ready && previous.split === split && previous.height === height && previous.statusHeight === measuredStatusHeight ? previous : { ready: true, split, height, statusHeight: measuredStatusHeight }));
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };

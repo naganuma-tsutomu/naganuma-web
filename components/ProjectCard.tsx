@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
+import ContentImage from "./ContentImage";
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useInView } from "@/lib/useInView";
 import type { ProjectSummary } from "@/lib/project-types";
 
@@ -20,8 +20,6 @@ const dateFormatter = new Intl.DateTimeFormat("ja-JP", {
 });
 
 export default function ProjectCard({ project, index, sample = false }: ProjectCardProps) {
-  const [imageError, setImageError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const ref = useRef<HTMLElement>(null);
   const isVisible = useInView(ref, { once: true, margin: "-50px" });
   const isFullyInView = useInView(ref, { amount: 0.95 });
@@ -69,26 +67,18 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
 
         {/* Image */}
         <div className="relative h-48 bg-gray-100 border-b-2 border-[var(--ink)] shrink-0">
-          {isLoading && !imageError && (
-            <div data-project-image-loading className="absolute inset-0 bg-gray-300 z-10 animate-[pulse_1.5s_ease-in-out_infinite] motion-reduce:animate-none" />
-          )}
-          <Image
-            src={imageError ? "/images/no-image.jpg" : project.imageUrl}
+          <ContentImage
+            src={project.imageUrl}
             alt={project.title}
-            fill
-            sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1023px) 46vw, (max-width: 1600px) 30vw, 475px"
-            className={`object-cover transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
+            sizes="(max-width: 767px) calc(100vw - 68px), (max-width: 1279px) 46vw, (max-width: 1600px) 30vw, 475px"
             priority={index < 3}
-            onLoad={() => setIsLoading(false)}
-            onError={() => {
-              setImageError(true);
-              setIsLoading(false);
-            }}
+            fallbackLabel={`PROJECT / ${String(index + 1).padStart(2, "0")}`}
+            loadingPlaceholder
           />
         </div>
 
         {/* Text Content */}
-        <div className="p-6 flex-grow transition-colors duration-300">
+        <div className="min-w-0 p-6 flex-grow transition-colors duration-300">
           {sample && <span className="project-card-sample">SAMPLE</span>}
           {date && (
             <div className="mb-3 font-[family-name:var(--mono)] text-xs tracking-wider text-[var(--text-sub)]">
@@ -97,13 +87,13 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
           )}
           <h3
             id={`${project.slug}-title`}
-            className={`text-2xl font-bold font-[family-name:var(--font-oswald),sans-serif] mb-2 group-hover/card:text-[var(--red)] group-focus-within/card:text-[var(--red)] transition-colors md:text-[var(--ink)] ${
+            className={`[overflow-wrap:anywhere] text-2xl font-bold font-[family-name:var(--font-oswald),sans-serif] mb-2 group-hover/card:text-[var(--red)] group-focus-within/card:text-[var(--red)] transition-colors md:text-[var(--ink)] ${
               isFullyInView ? "text-[var(--red)]" : "text-[var(--ink)]"
             }`}
           >
             {project.title}
           </h3>
-          <p className="text-[var(--text-sub)] line-clamp-3 transition-colors duration-300">
+          <p className="text-[var(--text-sub)] [overflow-wrap:anywhere] line-clamp-3 transition-colors duration-300">
             {project.description}
           </p>
         </div>
@@ -118,7 +108,7 @@ export default function ProjectCard({ project, index, sample = false }: ProjectC
       style={{
         transitionDelay: `${index * 100}ms`,
       }}
-      className={`project-card group/card relative h-full font-[family-name:var(--font-shippori-mincho)] transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none! motion-reduce:opacity-100! motion-reduce:transform-none! motion-reduce:translate-none! print:opacity-100! print:transform-none! ${
+      className={`project-card group/card relative min-w-0 h-full font-[family-name:var(--font-shippori-mincho)] transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none! motion-reduce:opacity-100! motion-reduce:transform-none! motion-reduce:translate-none! print:opacity-100! print:transform-none! ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
       }${sample ? " project-card-preview" : ""}`}
       aria-labelledby={`${project.slug}-title`}

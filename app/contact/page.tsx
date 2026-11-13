@@ -1,3 +1,4 @@
+import WindowDots from "@/components/WindowDots";
 import InteriorPageHeader from "@/components/InteriorPageHeader";
 import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
@@ -24,7 +25,29 @@ export default function Contact() {
       <InteriorPageHeader title="CONTACT" kicker="LINKS / 002" description="制作の記録や日々の発信は、こちらからご覧いただけます。" meta="GITHUB / X" />
 
       <div className="contact-grid">
-        <section className="contact-details" aria-labelledby="contact-intro-title">
+        <section className="dark-panel @min-[800px]/reader:col-start-2 @min-[800px]/reader:row-start-1" aria-labelledby="contact-links-title">
+          <div className="panel-titlebar">
+            <span>profiles.txt</span>
+            <WindowDots />
+          </div>
+          <div className="border border-[var(--border)] border-t-0 p-[clamp(20px,3cqw,37px)]">
+            <div className="mb-[29px]">
+              <span className="font-[family-name:var(--mono)] text-xs leading-normal text-[var(--aqua)]">&gt; ls /profiles</span>
+              <h2 id="contact-links-title" className="mt-3 font-[family-name:var(--font-pixel)] text-[clamp(23px,2.4cqw,34px)] leading-[1.3] font-bold tracking-[-0.08em] @max-[480px]/reader:text-[22px]">SOCIAL LINKS<span className="text-[var(--aqua)]">_</span></h2>
+            </div>
+            <div className="grid gap-[15px]">
+              {socialLinks.map((link, index) => (
+                <a className={profileLinkClass} href={link.url} key={link.name} target="_blank" rel="noopener noreferrer">
+                  <span className={profileLabelClass}>{String(index + 1).padStart(2, "0")} / {link.name}</span>
+                  <span className={profileUrlClass}>{link.displayText}</span>
+                  <span className={profileArrowClass} aria-hidden="true">↗</span>
+                </a>
+              ))}
+            </div>
+            <p className="mt-7 flex flex-wrap justify-between gap-x-4 gap-y-2 border-t border-[#597174] pt-[14px] font-[family-name:var(--mono)] text-[10px] leading-normal tracking-[0.08em] text-[#b9c7c9]">EXTERNAL LINKS <span>OPEN IN NEW TAB ↗</span></p>
+          </div>
+        </section>
+        <section className="contact-details @min-[800px]/reader:col-start-1 @min-[800px]/reader:row-start-1" aria-labelledby="contact-intro-title">
           <div className="interior-section-heading">
             <span>01 / PROFILES</span>
             <span className="section-rule" aria-hidden="true" />
@@ -46,29 +69,6 @@ export default function Contact() {
                 </p>
               </div>
             ))}
-          </div>
-        </section>
-
-        <section className="dark-panel" aria-labelledby="contact-links-title">
-          <div className="panel-titlebar">
-            <span>profiles.txt</span>
-            <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
-          </div>
-          <div className="border border-[var(--border)] border-t-0 p-[clamp(20px,3cqw,37px)]">
-            <div className="mb-[29px]">
-              <span className="font-[family-name:var(--mono)] text-xs leading-normal text-[var(--aqua)]">&gt; ls /profiles</span>
-              <h2 id="contact-links-title" className="mt-3 font-[family-name:var(--font-pixel)] text-[clamp(23px,2.4cqw,34px)] leading-[1.3] font-bold tracking-[-0.08em] @max-[480px]/reader:text-[22px]">SOCIAL LINKS<span className="text-[var(--aqua)]">_</span></h2>
-            </div>
-            <div className="grid gap-[15px]">
-              {socialLinks.map((link, index) => (
-                <a className={profileLinkClass} href={link.url} key={link.name} target="_blank" rel="noopener noreferrer">
-                  <span className={profileLabelClass}>{String(index + 1).padStart(2, "0")} / {link.name}</span>
-                  <span className={profileUrlClass}>{link.displayText}</span>
-                  <span className={profileArrowClass} aria-hidden="true">↗</span>
-                </a>
-              ))}
-            </div>
-            <p className="mt-7 flex flex-wrap justify-between gap-x-4 gap-y-2 border-t border-[#597174] pt-[14px] font-[family-name:var(--mono)] text-[10px] leading-normal tracking-[0.08em] text-[#b9c7c9]">EXTERNAL LINKS <span>OPEN IN NEW TAB ↗</span></p>
           </div>
         </section>
       </div>

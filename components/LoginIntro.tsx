@@ -13,6 +13,7 @@ export default function LoginIntro() {
   const autoTimer = useRef<number | null>(null);
   const exitTimer = useRef<number | null>(null);
   const restorePage = useRef<(() => void) | null>(null);
+  const screen = useRef<HTMLDivElement>(null);
   const skipButton = useRef<HTMLButtonElement>(null);
   const shouldShow = useRef<boolean | null>(null);
 
@@ -53,22 +54,36 @@ export default function LoginIntro() {
     }
 
     const page = Array.from(document.querySelectorAll<HTMLElement>(
-      "body > .skip-link, body > .site-header, body > #main-content, body > footer",
+      "body > .skip-link, body > .site-header, [data-workspace]",
     ));
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const previousInert = page.map((element) => element.inert);
     const previousOverflow = document.body.style.overflow;
+    let keyboardUsed = false;
     page.forEach((element) => { element.inert = true; });
     document.body.style.overflow = "hidden";
     restorePage.current = () => {
+      window.removeEventListener("keydown", handleKeyDown);
       page.forEach((element, index) => { element.inert = previousInert[index]; });
       document.body.style.overflow = previousOverflow;
+      if (screen.current?.contains(document.activeElement)) {
+        const target = previousFocus && previousFocus !== document.body && previousFocus.isConnected && !previousFocus.closest("[data-login-intro]")
+          ? previousFocus
+          : document.querySelector<HTMLElement>(keyboardUsed ? "[data-home-reader], [data-page-reader]" : "#main-content");
+        target?.focus({ preventScroll: true });
+      }
     };
 
-    skipButton.current?.focus({ preventScroll: true });
+    screen.current?.focus({ preventScroll: true });
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      keyboardUsed = true;
       if (event.key === "Escape") {
         dismiss();
+      }
+      if (event.key === "Tab") {
+        event.preventDefault();
+        skipButton.current?.focus({ preventScroll: true });
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -87,13 +102,15 @@ export default function LoginIntro() {
 
   return (
     <div
-      className={`${styles.screen} fixed inset-0 z-[200] grid h-dvh w-full place-items-center overflow-hidden bg-[#e9e4d8] font-[family-name:var(--mono)] text-[var(--ink)] opacity-100 motion-reduce:hidden ${phase === "leaving" ? styles.leaving : ""}`}
+      ref={screen}
+      tabIndex={-1}
+      className={`${styles.screen} fixed inset-0 z-[200] grid h-dvh w-screen place-items-center overflow-hidden bg-[#d9dcd3] [background-image:linear-gradient(90deg,#0a171d09_1px,transparent_1px),linear-gradient(#0a171d09_1px,transparent_1px)] [background-size:34px_34px] font-[family-name:var(--mono)] text-[var(--ink)] opacity-100 outline-none motion-reduce:hidden print:hidden ${phase === "leaving" ? styles.leaving : ""}`}
       data-login-intro
       role="dialog"
       aria-modal="true"
       aria-label="ウェルカム画面"
     >
-      <div className={`${styles.frame} grid h-full w-[min(calc(100%-72px),1464px)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden px-[18px] py-[clamp(18px,3vw,42px)] max-[1200px]:w-[calc(100%-48px)] max-[768px]:w-full`}>
+      <div className={`${styles.frame} grid h-[calc(100%-64px)] min-h-0 w-[min(calc(100%-64px),1464px)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden border border-[#a8aaa0] bg-[#e9e4d8] px-[clamp(18px,2.5vw,36px)] py-[clamp(18px,2.5vw,32px)] shadow-[8px_8px_0_#0a171d14] max-[768px]:h-full max-[768px]:w-full max-[768px]:border-0 max-[768px]:px-[18px] max-[768px]:py-[18px] max-[768px]:shadow-none [@media(max-height:560px)]:h-full`}>
         <div className={`${styles.topbar} flex items-center justify-between gap-5 border-b border-[#a8aaa0] pb-[14px] max-[375px]:gap-2`}>
           <div className="flex min-w-0 items-center gap-5">
             <span className={wordmarkClass}>
@@ -108,21 +125,21 @@ export default function LoginIntro() {
         </div>
 
         <div className={`${styles.center} grid min-h-0 place-items-center overflow-y-auto px-[10px] pt-[26px] pb-[34px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-[641px]:px-[5px]`}>
-          <div className={`${styles.loginWindow} w-[min(100%,482px)] border-[3px] border-[var(--ink)] bg-[var(--ink)] p-[5px] text-[var(--paper)] shadow-[8px_8px_0_var(--ink)] max-[641px]:shadow-[5px_5px_0_var(--ink)]`}>
-            <div className="flex min-h-[38px] items-center justify-between gap-3 border border-[#afbdba] px-3 py-[7px] text-xs">
+          <div className={`${styles.loginWindow} w-[min(100%,560px)] border-[3px] border-[var(--ink)] bg-[var(--ink)] p-[5px] text-[var(--paper)] shadow-[8px_8px_0_var(--ink)] max-[641px]:shadow-[5px_5px_0_var(--ink)]`}>
+            <div className="flex min-h-[42px] items-center justify-between gap-3 border border-[#afbdba] px-3 py-[7px] text-xs max-[641px]:min-h-[38px]">
               <span>naganuma@home: login</span>
               <span className="flex gap-[7px] [&_i]:h-[10px] [&_i]:w-[10px] [&_i]:rounded-full [&_i]:border [&_i]:border-[#c7d4cf]" aria-hidden="true"><i /><i /><i /></span>
             </div>
-            <div className={`${styles.windowBody} border border-t-0 border-[#afbdba] p-[clamp(21px,3vw,34px)] max-[641px]:p-[21px]`}>
+            <div className={`${styles.windowBody} border border-t-0 border-[#afbdba] p-[clamp(21px,3vw,40px)] max-[641px]:p-[21px]`}>
               <div className="flex items-center gap-[23px] max-[641px]:gap-[17px]">
-                <div className={`${styles.avatar} grid h-[94px] w-[94px] shrink-0 place-items-center border-2 border-[var(--paper)] bg-[var(--orange)] font-[family-name:var(--font-pixel)] text-[56px] leading-none font-bold text-[var(--red)] shadow-[4px_4px_0_#86cec2] max-[641px]:h-[72px] max-[641px]:w-[72px] max-[641px]:text-[42px]`} aria-hidden="true">N</div>
+                <div className={`${styles.avatar} grid h-[104px] w-[104px] shrink-0 place-items-center border-2 border-[var(--paper)] bg-[var(--orange)] font-[family-name:var(--font-pixel)] text-[62px] leading-none font-bold text-[var(--red)] shadow-[4px_4px_0_#86cec2] max-[641px]:h-[72px] max-[641px]:w-[72px] max-[641px]:text-[42px]`} aria-hidden="true">N</div>
                 <div>
                   <p className="mb-[6px] text-[10px] tracking-[0.12em] text-[#86cec2]">LOCAL ACCOUNT / 01</p>
-                  <h2 className="m-0 font-[family-name:var(--font-oswald)] text-[clamp(27px,3.5vw,35px)] leading-[1.2] font-bold tracking-[0.02em] max-[641px]:text-[28px]">naganuma</h2>
+                  <h2 className="m-0 font-[family-name:var(--font-oswald)] text-[clamp(27px,3.5vw,40px)] leading-[1.2] font-bold tracking-[0.02em] max-[641px]:text-[28px]">naganuma</h2>
                   <p className="mt-[7px] text-[10px] tracking-[0.04em] text-[#b7c5c3] max-[641px]:text-[9px]">WEB / SERVER / HOMELAB</p>
                 </div>
               </div>
-              <div className={`${styles.authStage} relative mt-[30px] h-[90px] border-t border-[#789195]`}>
+              <div className={`${styles.authStage} relative mt-[34px] h-[100px] border-t border-[#789195] max-[641px]:mt-[30px] max-[641px]:h-[90px]`}>
                 <div className={`${styles.signIn} absolute inset-x-0 top-4`} aria-hidden="true">
                   <span className="mb-[7px] block text-[10px] leading-none tracking-[0.1em] text-[#86cec2]">PASSWORD</span>
                   <span className="flex h-[43px] items-center justify-between border border-[#a9b8b7] bg-[#12272d]">
