@@ -1,0 +1,1 @@
+export const interiorBreadcrumbClass = "flex items-center gap-3 pt-[19px] pb-[22px] font-[family-name:var(--mono)] text-[11px] leading-normal tracking-[0.09em] max-[768px]:pt-[13px] max-[768px]:pb-[17px] [&_a]:underline [&_a]:underline-offset-[4px] [&_a:hover]:text-[var(--red)]";

@@ -15,6 +15,7 @@ import {
 import { buildProjectEntries } from "@/lib/project-list";
 import { getProjectPage } from "@/lib/projects";
 import { paginate, sampleContentEnabled } from "@/lib/sample-content";
+import { interiorBreadcrumbClass } from "@/components/interiorStyles";
 
 export const metadata = createPageMetadata({
   title: "PROJECTS",
@@ -45,7 +46,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
   return (
     <section className="projects-index site-shell @container/reader" aria-labelledby="projects-index-title">
       <WorkspaceGuidePublisher path="/projects" page={Array.isArray(rawPage) ? rawPage[0] ?? "" : rawPage ?? ""} guide={{ id: `projects-page-${page}`, command: "ls projects/", output: <TerminalListing listing={listing} /> }} projectOutput={<TerminalListing listing={listing} />} />
-      <nav className="interior-breadcrumb" aria-label="パンくずリスト">
+      <nav className={interiorBreadcrumbClass} aria-label="パンくずリスト">
         <Link href="/">HOME</Link><span aria-hidden="true">/</span><span>PROJECTS</span>
       </nav>
 

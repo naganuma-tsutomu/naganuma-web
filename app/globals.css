@@ -81,10 +81,6 @@
   @apply pb-[72px] max-[768px]:pb-[38px];
 }
 
-@utility interior-breadcrumb {
-  @apply flex items-center gap-3 pt-[19px] pb-[22px] font-[family-name:var(--mono)] text-[11px] leading-normal tracking-[0.09em] max-[768px]:pt-[13px] max-[768px]:pb-[17px];
-}
-
 @utility interior-section-heading {
   @apply mb-5 flex items-center gap-[17px] font-[family-name:var(--mono)] text-[11px] leading-normal tracking-[0.09em] whitespace-nowrap max-[480px]:gap-[10px] max-[480px]:text-[10px];
 }
@@ -103,10 +99,6 @@
 
 @utility project-card-sample {
   @apply mb-2 inline-block bg-[var(--orange)] px-[7px] py-[3px] font-[family-name:var(--mono)] text-[10px] leading-[1.4] tracking-[0.08em] text-[var(--ink)];
-}
-
-@utility article-breadcrumb {
-  @apply mb-11 flex items-baseline gap-3 font-[family-name:var(--mono)] text-xs leading-[1.6] max-[768px]:mb-[30px];
 }
 
 @utility article-meta {
@@ -174,8 +166,6 @@
 }
 
 /* Shared selectors keep CMS-generated markup styled without changing its HTML. */
-.article-breadcrumb a { @apply underline underline-offset-[5px]; }
-.article-breadcrumb > span:last-child { @apply [overflow-wrap:anywhere] min-w-0; }
 .article-meta time { @apply ml-auto; }
 .article-sample { @apply bg-[var(--orange)] py-[3px] px-[8px]; }
 .article-header h1 { @apply my-[18px] mx-[0] text-[clamp(28px,_5cqw,_68px)] leading-[1.2] [overflow-wrap:anywhere]; }
@@ -206,7 +196,7 @@
 .article-body th:not(:last-child), .article-body td:not(:last-child) { @apply whitespace-nowrap; }
 .article-body tbody tr:nth-child(even) td { @apply bg-[#f2f1e9]; }
 .article-body hr { @apply [border:0]; @apply border-t-[1px] border-solid border-t-[#a4aca6] my-[36px]; }
-.article-footer a:hover, .article-breadcrumb a:hover { @apply text-[var(--red)]; }
+.article-footer a:hover { @apply text-[var(--red)]; }
 .article-state h1 { @apply text-[clamp(26px,_5vw,_42px)] leading-[1.5] my-[16px] mx-[0]; }
 .article-state > p { @apply leading-[1.9]; }
 .article-state > a { @apply block mt-[28px] underline underline-offset-[5px]; }
@@ -235,8 +225,6 @@
 }
 
 /* Interior pages use the same paper, ink and terminal language as the home page. */
-.interior-breadcrumb a { @apply underline underline-offset-[4px]; }
-.interior-breadcrumb a:hover { @apply text-[var(--red)]; }
 .interior-section-heading .section-rule { @apply min-w-[20px]; }
 .interior-section-title span, .about-copy h2 span { @apply text-[var(--red)]; }
 

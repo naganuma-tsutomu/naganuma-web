@@ -56,7 +56,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <div data-article-layout className={`@container/article site-shell pt-6 pb-12 max-[768px]:pt-[14px] ${hasToc ? "max-w-[1240px]" : "max-w-[920px]"}`}>
       <WorkspaceGuidePublisher path={`/projects/${encodeURIComponent(slug)}`} guide={{ id: `article-${slug}`, command: "pwd", output: <div className="space-y-3 text-xs leading-[1.8]"><p data-command-row className="[overflow-wrap:anywhere]">/projects/{slug}</p><p data-command-row className="text-[var(--aqua)]">{project.title}</p><Link href="/projects" className="text-[var(--aqua)] underline underline-offset-4">制作実績の一覧へ ↗</Link></div> }} />
-      <nav className="article-breadcrumb" aria-label="パンくずリスト">
+      <nav className="mb-11 flex items-baseline gap-3 font-[family-name:var(--mono)] text-xs leading-[1.6] max-[768px]:mb-[30px] [&_a]:underline [&_a]:underline-offset-[5px] [&_a:hover]:text-[var(--red)] [&>span:last-child]:min-w-0 [&>span:last-child]:[overflow-wrap:anywhere]" aria-label="パンくずリスト">
         <Link href="/projects">PROJECTS</Link><span aria-hidden="true">/</span><span>{project.title}</span>
       </nav>
       <div className={hasToc ? "block @min-[960px]/article:grid @min-[960px]/article:grid-cols-[minmax(0,1fr)_260px] @min-[960px]/article:items-start @min-[960px]/article:gap-9 @min-[1100px]/article:grid-cols-[minmax(0,1fr)_280px] @min-[1100px]/article:gap-12" : undefined}>

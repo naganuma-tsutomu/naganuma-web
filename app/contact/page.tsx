@@ -3,6 +3,7 @@ import InteriorPageHeader from "@/components/InteriorPageHeader";
 import { createPageMetadata } from "@/lib/site-metadata";
 import Link from "next/link";
 import { contactLead, socialLinks } from "@/app/data/contact";
+import { interiorBreadcrumbClass } from "@/components/interiorStyles";
 
 const profileLinkClass = "grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-[7px] border border-[#8ca6a7] bg-[#102c32] px-5 py-[18px] text-[var(--paper)] no-underline transition-colors duration-200 hover:border-[var(--aqua)] hover:bg-[#17383d] focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-[var(--orange)]";
 const profileLabelClass = "col-start-1 font-[family-name:var(--mono)] text-[11px] leading-normal tracking-[0.08em] text-[var(--aqua)]";
@@ -18,7 +19,7 @@ export const metadata = createPageMetadata({
 export default function Contact() {
   return (
     <div className="interior-page site-shell">
-      <nav className="interior-breadcrumb" aria-label="パンくずリスト">
+      <nav className={interiorBreadcrumbClass} aria-label="パンくずリスト">
         <Link href="/">HOME</Link><span aria-hidden="true">/</span><span>CONTACT</span>
       </nav>
 

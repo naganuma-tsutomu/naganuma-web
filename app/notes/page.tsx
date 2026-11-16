@@ -16,6 +16,7 @@ import {
 import { getNoteFeed } from "@/lib/note";
 import type { NoteFeed } from "@/lib/note-types";
 import { paginate, sampleContentEnabled } from "@/lib/sample-content";
+import { interiorBreadcrumbClass } from "@/components/interiorStyles";
 
 export const metadata = createPageMetadata({
   title: "NOTES",
@@ -49,7 +50,7 @@ export default async function NotesPage({ searchParams }: { searchParams: Promis
   return (
     <section className="projects-index site-shell @container/reader" aria-labelledby="notes-index-title">
       <WorkspaceGuidePublisher path="/notes" page={Array.isArray(rawPage) ? rawPage[0] ?? "" : rawPage ?? ""} guide={{ id: `notes-page-${page}`, command: "ls notes/", output: <TerminalListing listing={listing} /> }} noteOutput={<TerminalListing listing={listing} />} />
-      <nav className="interior-breadcrumb" aria-label="パンくずリスト">
+      <nav className={interiorBreadcrumbClass} aria-label="パンくずリスト">
         <Link href="/">HOME</Link><span aria-hidden="true">/</span><span>NOTES</span>
       </nav>
 

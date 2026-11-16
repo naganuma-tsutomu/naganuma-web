@@ -7,6 +7,7 @@ import {
   bio,
   skills,
 } from "@/app/data/about";
+import { interiorBreadcrumbClass } from "@/components/interiorStyles";
 
 export const metadata = createPageMetadata({
   title: "About",
@@ -20,7 +21,7 @@ const aboutSectionClass = "border-t border-[var(--ink)] pt-[30px] pb-[46px] @max
 export default function About() {
   return (
     <div className="interior-page site-shell">
-      <nav className="interior-breadcrumb" aria-label="パンくずリスト">
+      <nav className={interiorBreadcrumbClass} aria-label="パンくずリスト">
         <Link href="/">HOME</Link><span aria-hidden="true">/</span><span>ABOUT</span>
       </nav>
 
