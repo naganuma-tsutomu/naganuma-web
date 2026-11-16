@@ -35,7 +35,7 @@
 }
 @keyframes windowOpen {
   from { opacity: 0; transform: translateY(22px) scale(.94); filter: blur(3px); box-shadow: 0 0 0 var(--ink); }
-  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); box-shadow: var(--navigation-shadow, 10px) var(--navigation-shadow, 10px) 0 var(--ink); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); box-shadow: var(--overlay-window-shadow, 8px) var(--overlay-window-shadow, 8px) 0 var(--ink); }
 }
 @keyframes windowClose {
   0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }

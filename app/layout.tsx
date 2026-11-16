@@ -8,6 +8,7 @@ import { HomelabProvider } from "@/components/HomelabProvider";
 import LoginIntro from "@/components/LoginIntro";
 import { LOGIN_INTRO_STORAGE_KEY } from "@/lib/login-intro";
 import { PROJECT_PREVIEW_COOKIE } from "@/lib/project-preview";
+import { desktopBackgroundClass } from "@/components/desktopStyles";
 import "./globals.css";
 import { Oswald, Shippori_Mincho, Silkscreen } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -58,7 +59,7 @@ export default async function RootLayout({
           }} />
         )}
       </head>
-      <body className="m-0 flex min-h-screen flex-col bg-[var(--paper)] bg-fixed [background-image:linear-gradient(90deg,#0a171d0e_1px,transparent_1px),linear-gradient(#0a171d0e_1px,transparent_1px)] [background-size:34px_34px] print:bg-none font-[Arial,'Helvetica_Neue',var(--font-shippori-mincho),serif] text-[var(--ink)]">
+      <body className={`m-0 flex min-h-screen flex-col ${desktopBackgroundClass} print:bg-none font-[Arial,'Helvetica_Neue',var(--font-shippori-mincho),serif] text-[var(--ink)]`}>
         <LoginIntro />
         <noscript><style>{"[data-login-intro] { display: none !important; }"}</style></noscript>
         <a className="skip-link fixed -top-[100px] left-4 z-[100] bg-[var(--ink)] px-5 py-3 text-white focus:top-3" href="#main-content">本文へスキップ</a>

@@ -8,6 +8,7 @@ import PageTransition from "./PageTransition";
 import PageWindow from "./PageWindow";
 import { READER_LAYOUT_EVENT } from "@/lib/reading-viewport";
 import type { HomeSection } from "@/lib/home-sections";
+import { desktopWorkspaceClass } from "./desktopStyles";
 
 export default function WorkspaceShell({ children, footer }: { children: ReactNode; footer: ReactNode }) {
   const statusRef = useRef<HTMLDivElement>(null);
@@ -43,7 +44,7 @@ export default function WorkspaceShell({ children, footer }: { children: ReactNo
   const value = useMemo(() => ({ layout, publication, publish, homeSection, setHomeSection }), [layout, publication, publish, homeSection]);
   return (
     <WorkspaceContext.Provider value={value}>
-      <div data-workspace data-ready={layout.ready} data-layout={layout.split ? "split" : "flow"} data-height={layout.height} data-status-height={layout.statusHeight} data-active-section={homeSection} style={{ "--workspace-height": `${layout.height}px`, "--page-window-height": `${layout.height}px`, "--workspace-status-height": `${layout.statusHeight}px` } as CSSProperties} className="grid w-full items-start gap-8 px-4 py-6 min-[960px]:px-6 xl:px-8 data-[layout=split]:grid-cols-[minmax(0,1fr)_440px] print:block print:bg-none print:p-0">
+      <div data-workspace data-ready={layout.ready} data-layout={layout.split ? "split" : "flow"} data-height={layout.height} data-status-height={layout.statusHeight} data-active-section={homeSection} style={{ "--workspace-height": `${layout.height}px`, "--page-window-height": `${layout.height}px`, "--workspace-status-height": `${layout.statusHeight}px` } as CSSProperties} className={`grid w-full items-start gap-8 ${desktopWorkspaceClass} data-[layout=split]:grid-cols-[minmax(0,1fr)_440px] print:block print:bg-none print:p-0`}>
         <PageTransition><PageWindow footer={footer}>{children}</PageWindow></PageTransition>
         <PersistentSidebar statusRef={statusRef} />
       </div>

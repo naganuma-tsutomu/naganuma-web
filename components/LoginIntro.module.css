@@ -2,11 +2,10 @@
 
 .leaving {
   pointer-events: none;
-  animation: desktopReveal 250ms ease-in-out 250ms forwards;
+  animation: desktopReveal 380ms ease-out 220ms forwards;
 }
-.leaving .topbar,
-.leaving .bottomBar { animation: chromeFade 240ms ease-in forwards; }
-.leaving .loginWindow { animation: windowClose 300ms cubic-bezier(.55, .02, .78, .27) both; }
+.leaving .chrome { animation: chromeFade 220ms ease-in forwards; }
+.leaving .loginWindow { animation: windowClose 220ms ease-in both; }
 
 .loginWindow { animation: windowAppear .35s ease-out both; }
 .passwordDots i {
@@ -36,9 +35,8 @@
 
 @keyframes windowAppear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes windowClose {
-  0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-  24% { opacity: 1; transform: translateY(-3px) scale(1.015); box-shadow: 12px 12px 0 var(--ink); }
-  100% { opacity: 0; transform: translateY(-16px) scale(.9); filter: blur(2px); box-shadow: 0 0 0 var(--ink); }
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-12px); }
 }
 @keyframes chromeFade { to { opacity: 0; } }
 @keyframes desktopReveal { to { opacity: 0; } }
@@ -49,16 +47,11 @@
 @keyframes progress { to { transform: translateX(0); } }
 
 
-@media (max-width: 374px) {
-  .topbar :global(.site-wordmark) { font-size: 18px; letter-spacing: .2em; }
-}
-
-@media (max-height: 560px) {
-  .frame { padding-block: 12px; }
-  .center { padding-block: 14px 20px; }
-  .windowBody { padding-block: 16px; }
-  .avatar { width: 58px; height: 58px; font-size: 34px; }
-  .authStage { margin-top: 16px; }
+@media (max-height: 640px) {
+  .center { padding-block: 6px; }
+  .windowBody { padding-block: 8px; }
+  .avatar { width: 48px; height: 48px; font-size: 28px; }
+  .authStage { margin-top: 12px; height: 78px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

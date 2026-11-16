@@ -1,0 +1,1 @@
+export const overlayWindowFrameClass = "border-2 border-[#afbdba] [--overlay-window-shadow:8px] max-[899px]:[--overlay-window-shadow:4px] shadow-[var(--overlay-window-shadow)_var(--overlay-window-shadow)_0_var(--ink)]";

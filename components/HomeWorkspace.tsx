@@ -11,9 +11,9 @@ import { useWorkspace } from "./WorkspaceContext";
 import { contentWindowFrame, contentWindowTitle } from "./contentWindowStyles";
 
 export default function HomeWorkspace({ children, projectOutput, noteOutput }: { children: ReactNode; projectOutput: ReactNode; noteOutput: ReactNode }) {
-  const { rootRef, readerRef, contentRef, split, active } = useHomeReader();
+  const { rootRef, readerRef, contentRef, active } = useHomeReader();
   const query = useSearchParams().toString();
-  const { publish, setHomeSection } = useWorkspace();
+  const { publish, setHomeSection, layout: { split } } = useWorkspace();
   const selected = homeSections.find(section => section.id === active)!;
   const guide = useMemo<TerminalGuide>(() => ({
     id: active,
@@ -47,7 +47,7 @@ export default function HomeWorkspace({ children, projectOutput, noteOutput }: {
           <span>HOME — naganuma-web</span><span className="ml-auto text-[var(--red)]" data-reader-title>{selected.label}</span>
           <span className="ml-1 flex gap-[6px] [&_i]:h-[9px] [&_i]:w-[9px] [&_i]:rounded-full [&_i]:border [&_i]:border-current" aria-hidden="true"><i /><i /><i /></span>
         </div>
-        <div ref={readerRef} data-home-reader data-scroll={split ? "internal" : "document"} role="region" aria-label="サイトの本文" tabIndex={0} className={`relative min-h-0 bg-[var(--paper)] text-base leading-[1.9] [scrollbar-color:#537175_#e9e4d8] [scrollbar-width:thin] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--red)] ${split ? "flex-1 overflow-y-auto overscroll-contain" : ""} print:h-auto! print:overflow-visible!`}>
+        <div ref={readerRef} data-home-reader data-scroll={split ? "internal" : "document"} role="region" aria-label="サイトの本文" tabIndex={0} className={`relative min-h-0 bg-[var(--paper)] text-base leading-[1.9] [scrollbar-color:#537175_#e9e4d8] [scrollbar-width:thin] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--red)] ${split ? "flex-1 overflow-y-auto overscroll-contain [scrollbar-gutter:stable]" : ""} print:h-auto! print:overflow-visible!`}>
           <div ref={contentRef} className="@container/reader px-4 pt-4 pb-1 min-[600px]:px-6 print:p-0">{children}</div>
         </div>
       </section>

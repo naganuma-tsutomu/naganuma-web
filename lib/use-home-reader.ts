@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
 import { readWorkspaceLayout } from "./workspace-layout";
 import { READER_LAYOUT_EVENT } from "./reading-viewport";
 import { homeSections, type HomeSection } from "./home-sections";
@@ -13,7 +12,6 @@ export function useHomeReader() {
   const rootRef = useRef<HTMLDivElement>(null);
   const readerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [split, setSplit] = useState(false);
   const [active, setActive] = useState<HomeSection>("top");
 
   useEffect(() => {
@@ -109,7 +107,6 @@ export function useHomeReader() {
       initialized = true;
       const saved = initial ? fromHistory() : bookmark;
       divided = next;
-      flushSync(() => setSplit(next));
       if (initial || changed || resized) {
         if (divided) window.scrollTo({ top: 0, behavior: "instant" });
         if (saved) restore(saved);
@@ -178,5 +175,5 @@ export function useHomeReader() {
     };
   }, []);
 
-  return { rootRef, readerRef, contentRef, split, active };
+  return { rootRef, readerRef, contentRef, active };
 }

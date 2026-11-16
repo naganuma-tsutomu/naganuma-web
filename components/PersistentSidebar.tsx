@@ -30,7 +30,7 @@ export default function PersistentSidebar({ statusRef }: { statusRef: RefObject<
     </div>,
   }), [pathname, route]);
   return (
-    <aside aria-label="スクロール連動ターミナル" className={`${layout.split ? "block" : "hidden"} min-w-0 print:hidden`}>
+    <aside data-workspace-sidebar aria-label="スクロール連動ターミナル" className={`${layout.split ? "block" : "hidden"} min-w-0 print:hidden`}>
       <div data-terminal-sidebar>
         <div className="relative">
           <div className="grid gap-4 [&_.terminal-panel]:h-[calc(var(--workspace-height)-var(--workspace-status-height)-16px)]">

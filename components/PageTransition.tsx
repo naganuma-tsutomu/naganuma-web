@@ -5,6 +5,7 @@ import { flushSync } from "react-dom";
 import { usePathname } from "next/navigation";
 import { pageNumber } from "@/app/data/links";
 import styles from "./PageTransition.module.css";
+import { overlayWindowFrameClass } from "./overlayWindowStyles";
 
 type Phase = "idle" | "closing" | "opening";
 
@@ -160,7 +161,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
           <span className="flex items-center gap-[9px]"><i className="h-[7px] w-[7px] bg-[var(--red)]" /> DESKTOP {phase === "opening" ? pageNumbers.to : pageNumbers.from} / WORKSPACE</span>
           <span className="@max-[600px]/transition:hidden">WINDOW MANAGER <b className="text-base text-[var(--red)]">↗</b></span>
         </div>
-        <div className={`${styles.window} [--navigation-shadow:10px] max-[899px]:[--navigation-shadow:5px] w-[min(100%,570px)] border-[3px] border-[var(--ink)] bg-[var(--ink)] p-[5px] text-[var(--paper)] shadow-[10px_10px_0_var(--ink)] max-[899px]:shadow-[5px_5px_0_var(--ink)]`} aria-hidden="true">
+        <div className={`${styles.window} ${overlayWindowFrameClass} w-[min(100%,570px)] bg-[var(--ink)] p-[5px] text-[var(--paper)]`} aria-hidden="true">
           <div className="flex min-h-[38px] items-center justify-between gap-3 border border-[#afbdba] px-3 py-[7px] text-xs">
             <span>naganuma@home: navigation</span>
             <span className="flex gap-[7px] [&_i]:h-[10px] [&_i]:w-[10px] [&_i]:rounded-full [&_i]:border [&_i]:border-[#c7d4cf] [&_i:first-child]:border-[var(--red)] [&_i:first-child]:bg-[var(--red)]" aria-hidden="true"><i /><i /><i /></span>
