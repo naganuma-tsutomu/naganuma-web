@@ -169,7 +169,7 @@ function NeofetchOutput({ animate = false, onComplete, compact = false, snapshot
         <div className={`mt-[17px] flex h-[21px] w-[245px] max-w-full max-[768px]:h-4 [&_span]:flex-1 ${visibleRows === null ? "" : "invisible"}`} aria-hidden="true">
           {homelabPreview.palette.map((color) => <span key={color} style={{ backgroundColor: color }} />)}
         </div>
-        <p className={`status-demo mt-[9px] ${visibleRows === null ? "" : "invisible"}`} data-state={system.state} aria-live="polite">{snapshot || status ? stateLabels[system.state] : "CONNECTING"}</p>
+        <p className={`mt-[9px] text-[10px] tracking-[.05em] whitespace-nowrap text-[#b9c7c9] data-[state=demo]:text-[#ff7364] data-[state=live]:inline-flex data-[state=live]:items-center data-[state=live]:gap-[9px] data-[state=live]:before:h-[7px] data-[state=live]:before:w-[7px] data-[state=live]:before:flex-none data-[state=live]:before:rounded-full data-[state=live]:before:bg-[#57d7c3] data-[state=live]:before:shadow-[0_0_10px_#57d7c3] data-[state=live]:before:content-[''] ${visibleRows === null ? "" : "invisible"}`} data-state={system.state} aria-live="polite">{snapshot || status ? stateLabels[system.state] : "CONNECTING"}</p>
       </div>
     </div>
   );

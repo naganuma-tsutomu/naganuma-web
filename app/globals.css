@@ -230,9 +230,3 @@
 
 /* Interior typography follows the actual content window, including wide-screen split views. */
 .interior-section-title { @apply text-[clamp(28px,4cqw,52px)]; }
-
-/* Shared by the terminal's system-state label. */
-.status-demo { @apply text-[10px] tracking-[.05em] whitespace-nowrap text-[#b9c7c9]; }
-.status-demo[data-state="demo"] { @apply text-[#ff7364]; }
-.status-demo[data-state="live"] { @apply inline-flex items-center gap-[9px]; }
-.status-demo[data-state="live"]::before { @apply content-[""] w-[7px] h-[7px] flex-none rounded-[50%] bg-[#57d7c3] shadow-[0_0_10px_#57d7c3]; }
