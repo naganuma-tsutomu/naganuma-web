@@ -1,11 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  --animate-window-shadow: window-shadow-in 320ms ease-out both;
-  @keyframes window-shadow-in {
-    0%, 25% { box-shadow: 7px 7px 0 transparent; }
-    100% { box-shadow: 7px 7px 0 var(--ink); }
-  }
   --animate-blink: blink 1s step-end infinite;
   @keyframes blink {
     50% { opacity: 0; }
