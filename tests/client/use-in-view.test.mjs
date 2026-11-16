@@ -34,8 +34,6 @@ class FakeIntersectionObserver {
 function Probe({ options, attach = true }) {
   const ref = useRef(null);
   const inView = useInView(ref, options);
-  // createElement passes the ref to React; it does not read ref.current during render.
-  // eslint-disable-next-line react-hooks/refs
   return React.createElement("div", { ref: attach ? ref : undefined, "data-in-view": String(inView) });
 }
 
