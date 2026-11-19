@@ -198,6 +198,8 @@ test("manual input and results survive tabs, width changes, and returning to fol
   await input(page).press("Enter");
   await input(page).fill("unfinished draft");
   await navigation(page).getByRole("link", { name: "NOTES", exact: true }).click();
+  // Manual mode keeps the terminal guide unchanged; wait for the reader to finish navigating.
+  await expect(page.locator("[data-reader-title]")).toHaveText("NOTES");
   await expect(panel(page)).toHaveAttribute("data-guide", "top");
   await expect(input(page)).toHaveValue("unfinished draft");
   for (const width of [1280, 1279, 1024, 960, 390, 1440]) {
