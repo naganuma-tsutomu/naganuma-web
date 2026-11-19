@@ -123,28 +123,25 @@ test("only the loading window animates while the main window switches instantly 
     await expect(loadingWindow).not.toHaveCSS("animation-name", "none");
     await expect(page.locator("[data-phase]")).toHaveAttribute("data-phase", "idle");
     await expect(main).toHaveCSS("visibility", "visible");
-    const shadow = await main.locator(":scope > div > section").evaluate(element => {
-      const animation = element.getAnimations().find(animation =>
-        animation instanceof CSSAnimation && animation.animationName === "window-shadow-in");
-      if (!animation) throw new Error("Missing window shadow animation");
-      const box = element.getBoundingClientRect().toJSON();
-      animation.pause();
-      const samples = [0, 80, 200, 320].map(time => {
-        animation.currentTime = time;
+    const window = main.getByRole("region", { name: "ABOUTの本文ウィンドウ", exact: true });
+    await expect(window).toHaveCSS("animation-name", "none");
+    // The content window's shadow is static since the shadow entrance was removed.
+    const samples = await window.evaluate(async element => {
+      const samples = [];
+      for (let frame = 0; frame < 4; frame++) {
         const style = getComputedStyle(element);
-        return { shadow: style.boxShadow, opacity: style.opacity, transform: style.transform, filter: style.filter, box: element.getBoundingClientRect().toJSON() };
-      });
-      animation.finish();
-      return { box, samples };
+        samples.push({ shadow: style.boxShadow, opacity: style.opacity, transform: style.transform, filter: style.filter, box: element.getBoundingClientRect().toJSON(), animations: element.getAnimations().length });
+        await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+      }
+      return samples;
     });
-    expect(shadow.samples[0].shadow).toBe(shadow.samples[1].shadow);
-    expect(shadow.samples[1].shadow).not.toBe(shadow.samples[2].shadow);
-    expect(shadow.samples[2].shadow).not.toBe(shadow.samples[3].shadow);
-    for (const sample of shadow.samples) {
+    for (const sample of samples) {
+      expect(sample.shadow).toContain("rgb(10, 23, 29) 7px 7px 0px 0px");
       expect(sample.opacity).toBe("1");
       expect(sample.transform).toBe("none");
       expect(sample.filter).toBe("none");
-      expect(sample.box).toEqual(shadow.box);
+      expect(sample.animations).toBe(0);
+      expect(sample).toEqual(samples[0]);
     }
     await expect(main).toHaveCSS("animation-name", "none");
     await expect(main).toHaveCSS("transform", "none");
